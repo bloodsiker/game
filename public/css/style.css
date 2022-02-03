@@ -1,0 +1,656 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto&family=Rubik:wght@800&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Rubik+Mono+One&display=swap");
+:root {
+    --font-family: 'Roboto',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    --font-family-2: 'Rubik',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    --font-family-3: 'Rubik Mono One',-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+    --font-color: white;
+    --background-color: #1E272A;
+    --base-color: #E0931F;
+    --base-color-2: #FEDD89;
+    --base-color-lighter: #e39e35;
+    --base-color-darker: #ca841c;
+    --color-1: #E0931F;
+    --color-2: #FF3F3F;
+    --color-3: #2E5D7E;
+    --border-radius: 20px;
+    --primary: var(--base-color);
+}
+
+body, html {
+  font-family: var(--font-family);
+  color: var(--font-color);
+  padding: 0;
+  margin: 0;
+  font-size: 16px;
+}
+
+body {
+  background: var(--background-color);
+}
+
+section {
+  margin-bottom: 5rem;
+}
+
+a {
+  color: var(--base-color);
+}
+
+.btn {
+  border-radius: 5px;
+  background: var(--base-color);
+  font-family: var(--font-family-2);
+  border: 0 none;
+  text-transform: uppercase;
+  padding: 0.8rem 1.3rem;
+  font-size: 0.8em;
+  color: var(--font-color);
+}
+.btn:focus {
+  background: var(--base-color);
+  box-shadow: 0 0 0;
+  outline: 0 none;
+}
+.btn:hover {
+  background: var(--base-color-lighter);
+  color: var(--font-color);
+}
+.btn:active {
+  background: var(--base-color-darker) !important;
+  color: var(--font-color);
+}
+.btn:active:focus {
+  box-shadow: 0 0 0 0.2rem var(--base-color-darker) !important;
+}
+
+.page-title {
+  font-family: var(--font-family-2);
+  font-size: 2em;
+  margin-top: 6rem;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.page-subtitle {
+  margin-bottom: 5rem;
+  text-align: center;
+  font-size: 1em;
+}
+
+.grow, .btn, .game, .game-popup-wrapper .game-popup .game-popup-coins .game-popup-coin, .social-section .social {
+  transition: transform 0.2s;
+}
+.grow:hover, .btn:hover, .game:hover, .game-popup-wrapper .game-popup .game-popup-coins .game-popup-coin:hover, .social-section .social:hover {
+  transform: scale(1.05);
+}
+
+@keyframes fadeOutDown {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+}
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes fadeOut {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+.animate__fadeIn {
+  animation-name: fadeIn;
+}
+
+.animate__fadeOut {
+  animation-name: fadeOut;
+}
+
+.animate__fadeInDown {
+  animation-name: fadeInDown;
+}
+
+.animate__fadeOutDown {
+  animation-name: fadeOutDown;
+}
+
+.animate__animated {
+  animation-duration: 0.3s;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+}
+
+/* ------------------------- Hero ------------------------- */
+#hero-section {
+  margin-top: 3rem;
+  padding-bottom: 3rem;
+}
+#hero-section .hero-content h1 {
+  font-size: 2.8em;
+  font-family: var(--font-family-2);
+}
+#hero-section .hero-content p {
+  color: var(--base-color-lighter);
+}
+@media (max-width: 768px) {
+  #hero-section .hero-content {
+    padding-top: 4rem;
+  }
+  #hero-section .hero-content h1 {
+    font-size: 1.8em;
+  }
+}
+
+/* ------------------------- Games ------------------------- */
+.game {
+  height: 360px;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  position: relative;
+  margin-bottom: 2rem;
+  cursor: pointer;
+}
+.game:hover .game-icon {
+  transform-origin: center center;
+  transform: translate(-50%, -50%) scale(1.1);
+}
+.game .game-background, .game .game-background-overlay {
+  position: absolute;
+  background-size: cover;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.game .game-background-overlay {
+  background: rgba(30, 39, 42, 0.7);
+}
+.game .game-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 130px;
+  width: 130px;
+  background-size: cover;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+}
+.game .game-name {
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  right: 1rem;
+  font-family: var(--font-family-2);
+  font-size: 1.5em;
+}
+.game .game-edge {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  right: 1rem;
+  font-size: 0.8em;
+  color: var(--base-color);
+}
+
+@media (max-width: 768px) {
+  .game {
+    height: 220px;
+  }
+  .game .game-icon {
+    height: 100px;
+    width: 100px;
+  }
+  .game .game-name {
+    font-size: 1.2em;
+  }
+}
+/* ------------------------- Features ------------------------- */
+#features-section .feature {
+  margin-bottom: 4rem;
+}
+#features-section .feature .feature-icon {
+  height: 75px;
+  margin-bottom: 1rem;
+}
+#features-section .feature .feature-title {
+  font-family: var(--font-family-2);
+  font-size: 1.5em;
+}
+#features-section .feature .feature-message {
+  color: var(--base-color-lighter);
+  font-size: 0.9em;
+}
+
+/* ------------------------- Socials ------------------------- */
+#social-section {
+  text-align: center;
+}
+#social-section .social {
+  margin-bottom: 1rem;
+  display: block;
+}
+#social-section .social:last-child {
+  margin-right: 0;
+}
+#social-section .social img {
+  height: 60px;
+}
+
+/* ------------------------- Jackpot ------------------------- */
+#jackpot-section {
+  background-color: #233743;
+  border-radius: var(--border-radius);
+}
+#jackpot-section .slick-dots li button:before {
+  color: #233743;
+  opacity: 1;
+}
+#jackpot-section .slick-dots li.slick-active button:before {
+  color: white;
+}
+#jackpot-section .slick-slide:focus {
+  outline: 0 none;
+}
+#jackpot-section .jackpots .jackpot {
+  text-align: center;
+  padding: 3rem;
+}
+#jackpot-section .jackpots .jackpot .jackpot-icon {
+  text-align: center;
+  height: 130px;
+  margin-bottom: 2rem;
+  display: inline-block;
+}
+#jackpot-section .jackpots .jackpot .jackpot-message {
+  font-family: var(--font-family-2);
+  font-size: 1em;
+  line-height: 1;
+  margin-bottom: 1rem;
+}
+#jackpot-section .jackpots .jackpot .jackpot-message .jackpot-game {
+  display: inline-flex;
+  align-items: center;
+  color: var(--base-color);
+}
+#jackpot-section .jackpots .jackpot .jackpot-message .jackpot-game img {
+  display: inline-block;
+  height: 18px;
+  margin-left: 3px;
+}
+    #jackpot-section .jackpots .jackpot .jackpot-amount {
+        font-family: var(--font-family-2);
+        font-size: 2em;
+        margin-bottom: 1rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 0;
+    }
+    #jackpot-section .jackpots .jackpot .jackpot-coin {
+        font-family: var(--font-family-2);
+        font-size: 2em;
+        margin-bottom: 1rem;
+        line-height: 1;
+    }
+
+footer {
+  background: rgba(0, 0, 0, 0.12);
+}
+footer .container {
+  padding: 3rem;
+  padding-bottom: 1rem;
+}
+footer .footer-partners {
+  margin-bottom: 3rem;
+  text-align: center;
+}
+footer .footer-links {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+footer .footer-links .footer-link {
+  background: var(--background-color);
+  text-align: center;
+  color: white;
+  padding: 0.8rem 1.3rem;
+  border-radius: 10px;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+  text-decoration: none;
+}
+footer .copyright {
+  font-size: 0.8em;
+  text-align: center;
+  color: #8F9394;
+}
+footer .copyright span {
+  color: white;
+}
+
+nav {
+  padding: 2rem;
+}
+nav .navigation {
+  display: flex;
+  align-items: center;
+}
+nav .navigation .logo {
+  display: block;
+  flex-grow: 1;
+}
+nav .navigation .logo-vertical {
+  display: block;
+  text-align: center;
+}
+nav .navigation .links {
+  flex-shrink: 0;
+}
+nav .navigation .links .link {
+  margin-right: 1rem;
+  font-family: var(--font-family-2);
+  padding: 0.8rem 1.3rem;
+  display: inline-block;
+  color: var(--font-color);
+}
+
+.nav-image {
+  background: url("../assets/hero.png") center/cover;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 830px;
+  z-index: -1;
+}
+.nav-image .nav-image-gradient {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 180px;
+  background: linear-gradient(rgba(0, 0, 0, 0), var(--background-color));
+}
+
+.results {
+  height: 450px;
+  overflow: hidden;
+}
+.results .results-table {
+  width: 100%;
+  border-spacing: 0 0.5rem;
+  border-collapse: separate;
+  font-family: var(--font-family-2);
+  font-size: 0.8em;
+}
+    .results .results-table thead tr th {
+        font-size: 0.8em;
+        opacity: 0.5;
+        padding-left: 15px;
+    }
+.results .results-table tbody tr {
+  background: rgba(30, 39, 42, 0.7);
+}
+.results .results-table tbody tr:nth-child(5) {
+  opacity: 0.9;
+}
+.results .results-table tbody tr:nth-child(6) {
+  opacity: 0.5;
+}
+.results .results-table tbody tr:nth-child(7) {
+  opacity: 0.2;
+}
+.results .results-table tbody tr td {
+  padding: 1rem;
+  white-space: nowrap;
+  line-height: 1;
+  vertical-align: middle;
+}
+.results .results-table tbody tr td img {
+  height: 20px;
+  margin-right: 5px;
+}
+.results .results-table tbody tr td:first-child {
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+}
+.results .results-table tbody tr td:last-child {
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+}
+    .results .results-table tbody tr td.result-game {
+        font-size: 0.9em;
+        width:25%;
+    }
+.results .results-table tbody tr td.result-user.hidden {
+  opacity: 0.5;
+}
+.results .results-table tbody tr td.result-multiplier {
+  text-align: center;
+}
+    .results .results-table tbody tr td.result-payout.positive {
+        color: #26FF03;
+    }
+
+    .results .results-table tbody tr td.result-payout.negative {
+        color: red;
+    }
+
+.game-popup-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    z-index: 100;
+}
+.game-popup-wrapper .game-popup-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(30, 39, 42, 0.7);
+}
+.game-popup-wrapper .game-popup {
+  border-radius: var(--border-radius);
+  background: #1e272a;
+  padding: 3rem;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+.game-popup-wrapper .game-popup .game-popup-close-btn {
+  position: absolute;
+  top: 2rem;
+  right: 2rem;
+  cursor: pointer;
+}
+.game-popup-wrapper .game-popup .game-popup-close-btn svg {
+  height: 34px;
+  width: 34px;
+  fill: var(--font-color);
+}
+.game-popup-wrapper .game-popup .game-popup-close-btn:hover svg {
+  fill: var(--base-color);
+}
+.game-popup-wrapper .game-popup .game-popup-header {
+  display: flex;
+  margin-bottom: 3rem;
+}
+.game-popup-wrapper .game-popup .game-popup-header .game-popup-header-icon {
+  margin-right: 2rem;
+  flex-shrink: 0;
+}
+.game-popup-wrapper .game-popup .game-popup-header .game-popup-header-edge {
+  color: var(--base-color);
+  font-weight: bold;
+}
+.game-popup-wrapper .game-popup .game-popup-header .game-popup-header-name {
+  font-size: 3rem;
+  font-family: var(--font-family-2);
+  line-height: 1.2;
+}
+.game-popup-wrapper .game-popup .game-popup-header .game-popup-header-description {
+  font-size: 0.8em;
+}
+.game-popup-wrapper .game-popup .game-popup-coins-title {
+  font-family: var(--font-family-2);
+  margin-bottom: 1rem;
+  font-size: 1.3em;
+  line-height: 1.2;
+}
+.game-popup-wrapper .game-popup .game-popup-coins .game-popup-coin {
+  display: flex;
+  align-items: center;
+  line-height: 1.2;
+  font-weight: bold;
+  font-size: 0.8em;
+  cursor: pointer;
+  color: var(--font-color);
+  text-decoration: none;
+  padding: 0.5rem;
+  margin: -0.5rem;
+  margin-bottom: 1rem;
+}
+.game-popup-wrapper .game-popup .game-popup-coins .game-popup-coin img {
+  margin-right: 1rem;
+  height: 50px;
+  width: 50px;
+}
+.game-popup-wrapper .game-popup .game-popup-coins .game-popup-coin:hover {
+  background: var(--background-color);
+  border-radius: var(--border-radius);
+}
+@media (max-width: 768px) {
+  .game-popup-wrapper .game-popup {
+    padding: 2rem;
+    padding-bottom: 1rem;
+  }
+  .game-popup-wrapper .game-popup .game-popup-header {
+    display: block;
+  }
+  .game-popup-wrapper .game-popup .game-popup-header .game-popup-header-icon {
+    display: none;
+  }
+  .game-popup-wrapper .game-popup .game-popup-header .game-popup-header-info .game-popup-header-name {
+    font-size: 2em;
+  }
+  .game-popup-wrapper .game-popup .game-popup-coins-title {
+    font-size: 1em;
+  }
+  .game-popup-wrapper .game-popup .game-popup-coins .game-popup-coin {
+    margin-bottom: 0.5rem;
+  }
+  .game-popup-wrapper .game-popup .game-popup-coins .game-popup-coin img {
+    height: 40px;
+    width: 40px;
+  }
+}
+
+.social-section {
+  text-align: center;
+}
+.social-section .social {
+  margin-bottom: 1rem;
+  display: block;
+}
+.social-section .social:last-child {
+  margin-right: 0;
+}
+.social-section .social img {
+  height: 60px;
+}
+@media (max-width: 768px) {
+  .social-section .social img {
+    height: 40px;
+  }
+}
+
+#games-vertical-wrapper {
+  background: rgba(46, 93, 126, 0.3);
+}
+#games-vertical-wrapper .games-verical {
+  padding: 2rem;
+  padding-right: 0;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+#games-vertical-wrapper .games-verical::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+#games-vertical-wrapper .games-verical::-webkit-scrollbar-track {
+  background: transparent;
+}
+#games-vertical-wrapper .games-verical::-webkit-scrollbar-thumb {
+  background: rgba(46, 93, 126, 0.3);
+}
+#games-vertical-wrapper .games-verical::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+#games-vertical-wrapper .games-verical .game {
+  display: inline-block;
+  height: 300px;
+  width: 200px;
+  margin-bottom: 0;
+  margin-right: 2rem;
+}
+
+.partners .partner {
+  margin-bottom: 4rem;
+  color: var(--font-color);
+}
+.partners .partner .partner-icon {
+  margin-bottom: 1rem;
+  background: white;
+  border-radius: 10px;
+  display: inline-flex;
+  overflow: hidden;
+}
+.partners .partner .partner-icon img {
+  height: 75px;
+}
+.partners .partner .partner-title {
+  font-family: var(--font-family-2);
+  font-size: 1.5em;
+}
+.partners .partner .partner-message {
+  color: var(--base-color-lighter);
+  font-size: 0.9em;
+}
+
+
+.fancybox-skin {
+    background: #1E272A !important;
+    padding: 5px !important;
+}
+
+p {
+    color: white;
+}

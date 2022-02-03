@@ -18,12 +18,12 @@ class CreateMinesTable extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->double('sum',10,2);
             $table->tinyInteger('count_mine');
-            $table->double('coeff',10,2)->nullable();
+            $table->float('coeff',10,2)->nullable();
             $table->double('won_sum',10,2)->default(0);
             $table->boolean('active')->default(true);
             $table->boolean('lose')->default(false);
             $table->string('mines');
-            $table->string('revealed');
+            $table->string('revealed')->nullable();
             $table->tinyInteger('step')->nullable();
             $table->timestamps();
 

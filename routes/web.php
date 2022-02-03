@@ -1,5 +1,12 @@
 <?php
 
+use App\Http\Controllers\Web\AccountController;
+use App\Http\Controllers\Web\Game\DiceController;
+use App\Http\Controllers\Web\Game\KenoController;
+use App\Http\Controllers\Web\Game\MineController;
+use App\Http\Controllers\Web\LoginController;
+use App\Http\Controllers\Web\MainController;
+use App\Http\Controllers\Web\RegisterController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +20,54 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::group(['middleware' => ['web']], function () {
+    Route::get('/', [MainController::class, 'index'])->name('index');
+
+    Route::match(['post', 'get'], 'login', [LoginController::class, 'login'])->name('login');
+    Route::get('logout', [LoginController::class, 'logout'])->name('logout');
+    Route::match(['post', 'get'], 'register', [RegisterController::class, 'index'])->name('register');
+
+    Route::group(['middleware' => ['auth']], function () {
+        Route::post('/dice/getDiceResult', [DiceController::class, 'getDiceResult'])->name('getDiceResult');
+        Route::post('/dice/getLastBets', [DiceController::class, 'getLastBets'])->name('getDiceLastBets');
+        Route::get('/dice/getBet/{id}', [DiceController::class, 'getBet'])->name('getBet');
+
+        Route::post('/keno/getKenoResult', [KenoController::class, 'getKenoResult'])->name('getKenoResult');
+        Route::post('/keno/getLastBets', [KenoController::class, 'getLastBets'])->name('getKenoLastBets');
+        Route::post('/keno/getRates', [KenoController::class, 'getRates'])->name('getKenoRates');
+
+        Route::post('/getBalance', [AccountController::class, 'getBalance'])->name('getBalance');
+        Route::post('/getFaucetHistory', [AccountController::class, 'getFaucetHistory'])->name('getFaucetHistory');
+
+        Route::get('/account/info', [AccountController::class, 'index'])->name('account.info');
+        Route::get('/account/player', [AccountController::class, 'infoPlayer'])->name('account.player');
+        Route::match(['post', 'get'],'/account/reward/{currency}', [AccountController::class, 'reward'])->name('account.reward');
+    });
+
+
+    Route::post('/keno/getAllLastBets', [KenoController::class, 'getAllLastBets'])->name('getKenoAllLastBets');
+
+    Route::get('/dice/{currency}', [DiceController::class, 'index'])->name('dice');
+    Route::get('/mine/{currency}', [MineController::class, 'index'])->name('mine');
+    Route::get('/keno/{currency}', [KenoController::class, 'index'])->name('keno');
+
+
+//    Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
+//        Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+//
+//        Route::match(['post', 'get'], 'edit', [ProfileController::class, 'edit'])->name('admin.profile.edit');
+//        Route::get('logout', [ProfileController::class, 'logout'])->name('admin.logout');
+//
+//        Route::get('exchange-source', [ExchangeSourceController::class, 'list'])->name('admin.exchange_source');
+//        Route::match(['post', 'get'], 'exchange-source/{id}/edit', [ExchangeSourceController::class, 'edit'])->name('admin.exchange_source.edit');
+//        Route::match(['post', 'get'], 'exchange-source/add', [ExchangeSourceController::class, 'add'])->name('admin.exchange_source.add');
+//        Route::get('exchange-source/{id}/delete', [ExchangeSourceController::class, 'delete'])->name('admin.exchange_source.delete');
+//
+//        Route::post('exchange-ajax', [ExchangeController::class, 'ajax'])->name('admin.exchange.ajax');
+//        Route::get('exchange', [ExchangeController::class, 'list'])->name('admin.exchange');
+//        Route::match(['post', 'get'], 'exchange/{id}/edit', [ExchangeController::class, 'edit'])->name('admin.exchange.edit');
+//        Route::match(['post', 'get'], 'exchange/add', [ExchangeController::class, 'add'])->name('admin.exchange.add');
+//        Route::get('exchange/{id}/delete', [ExchangeController::class, 'delete'])->name('admin.exchange.delete');
+//    });
 });

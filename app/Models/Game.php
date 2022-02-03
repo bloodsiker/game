@@ -9,11 +9,6 @@ class Game extends Model
     protected $hidden = ['created_at', 'updated_at'];
 
     protected $fillable = [
-        'name', 'is_active'
+        'name', 'edge', 'max_win', 'min_bid', 'is_active'
     ];
-
-    public function network()
-    {
-        return $this->hasOne(Network::class, 'id', 'network_id');
-    }
 }

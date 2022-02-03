@@ -17,10 +17,12 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name',
+        'login',
         'email',
         'password',
     ];
+
+    protected $balance;
 
     /**
      * The attributes that should be hidden for arrays.
@@ -40,4 +42,50 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function getBalance($currency)
+    {
+        switch ($currency) {
+            case 'usd':
+                return $this->usd;
+            case 'rub':
+                return $this->rub;
+            case 'uah':
+                return $this->uah;
+            default:
+                return 0;
+        }
+    }
+
+    /**
+     * @param $currency
+     *
+     * @return $this
+     */
+    public function setActiveBalance($currency)
+    {
+        $this->balance = $currency;
+
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getActiveBalance()
+    {
+        return $this->{$this->balance};
+    }
+
+    public function addToBalance($amount)
+    {
+        $this->{$this->balance} += $amount;
+        $this->save();
+    }
+
+    public function writeOffBalance($amount)
+    {
+        $this->{$this->balance} -= $amount;
+        $this->save();
+    }
 }

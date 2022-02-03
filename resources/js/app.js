@@ -1,1 +1,13 @@
 require('./bootstrap');
+// require('./jquery-2.1.0.min');
+// require('./jquery-ui-1.11.4/jquery-ui.min');
+// require('./bootstrap/js/bootstrap.min');
+// require('./fancybox/jquery.fancybox');
+// require('./highstock');
+// require('./chat');
+// require('./highstock-theme');
+// require('./account');
+// require('./deposit');
+// require('./games');
+// require('./withdraw');
+// require('./js.cookies');

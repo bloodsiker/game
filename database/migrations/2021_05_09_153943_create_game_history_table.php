@@ -18,7 +18,7 @@ class CreateGameHistoryTable extends Migration
             $table->bigInteger('game_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
             $table->double('sum',10,2);
-            $table->double('coeff',10,2);
+            $table->float('coeff',10,2);
             $table->double('result',10,2);
             $table->timestamps();
 

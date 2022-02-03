@@ -17,7 +17,7 @@ class CreateMineRatesTable extends Migration
             $table->id();
             $table->tinyInteger('mine');
             $table->tinyInteger('step');
-            $table->double('coeff',10,2);
+            $table->float('coeff',10,2);
             $table->timestamps();
         });
     }

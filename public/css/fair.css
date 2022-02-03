@@ -1,0 +1,106 @@
+/*--------- 15.10.2021 update ----------*/
+@import url("https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&display=swap");
+
+html {
+    font-size: 14px;
+}
+
+body {
+    background: var(--cg-background-color);
+    font-family: var(--font-family);
+    min-width: unset;
+}
+
+h4 {
+    font-family: var(--font-family-2);
+    font-size: 1.5em;
+    border-bottom: 1px solid var(--cg-border-color);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+}
+
+    h4 .btn {
+        padding: 0.4rem 1rem;
+        height: auto;
+        margin-left: 1rem;
+    }
+
+.table > tbody > tr > td {
+    border-top: 0 none;
+    vertical-align: middle;
+    padding: 5px 0px;
+}
+
+    .table > tbody > tr > td:first-child {
+        text-align: right;
+        width: 1%;
+        white-space: nowrap;
+        font-size: 1em;
+        padding-right: 10px;
+    }
+
+.table-striped {
+    margin-top: 5px;
+}
+
+.table > tbody > tr > th {
+    border-top: 0 none;
+    background: var(--cg-input-bg);
+    font-weight: normal;
+}
+
+    .table > tbody > tr > th:first-child {
+        border-top-left-radius: var(--cg-border-radius);
+        border-bottom-left-radius: var(--cg-border-radius);
+    }
+
+    .table > tbody > tr > th:last-child {
+        border-top-right-radius: var(--cg-border-radius);
+        border-bottom-right-radius: var(--cg-border-radius);
+    }
+
+.form-control,
+.form-control[readonly],
+.input-group .input-group-addon {
+    background: var(--cg-input-bg);
+    color: var(--cg-input-color);
+    border: 0px solid var(--cg-border-color);
+    height: auto;
+    padding: 6px 10px;
+}
+
+footer {
+    text-align: center;
+    font-size: 0.8em;
+    margin: 1rem 0;
+}
+
+.nav-tabs {
+    margin-bottom: 1rem;
+}
+
+.cg-tooltip {
+    position: relative;
+    display: inline-block;
+    cursor: help;
+}
+
+    .cg-tooltip .cg-tooltip-text {
+        visibility: hidden;
+        background-color: var(--cg-button-bg);
+        text-align: center;
+        padding: 5px 10px;
+        border-radius: var(--cg-border-radius);
+        position: absolute;
+        z-index: 1;
+        bottom: 50%;
+        left: 100%;
+        transform: translate(10px, 50%);
+    }
+
+    .cg-tooltip:hover .cg-tooltip-text {
+        visibility: visible;
+    }

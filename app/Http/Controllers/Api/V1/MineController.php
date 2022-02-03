@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Models\Mine;
+use App\Models\MineRate;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Artisan;
 
 /**
  * Class MineController
@@ -12,91 +14,161 @@ use Illuminate\Support\Facades\Artisan;
 class MineController extends Controller
 {
 
-    public function create()
+    public function create(Request $request)
     {
+        $user = User::find(1);
 
-    }
-
-    public function edit(Request $request, $id)
-    {
-        $exchange = Exchange::findOrFail($id);
-        $exchangeSource = ExchangeSource::all();
-
-        if ($request->isMethod('post')) {
-
-            $this->validate($request, [
-                'time_cron' => 'required',
-            ]);
-
-            $exchange->name = $request->get('name');
-            $exchange->time_cron = $request->get('time_cron');
-            $exchange->markup = $request->get('markup') ?: 0;
-            $exchange->is_active = $request->get('is_active') == 1 ? 1 : 0;
-            $exchange->save();
-
-            return redirect()->route('admin.exchange')->with(['success' => 'Успешно обновлено']);
+        if (!$request->get('mines_count')) {
+            return response()->json(['error' => 'need mines_count'], 400);
         }
 
-        return view('admin.exchange.edit', compact('exchange', 'exchangeSource'));
-    }
-
-    public function add(Request $request)
-    {
-        $exchangeSource = ExchangeSource::all();
-
-        if ($request->isMethod('post')) {
-
-            $this->validate($request, [
-                'source_id' => 'required',
-                'currency' => 'required',
-                'time_cron' => 'required',
-            ]);
-
-            $exchange = new Exchange();
-            $exchange->source_id = $request->get('source_id');
-            $exchange->name = $request->get('name');
-            $exchange->currency = $request->get('currency');
-            $exchange->time_cron = $request->get('time_cron');
-            $exchange->markup = $request->get('markup') ?: 0;
-            $exchange->is_active = $request->get('is_active') == 1 ? 1 : 0;
-            $exchange->save();
-
-            return redirect()->route('admin.exchange')->with(['success' => 'Успешно создано']);
+        if (!$request->get('sum')) {
+            return response()->json(['error' => 'need sum'], 400);
         }
 
-        return view('admin.exchange.add', compact('exchangeSource'));
-    }
+        $count = $request->get('mines_count') ?? 2;
+        $sum = $request->get('sum');
 
-    public function delete(Request $request, $id)
-    {
-        $exchange = Exchange::findOrFail($id);
-        if ( $exchange->delete()) {
-            return redirect()->route('admin.exchange')->with(['success' => 'Запись удалена']);
+        if ($user->balance < $sum) {
+            return response()->json(['error' => 'Не достаточно средст на счету'], 400);
         }
 
-        return redirect()->route('admin.exchange')->with(['error' => 'Запись удалена']);
+        $mines = $this->generateMines($count);
+
+        $game = new Mine();
+        $game->user_id = $user->id;
+        $game->sum = $sum;
+        $game->count_mine = $count;
+        $game->step = 0;
+        $game->coeff = 1;
+        $game->active = true;
+        $game->mines = json_encode($mines);
+        $game->save();
+
+        $user->balance -= $sum;
+        $user->save();
+
+        return response()->json([
+            'balance' => 200,
+            'msg' => 'Игра началась!',
+            'status' => 'success',
+        ]);
     }
 
-    public function ajax(Request $request)
+    public function play(Request $request)
     {
-        if ($request->isMethod('post')) {
-
-            if ($request->get('action') == 'get_currency') {
-                $id = $request->get('id');
-                $source = ExchangeSource::findOrFail($id);
-
-                $dataJson = json_decode(file_get_contents($source->url));
-
-                return response()->json(['status' => 1, 'data' => $dataJson]);
-            }
-
-            if ($request->get('action') == 'send_to_telegram') {
-                Artisan::call('telegram:exchange', ['--without_time' => 'yes']);
-
-                return response()->json(['status' => 1]);
-            }
+        if (!$request->get('cell')) {
+            return response()->json(['error' => 'need cell'], 400);
         }
 
-        return response()->json(['error' => 'Bad request']);
+        $mine = Mine::where(['user_id' => 1, 'active'=> true])->orderBy('id', 'DESC')->first();
+
+        if (!$mine) {
+            return response()->json(['error' => 'Game not found'], 404);
+        }
+
+        $cell = $request->get('cell');
+
+        $mines = json_decode($mine->mines);
+        $revealed = json_decode($mine->revealed);
+        $revealed[] = $cell;
+
+        $lose = in_array($cell, $mines) ? true : false;
+
+        if ($lose) {
+            $mine->active = false;
+            $mine->lose = true;
+            $mine->sum = 0;
+        } else {
+            ++$mine->step;
+        }
+
+        $rate = MineRate::where(['mine' => $mine->count_mine, 'step' => $mine->step])->first();
+
+        $mine->coeff = $rate ? $rate->coeff : $mine->coeff;
+        $mine->revealed = json_encode($revealed);
+
+        $mine->save();
+
+        if ($lose) {
+            $result = [
+                'active' => true,
+                'coeff' => $mine->coeff,
+                'lose' => $mine->lose,
+                'mines' => [],
+                'revealed' => json_decode($mine->revealed),
+                'status' => 'success',
+                'step' => $mine->step,
+                'sum' => $mine->sum,
+            ];
+        } else {
+            $result = [
+                'active' => true,
+                'coeff' => $mine->coeff,
+                'lose' => $mine->lose,
+                'mines' => [],
+                'revealed' => json_decode($mine->revealed),
+                'status' => 'success',
+                'step' => $mine->step,
+                'sum' => $mine->sum,
+                'possibleWin' => $mine->sum * $mine->coeff,
+            ];
+        }
+
+
+        return response()->json($result);
+    }
+
+    public function collect()
+    {
+        $mine = Mine::where(['user_id' => 1, 'active'=> true])->orderBy('id', 'DESC')->first();
+
+        if (!$mine) {
+            return response()->json(['error' => 'Game not found'], 404);
+        }
+
+        $mine->sum *= $mine->coeff;
+
+        $user = User::find(1);
+        $user->balance += $mine->sum;
+        $user->save();
+
+        $result = [
+            'active' => false,
+            'balance' => $user->balance,
+            'coeff' => $mine->coeff,
+            'lose' => $mine->lose,
+            'mines' => json_decode($mine->mines),
+            'revealed' => json_decode($mine->revealed),
+            'status' => 'success',
+            'step' => $mine->step,
+            'won_sum' => $mine->sum,
+        ];
+
+        return response()->json($result);
+    }
+
+    private function generateMines($count = 3)
+    {
+        $arrayNumber = [];
+        for ($i = 1; $i <= 25; $i++) {
+            $arrayNumber[] = $i;
+        }
+
+        shuffle($arrayNumber);
+
+        return array_rand($arrayNumber, $count);
+    }
+
+    public function rates(Request $request)
+    {
+        $count = $request->get('mines_count') ?? 2;
+
+        $rates = MineRate::where('mine', $count)->get(['mine', 'step', 'coeff']);
+
+        return response()->json([
+            'status' => 200,
+            'data' => $rates,
+        ]);
     }
 }

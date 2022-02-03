@@ -1,0 +1,266 @@
+.keno-game {
+    display: flex;
+    margin-bottom: 25px;
+}
+.game-keno__block_game {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.game-keno__winning {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-60%);
+    width: 100%;
+    max-width: 340px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(33,34,51,.95);
+    border: 2px solid #71e1f3;
+    border-radius: 8px;
+    box-shadow: 0 0 20px 2px rgb(0 0 0 / 50%);
+    visibility: hidden;
+    opacity: 0;
+    transition: all .3s ease-in-out;
+}
+.game-keno__winning_active {
+    visibility: visible;
+    opacity: 1;
+    transform: translate(-50%,-50%);
+}
+.game-keno__winning-close {
+    position: absolute;
+    top: -16px;
+    right: -16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #4fb6da url('/assets/icons/close.svg') 50% no-repeat;
+    background-size: 12px 12px;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+    box-shadow: 0 0 10px 2px rgb(0 0 0 / 20%);
+}
+.game-keno__winning-close:hover {
+    background-color: #5bc8e3;
+    transform: rotate(180deg);
+}
+.game-keno__winning-rate {
+    font-size: 60px;
+    font-weight: 700;
+    text-shadow: 2px 2px 40px #72f3fb;
+    white-space: nowrap;
+    color: #72f3fb;
+    background: linear-gradient(45deg,#3eb6eb,#72f3fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.game-keno__winning-amount {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    font-size: 20px;
+}
+.game-keno__winning-amount-value {
+    display: inline-block;
+    white-space: nowrap;
+    margin-left: 10px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #72f3fb;
+    background: linear-gradient(
+        45deg
+        ,#3eb6eb,#72f3fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.game-keno__numbers {
+    width: 100%;
+    max-width: 460px;
+    display: flex;
+    flex-wrap: wrap;
+}
+.game-keno__numbers-item-wrapper {
+    width: 16.6666%;
+    padding: 8px;
+}
+.game-keno__numbers-item {
+    position: relative;
+    width: 100%;
+    padding-top: 100%;
+    border-radius: 48%;
+    cursor: pointer;
+    /*background-image: radial-gradient(circle at 74%,at 90%,#383b61,#686b94);*/
+    /*background-image: radial-gradient(circle at 74% 90%,#383b61,#686b94);*/
+    background: var(--cg-button-bg);
+    box-shadow: 10px 10px 20px -14px #0a0e1f;
+}
+.game-keno__numbers-item_selected {
+    background-image: radial-gradient(circle at 74%,at 90%,#3aa0cc,#82f5ff);
+    background-image: radial-gradient(circle at 74% 90%,#3aa0cc,#82f5ff);
+}
+.game-keno__numbers-item:before {
+    position: absolute;
+    z-index: 0;
+    content: attr(data-number);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    color: #fff;
+}
+.game-keno__numbers-item:after {
+    position: absolute;
+    z-index: 1;
+    content: "";
+    top: 14%;
+    left: 14%;
+    right: 14%;
+    bottom: 14%;
+    margin: auto;
+    border: 2px solid hsla(0,0%,100%,.2);
+    border-radius: 48%;
+}
+.game-keno__numbers-item_selected:after {
+    border-color: rgba(0,0,0,.15);
+}
+.game-keno__numbers-item_opened {
+    box-shadow: 10px 10px 20px -14px #0a0e1f, inset 0 0 0 3px #fff;
+}
+.game-keno__numbers-item_selected.game-keno__numbers-item_opened {
+    background-image: radial-gradient(circle at 74%,at 90%,#bfe8fb,#fff);
+    background-image: radial-gradient(circle at 74% 90%,#bfe8fb,#fff);
+    -webkit-animation: keno-bingo .2s ease-out forwards;
+    animation: keno-bingo .2s ease-out forwards;
+}
+.game-keno__numbers-item_selected.game-keno__numbers-item_opened:before {
+    color: #58666d;
+}
+.game-keno__numbers-item_selected:after {
+    border-color: rgba(0,0,0,.15);
+}
+.game-keno__rates-item_text {
+    font-size: 12px;
+    text-align: center;
+    line-height: 18px;
+}
+.game-keno__rates {
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    justify-content: center;
+    margin-left: 25px;
+    width: 100px;
+    min-width: 100px;
+    border: 1px solid var(--cg-border-color);
+    border-radius: 6px;
+    padding: 15px;
+}
+.game-keno__rates-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.game-keno__rates-item-step {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    /*background-image: radial-gradient(circle at 74%,at 90%,#383b61,#686b94);*/
+    /*background-image: radial-gradient(circle at 74% 90%,#383b61,#686b94);*/
+    background: var(--cg-base-color);
+    font-size: 10px;
+    font-weight: 700;
+    color: #fff;
+}
+.game-keno__rates-item-rate {
+    margin-left: 10px;
+    font-size: 12px;
+}
+.game-keno__rates-item+.game-keno__rates-item {
+    margin-bottom: 10px;
+}
+.game-keno__rates-item_active .game-keno__rates-item-step {
+    background-image: radial-gradient(circle at 74%,at 90%,#bbe9ff,#fff);
+    background-image: radial-gradient(circle at 74% 90%,#bbe9ff,#fff);
+    color: #58666d;
+}
+
+.game-keno__rate-block_buttons {
+    width: 100%;
+    display: flex;
+    align-items: center;
+}
+.game-keno__button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    margin-top: 25px;
+    font-size: 20px;
+    border-color: transparent;
+    border-top: 2px solid #82ffff;
+    border-radius: 6px;
+    background: linear-gradient(to top right,#4be,#81f8fd);
+    text-shadow: 1px 1px 1px rgb(0 0 0 / 50%);
+    transition: all .3s ease-out;
+    position: relative;
+    touch-action: none;
+    cursor: pointer;
+}
+.game-keno__button:before {
+    content: "";
+    background: linear-gradient(to top right,#81f8fd,#4be);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    border-radius: 6px;
+    transition: all .3s;
+}
+.game-keno__button.disabled {
+    cursor: not-allowed;
+    opacity: .5;
+}
+.game-keno__button_small {
+    width: 100%;
+    height: 40px;
+    font-size: 14px;
+}
+.game-keno__button>span {
+    position: relative;
+    z-index: 1;
+    margin-top: -3px;
+}
+.game-keno__button_simple {
+    margin-left: 15px;
+    /*background: linear-gradient(to top right,#383b61,#686b94);*/
+    border-top-color: #becbd7;
+    background: var(--cg-button-clear);
+}
+.game-keno__button_simple:before {
+    background: linear-gradient(to top right,var(--cg-button-clear),#becbd7);
+}
+.game-keno__button:not(.disabled):hover:before {
+    opacity: 1;
+}
