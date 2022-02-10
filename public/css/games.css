@@ -110,6 +110,9 @@ footer
 .fz-16 {
     font-size: 16px!important;
 }
+.fz-12 {
+    font-size: 12px!important;
+}
 .fw-600 {
     font-weight: 600;
 }
@@ -118,7 +121,12 @@ footer
     border-color: transparent;
     color: #ffffff;
 }
-#divManualMessage {
+.alert-success {
+    background: linear-gradient(45deg,#b7eb6c,#6fb706);
+    border-color: transparent;
+    color: #ffffff;
+}
+#divManualMessage, #divSuccessMessage {
     margin-top: 20px;
 }
 
@@ -312,7 +320,7 @@ footer .well a {
 
 @media (min-width: 1200px) {
   .page-content {
-    padding-top: 120px;
+    padding-top: 90px;
   }
 
   #upper-alert {
@@ -563,3 +571,38 @@ footer div[data-ceg-image-type] {
 }
 
 /********** NEW ***********/
+@keyframes coin-animation {
+    0% {
+        transform: scale(1) rotateY(0)
+    }
+    50% {
+        transform: scale(1.28) rotateY(864deg)
+    }
+    68% {
+        transform: scale(1.3) rotateY(900deg)
+    }
+    72% {
+        transform: scale(1.28) rotateY(936deg)
+    }
+    to {
+        transform: scale(1) rotateY(3turn)
+    }
+}
+
+@-webkit-keyframes flipHeads {
+    from {
+        transform: scale(2) rotateY(0);
+    }
+    to {
+        transform: scale(1) rotateY(1800deg);
+    }
+}
+
+@-webkit-keyframes flipTails {
+    from {
+        transform: scale(1) rotateY(0);
+    }
+    to {
+        transform: scale(2) rotateY(1980deg);
+    }
+}

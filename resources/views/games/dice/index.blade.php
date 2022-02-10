@@ -1,13 +1,15 @@
 @extends('layouts.layout-fluid')
 
+@push('game_scripts')
+    <script src="{{ asset('js/dice.js') }}" type="text/javascript"></script>
+@endpush
+
 @push('head_scripts')
     <script type="text/javascript">
         var coin = "{{ $currency->idc }}";
         var style = "7";
         var coinname = "{{ $currency->name }}";
         var decimals = "6";
-        var conv_currency = "BTC";
-        var conv_price = "1.000000000000000000";
         var totalchannels = "5";
         var ratio = "10000000";
         var Balance = {{ auth()->check() ? auth()->user()->getBalance(request()->route('currency')) : 0 }};
@@ -53,8 +55,6 @@
         var minbid = "0.10";
         var effects = "0";
         var edge = "{{ $game->edge }}";
-        var conv_price = "1.000000000000000000";
-        var conv_currency = "BTC";
         var hotkeys = "";
         var decimals = "6";
         var highrollamount = "5000";
@@ -80,7 +80,7 @@
                 <li><a href="#auto_bet" class="text-def" data-toggle="tab"><i
                             class="fa fa-android fa-lg" aria-hidden="true"></i>Авто ставки</a></li>
                 <li><a href="#how_to_play" class="text-def" data-toggle="tab"><i
-                            class="fa fa-info-circle fa-lg" aria-hidden="true"></i>How to play</a></li>
+                            class="fa fa-info-circle fa-lg" aria-hidden="true"></i>Как играть</a></li>
                 <li><a href="#provable_fair" class="text-def" data-toggle="tab"><i
                             class="fa fa-balance-scale fa-lg" aria-hidden="true"></i>Provably fair</a></li>
             </ul>
@@ -579,60 +579,24 @@
         <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
             <ul class="nav nav-tabs " id="tab_result">
                 <li class="active">
-                    <a href="bitcoin.html#last_bets" class="fixed-tabs" data-toggle="tab"><i
+                    <a href="#last_bets" class="fixed-tabs" data-toggle="tab"><i
                             class="fa fa-users fa-lg" aria-hidden="true"></i>Все ставки <span id="allbets_pause"
                                                                                               class="glyphicon glyphicon-pause"
                                                                                               aria-hidden="true"></span>
                     </a>
                 </li>
-                <li><a href="bitcoin.html#my_bets" class="fixed-tabs" data-toggle="tab"><i
+                <li><a href="#my_bets" class="fixed-tabs" data-toggle="tab"><i
                             class="fa fa-user fa-lg" aria-hidden="true"></i>Мои ставки <span id="yourbets_pause"
                                                                                              class="glyphicon glyphicon-pause"
                                                                                              aria-hidden="true"></span></a>
                 </li>
-                <li><a href="bitcoin.html#high_rollers" class="fixed-tabs" data-toggle="tab"><i
+                <li><a href="#high_rollers" class="fixed-tabs" data-toggle="tab"><i
                             class="fa fa-star fa-lg" aria-hidden="true"></i>Высокие роллы <span class="badge"
                                                                                                 id="badge_high_roller"></span></a>
                 </li>
-                <li><a href="bitcoin.html#jackpots" class="fixed-tabs" data-toggle="tab"><i
+                <li><a href="#jackpots" class="fixed-tabs" data-toggle="tab"><i
                             class="fa fa-diamond fa-lg" aria-hidden="true"></i>Джекпоты <span class="badge"
                                                                                               id="badge_jackpot"></span></a>
-                </li>
-                <li role="presentation" class="dropdown">
-                    <a class="dropdown-toggle fixed-tabs" data-toggle="dropdown" href="bitcoin.html#"
-                       role="button" aria-expanded="false"><i class="fa fa-pie-chart fa-lg"
-                                                              aria-hidden="true"></i>Статистика <span
-                            class="caret"></span></a>
-                    <ul class="dropdown-menu pull-right" role="menu">
-                        <li><a href="bitcoin.html#statistic" data-toggle="tab"><i class="fa fa-line-chart fa-fw"
-                                                                                  aria-hidden="true"></i>Dice
-                                data</a></li>
-                        <li><a href="bitcoin.html#statistic_graph" data-toggle="tab"><i
-                                    class="fa fa-pie-chart fa-fw" aria-hidden="true"></i>All charts</a></li>
-
-                    </ul>
-                </li>
-
-                <li role="presentation" class="dropdown">
-                    <a class="dropdown-toggle fixed-tabs" data-toggle="dropdown" href="bitcoin.html#"
-                       role="button" aria-expanded="false"><i class="fa fa-trophy fa-lg" aria-hidden="true"></i>Лучшие игроки
-                        <span class="caret"></span></a>
-                    <ul class="dropdown-menu pull-right" role="menu">
-                        <li><a href="bitcoin.html#mostwagered" data-toggle="tab"><i
-                                    class="fa fa-line-chart fa-fw" aria-hidden="true"></i>Most wagered</a></li>
-                        <li><a href="bitcoin.html#mostbids" data-toggle="tab"><i class="fa fa-bar-chart fa-fw"
-                                                                                 aria-hidden="true"></i>Most
-                                bids</a></li>
-                        <li><a href="bitcoin.html#mostprofit" data-toggle="tab"><i class="fa fa-money fa-fw"
-                                                                                   aria-hidden="true"></i>Most
-                                profit</a></li>
-                        <li><a href="bitcoin.html#mosttips" data-toggle="tab"><i class="fa fa-gift fa-fw"
-                                                                                 aria-hidden="true"></i>Most
-                                tips dealt</a></li>
-                        <li><a href="bitcoin.html#mostchat" data-toggle="tab"><i class="fa fa-comment-o fa-fw"
-                                                                                 aria-hidden="true"></i>Most
-                                chat messages</a></li>
-                    </ul>
                 </li>
             </ul>
 
@@ -717,82 +681,6 @@
                                 <th></th>
                             </tr>
                         </table>
-                    </div>
-                </div>
-
-                <div class="tab-pane fade in" id="statistic">
-                    <br/>
-                    <div class="bets">
-                        <div id="global_stats">
-                            <br/>
-                            <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i>
-                            <br/>
-                        </div>
-                        <div id="user_stats"></div>
-                        <br/>
-                        <span class="small_info">Data is refreshed once every 10 minutes.</span>
-                    </div>
-                </div>
-                <div class="tab-pane fade in" id="statistic_graph">
-                    <br/>
-                    <div class="bets">
-                        <div id="chart_coins"
-                             style="min-width: 350px; height: 350px; max-width: 600px; margin: 0 auto; float: left;"></div>
-                        <div id="chart_games"
-                             style="min-width: 350px; height: 350px; max-width: 600px; margin: 0 auto; float: left;"></div>
-                    </div>
-                    <span class="small_info">Data is refreshed once every 10 minutes.</span>
-                </div>
-                <div class="tab-pane fade in" id="statistic_all">
-                    <br/>
-                    <div class="bets">
-                        <div id="all_global_stats">
-                            <br/>
-                            <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i>
-                            <br/>
-                        </div>
-                    </div>
-                    <span class="small_info">Data is refreshed once every 10 minutes.</span>
-                </div>
-
-                <div class="tab-pane fade in" id="mostwagered">
-                    <br/>
-                    <div class="bets">
-                        <div id="mostwagered_table">
-                        </div>
-                        <span class="small_info">Data is refreshed once every 10 minutes.</span>
-                    </div>
-                </div>
-                <div class="tab-pane fade in" id="mostbids">
-                    <br/>
-                    <div class="bets">
-                        <div id="mostbids_table">
-                        </div>
-                        <span class="small_info">Data is refreshed once every 10 minutes.</span>
-                    </div>
-                </div>
-                <div class="tab-pane fade in" id="mostprofit">
-                    <br/>
-                    <div class="bets">
-                        <div id="mostprofit_table">
-                        </div>
-                        <span class="small_info">Data is refreshed once every 10 minutes.</span>
-                    </div>
-                </div>
-                <div class="tab-pane fade in" id="mosttips">
-                    <br/>
-                    <div class="bets">
-                        <div id="mosttips_table">
-                        </div>
-                        <span class="small_info">Data is refreshed once every 10 minutes.</span>
-                    </div>
-                </div>
-                <div class="tab-pane fade in" id="mostchat">
-                    <br/>
-                    <div class="bets">
-                        <div id="mostchat_table">
-                        </div>
-                        <span class="small_info">Data is refreshed once every 10 minutes.</span>
                     </div>
                 </div>
             </div>

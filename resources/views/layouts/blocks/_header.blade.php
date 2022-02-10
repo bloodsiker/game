@@ -38,19 +38,24 @@
                        role="button" aria-haspopup="true" aria-expanded="false">Сменить игру <span
                             class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                        <li><a class='game' href='{{ route('dice', ['currency' => $currency->idc]) }}' data-type='game' data-game='Dice'>
+                        <li>
+                            <a class='game' href='{{ route('dice', ['currency' => $currency->idc]) }}' data-type='game' data-game='Dice'>
                                 <img src='{{ asset('assets/games/dice.png') }}' width=15>Dice</a></li>
-                        <li><a class='game' href='{{ route('mine', ['currency' => $currency->idc]) }}' data-type='game'
+                        <li>
+                            <a class='game' href='{{ route('mines', ['currency' => $currency->idc]) }}' data-type='game'
                                data-game='Mines'><img src='{{ asset('assets/games/minesweeper.png') }}' width=15>Mines</a>
                         </li>
-                        <li><a class='game' href='https://crypto.games/plinko/' data-type='game'
+                        <li>
+                            <a class='game' href='https://crypto.games/plinko/' data-type='game'
                                data-game='plinko'><img src='{{ asset('assets/games/plinko.png') }}' width=15>&nbsp;Plinko</a>
                         </li>
-                        <li><a class='game' href='https://crypto.games/dicev2/' data-type='game'
-                               data-game='dicev2'><img src='{{ asset('assets/games/dicev2.png') }}' width=15>&nbsp;DiceV2</a>
+                        <li>
+                            <a class='game' href='{{ route('coinflip', ['currency' => $currency->idc]) }}' data-type='game'
+                               data-game='Coin Flip'><img src='{{ asset('assets/games/dicev2.png') }}' width=15>&nbsp;Coin Flip</a>
                         </li>
-                        <li><a class='game' href='{{ route('keno', ['currency' => $currency->idc]) }}' data-type='game'
-                               data-game='keno'><img src='{{ asset('assets/games/lottery.png') }}' width=15>&nbsp;Keno</a>
+                        <li>
+                            <a class='game' href='{{ route('keno', ['currency' => $currency->idc]) }}' data-type='game'
+                               data-game='Keno'><img src='{{ asset('assets/games/lottery.png') }}' width=15>&nbsp;Keno</a>
                         </li>
                     </ul>
                 </li>

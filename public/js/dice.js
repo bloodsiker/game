@@ -109,18 +109,6 @@ $(document).ready(function () {
     $("#allbets_pause").hide();
     $("#yourbets_pause").hide();
 
-    //showBalance = function (balance, coinname) {
-    //    if (balance >= 0) {
-    //        $("#lblBalance").html("Your balance is: " + convert_number(balance, 8) + " " + coinname);
-    //        var num = (balance * conv_price);
-    //        var fixed = 2;
-    //        if (conv_currency == "BTC") {
-    //            fixed = 8
-    //        }
-    //        $("#lblUsdBalance").attr("data-original-title", num.toFixed(fixed) + " " + conv_currency);
-    //    }
-    //};
-
 
 
     $(".number").focusout(function () {
@@ -585,54 +573,43 @@ $(document).ready(function () {
         //}
     }
 
-    getAllBets = function () {
-        if (Wait == true) return;
+    const getAllBets = () => {
+        if (Wait === true) return;
 
-
-        var coins = coinslist + "";
-
-        if (coins.length < 3) {
-            coins = "all";
-        }
-
-        $.ajax(
-            {
-                type: 'GET',
-                url: '/api/lastbets/' + coins + '/' + AllBetsSize,
-                contentType: "application/json",
-                success: function (msg) {
-                    if (msg.length > 0) {
-                        addToTable(msg, "2");
-                    }
-                },
-                error: function (msg) {
-                    console.log("not ok....");
+        $.ajax({
+            type: 'POST',
+            url: '/dice/getAllLastBets',
+            contentType: "application/json",
+            success: function (msg) {
+                if (msg.length > 0) {
+                    addToTable(msg, "2");
                 }
-            });
+            },
+            error: function (msg) {
+                console.log("not ok....");
+            }
+        });
     };
 
 
-    getLastBets = function (longid, type) {
+    const getLastBets = (longid, type) => {
         if (Wait == true) return;
 
-        var coins = coinslist + "";
-
-        $.ajax(
-            {
-                type: 'POST',
-                url: '/dice/getLastBets',
-                // data: '{type:"' + type + '",coins:"' + coins + '"}',
-                dataType: 'json',
-                success: function (msg) {
-                    if (msg.d.length > 0) {
-                        addToTable(msg.d, "1");
-                    }
-                },
-                error: function (msg) {
-                    console.log("not ok....");
+        $.ajax({
+            type: 'POST',
+            url: '/dice/getLastBets',
+            dataType: 'json',
+            success: function (msg) {
+                if (msg.d.length > 0) {
+                    addToTable(msg.d, "1");
                 }
-            });
-    };
+            },
+            error: function (msg) {
+                console.log("not ok....");
+            }
+        });
+    }
+
     getLastBets(Longid, "1");
 
     getProvablyFair = function (longid, coin) {

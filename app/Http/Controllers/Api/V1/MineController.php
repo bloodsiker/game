@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Models\Mine;
+use App\Models\MineHistory;
 use App\Models\MineRate;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class MineController
@@ -35,7 +36,7 @@ class MineController extends Controller
 
         $mines = $this->generateMines($count);
 
-        $game = new Mine();
+        $game = new MineHistory();
         $game->user_id = $user->id;
         $game->sum = $sum;
         $game->count_mine = $count;
@@ -61,7 +62,7 @@ class MineController extends Controller
             return response()->json(['error' => 'need cell'], 400);
         }
 
-        $mine = Mine::where(['user_id' => 1, 'active'=> true])->orderBy('id', 'DESC')->first();
+        $mine = MineHistory::where(['user_id' => 1, 'active'=> true])->orderBy('id', 'DESC')->first();
 
         if (!$mine) {
             return response()->json(['error' => 'Game not found'], 404);
@@ -121,7 +122,7 @@ class MineController extends Controller
 
     public function collect()
     {
-        $mine = Mine::where(['user_id' => 1, 'active'=> true])->orderBy('id', 'DESC')->first();
+        $mine = MineHistory::where(['user_id' => 1, 'active'=> true])->orderBy('id', 'DESC')->first();
 
         if (!$mine) {
             return response()->json(['error' => 'Game not found'], 404);

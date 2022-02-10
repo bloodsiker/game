@@ -171,4 +171,27 @@ class DiceController extends Controller
             'd' => array_reverse($results)
         ]);
     }
+
+    public function getAllLastBets()
+    {
+        $diceHistory = DiceHistory::query()->orderBy('id', 'desc')->limit(50)->get();
+
+        $results = [];
+        $i = 0;
+        foreach ($diceHistory as $result) {
+            $results[$i]['id'] = $result->id;
+            $results[$i]['user_id'] = $result->user->login;
+            $results[$i]['coinname'] = $result->currency->name;
+            $results[$i]['time'] = $result->time_game;
+            $results[$i]['bet'] = $result->bet;
+            $results[$i]['multiplier'] = $result->multiplier;
+            $results[$i]['target'] = $result->target;
+            $results[$i]['roll'] = $result->roll;
+            $results[$i]['profit'] = $result->profit;
+            $results[$i]['idc'] = $result->currency->idc;
+            $i++;
+        }
+
+        return response()->json(array_reverse($results));
+    }
 }

@@ -29,7 +29,6 @@ button, input, textarea {
     display: flex;
 }
 .mines-game .choices .badges {
-    background-color: var(--cg-button-bg);
     border-radius: 3px;
     width: 95px;
     display: flex;
@@ -44,11 +43,12 @@ button, input, textarea {
     font-weight: 600;
     text-align: center;
 }
-.mines-game .choices .badges span {
+.mines-game .choices .badges .btnOperations {
     border-right: 1px solid rgba(255,255,255,.16);
     text-align: center;
     letter-spacing: .03em;
     color: var(--cg-button-color);
+    background-color: var(--cg-button-bg);
     font-weight: 600;
     padding: 10px 0;
     text-transform: uppercase;
@@ -56,34 +56,72 @@ button, input, textarea {
     display: inline-block;
     cursor: pointer;
 }
-.mines-game button.play {
-    display: block;
-    border-radius: 3px;
-    color: var(--cg-button-color);
-    background-color: var(--cg-button-bg);
+.auto_section_row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+#countAutoMine {
+    width: 60px;
+    height: 40px;
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+#btnMineAuto {
+    margin-top: 0;
+}
+.game-mine__button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 100%;
+    margin-top: 25px;
     font-size: 18px;
-    width: 250px;
-    cursor: pointer;
-    margin: 0 auto;
-    margin-bottom: 20px;
-    padding: 15px;
-    letter-spacing: .03em;
-}
-.mines-game button.play:hover {
-    color: var(--cg-button-color-hover);
-    background-color: var(--cg-button-bg-hover);
     border-color: transparent;
+    border-top: 2px solid #82ffff;
+    border-radius: 6px;
+    background: linear-gradient(to top right,#4be,#81f8fd);
+    text-shadow: 1px 1px 1px rgb(0 0 0 / 50%);
+    transition: all .3s ease-out;
+    position: relative;
+    touch-action: none;
+    cursor: pointer;
 }
-.mines-game button.play:active:hover {
-    color: var(--cg-button-color-active);
-    background-color: var(--cg-button-bg-active);
+.game-mine__button:before {
+    content: "";
+    background: linear-gradient(to top right,#81f8fd,#4be);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    border-radius: 6px;
+    transition: all .3s;
 }
-.mines-game button.play img {
-    margin-left: 10px;
-    vertical-align: middle;
-    height: 15px;
-    width: 15px;
-    object-fit: contain;
+.game-mine__button_small {
+    width: 100%;
+    height: 40px;
+    font-size: 14px;
+    padding-bottom: 3px;
+}
+.game-mine__button.disabled {
+    cursor: not-allowed;
+    opacity: .5;
+}
+.auto-count-desc {
+    display: flex;
+    align-items: center;
+    width: 180px;
+    height: 40px;
+    line-height: 14px;
+    border: 1px solid var(--cg-border-color);
+    border-left-style: none;
+    border-radius: 0 4px 4px 0;
 }
 .mines-game .board {
     display: flex;
@@ -96,55 +134,55 @@ button, input, textarea {
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    max-width: 407px;
+    max-width: 437px;
     padding: 10px;
     border: 1px solid var(--cg-border-color);
 }
-.mines-game .game span {
+.mines-game .game-mine__numbers-item {
     display: flex;
     box-shadow: 0 4px 15px rgb(248 246 255 / 25%);
     border-radius: 6px;
     /*background: var(--base-color);*/
     background: linear-gradient(to top right,#4be,#81f8fd);
     border: 1px solid #b6e4fb;
-    width: 65px;
-    height: 65px;
-    margin: 6px;
+    width: 73px;
+    height: 73px;
+    margin: 5px;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     position: relative;
 }
-.mines-game .game span:hover {
+.mines-game .game-mine__numbers-item:hover {
     transform: scale(1.1);
 }
-.mines-game .game span img {
+.mines-game .game-mine__numbers-item img {
     width: 70%;
 }
-.mines-game .game span.disabled {
+.mines-game .game-mine__numbers-item.disabled {
     pointer-events: none;
 }
-.mines-game .game span.disabled img {
+.mines-game .game-mine__numbers-item:not(.is_opacity) img {
     animation: revealIconZoomInOut .6s;
 }
-.mines-game .game span.gameSuccess {
+.mines-game .game-mine__numbers-item.gameSuccess {
     background: linear-gradient(
         90deg
         ,#76AC41 3.33%,#97D25B 100%);
     box-shadow: 0 8px 15px rgb(118 172 65 / 25%);
     pointer-events: none;
 }
-.mines-game .game span.gameDanger {
+.mines-game .game-mine__numbers-item.gameDanger {
     background: linear-gradient(
         90deg
         ,#FF3232 0%,#FF7878 99.99%,rgba(196,196,196,0) 100%);
     box-shadow: 0 8px 15px rgb(255 50 50 / 25%);
     pointer-events: none;
 }
-.disabled .mines-reveal-animation:before {
+.mines-reveal-animation:before {
     animation: revealCircleSmall .4s .25s linear;
 }
-.disabled .mines-reveal-animation:before {
+.mines-reveal-animation:before {
     content: '';
     width: 0px;
     height: 0px;
@@ -158,10 +196,10 @@ button, input, textarea {
     position: absolute;
     transform: translate(-50%, -50%);
 }
-.disabled .mines-reveal-animation:after {
+.mines-reveal-animation:after {
     animation: revealCircleLarge .4s .25s linear;
 }
-.disabled .mines-reveal-animation:after {
+.mines-reveal-animation:after {
     content: '';
     width: 0;
     height: 0;

@@ -244,10 +244,6 @@ $(document).ready(function () {
         if (balance >= 0) {
             $("#lblBalance").html("Баланс: " + convert_number(balance, 2));
             $("#lblCoinName").html(idc);
-            //$("#imgCoinBalance").attr("src", "/images/" + idc + ".png");
-            let num = (balance * conv_price);
-            let fixed = 2;
-            $("#lblUsdBalance").attr("data-original-title", num.toFixed(fixed) + " " + conv_currency);
         }
     }
 
@@ -607,7 +603,7 @@ $(document).ready(function () {
 
     //$("[data-toggle='popover']").popover();
 
-    $("#lblUsdBalance").tooltip();
+    // $("#lblUsdBalance").tooltip();
 
     $(".tooltipLink").tooltip();
 
@@ -679,18 +675,6 @@ $(document).ready(function () {
 
     });
 
-
-    // $(".dropdown-menu li a.coin").each(function (index, element) {
-    //     var game = $(this).data("game");
-    //     var coin = $(this).data("coin");
-    //     if (game != gamename) {
-    //         $(this).hide();
-    //     }
-    //     if (coin.toLowerCase() == idc.toLowerCase()) {
-    //         $(this).hide();
-    //     }
-    // });
-
     $(".dropdown-menu li a.game").each(function (index, element) {
         let game = $(this).data("game");
         if (game == gamename) {
@@ -713,29 +697,28 @@ $(document).ready(function () {
 
     getBalance = function (idc) {
         if (balancerefresh) {
-            $.ajax(
-                {
-                    type: 'POST',
-                    url: '/getBalance',
-                    data: {idc: idc},
-                    dataType: 'json',
-                    success: function (msg) {
-                        let balance = parseFloat(msg.d);
-                        if (balance >= 0) {
-                            showBalance(balance, idc);
-                            Balance = balance;
-                            BalanceCredits = balance * parseFloat(ratio);
-                            try {
-                                window.updateBalance(Math.floor(BalanceCredits));
-                            }
-                            catch (e) {
-                            };
+            $.ajax({
+                type: 'POST',
+                url: '/getBalance',
+                data: {idc: idc},
+                dataType: 'json',
+                success: function (msg) {
+                    let balance = parseFloat(msg.d);
+                    if (balance >= 0) {
+                        showBalance(balance, idc);
+                        Balance = balance;
+                        BalanceCredits = balance * parseFloat(ratio);
+                        try {
+                            window.updateBalance(Math.floor(BalanceCredits));
                         }
-                    },
-                    error: function (msg) {
-
+                        catch (e) {
+                        };
                     }
-                });
+                },
+                error: function (msg) {
+
+                }
+            });
         }
     };
 

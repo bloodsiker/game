@@ -1,0 +1,317 @@
+.coinflip-game {
+    display: flex;
+    margin-bottom: 25px;
+}
+.coinflip-game .section__title {
+    margin-bottom: 14px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #fff;
+}
+.coinflip-section__row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.coinflip-game .section__item {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 130px;
+    width: 100%;
+    padding-bottom: 15px;
+    margin-right: 4px;
+    border: 1px solid var(--cg-border-color);
+    border-radius: 4px;
+    transition: border-color .1s ease-out,opacity .1s ease-out,background-color .1s ease-out;
+    color: #fff;
+    touch-action: none;
+}
+.coinflip-game .section__item:not(.disabled):hover {
+    border-color: rgba(62,182,235,.57);
+    cursor: pointer;
+    background-color: rgba(62,182,235,.12);
+}
+.coinflip-game .buttons__eagle, .coinflip-game .buttons__tail {
+    background-position: center 26%;
+    background-repeat: no-repeat;
+    background-size: 45%;
+}
+.coinflip-game .buttons__eagle {
+    margin-right: 7.5px;
+    background-image: url('/assets/icons/coin-heads.png');
+}
+.coinflip-game .buttons__tail {
+    margin-left: 7.5px;
+    background-image: url('/assets/icons/coin-tails.png');
+}
+.game-coinflip__button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 100%;
+    margin-top: 25px;
+    font-size: 20px;
+    border-color: transparent;
+    border-top: 2px solid #82ffff;
+    border-radius: 6px;
+    background: linear-gradient(to top right,#4be,#81f8fd);
+    text-shadow: 1px 1px 1px rgb(0 0 0 / 50%);
+    transition: all .3s ease-out;
+    position: relative;
+    touch-action: none;
+    cursor: pointer;
+}
+.game-coinflip__button:before {
+    content: "";
+    background: linear-gradient(to top right,#81f8fd,#4be);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    border-radius: 6px;
+    transition: all .3s;
+}
+.game-coinflip__button.disabled {
+    cursor: not-allowed;
+    opacity: .5;
+}
+.game-coinflip__button>span {
+    position: relative;
+    z-index: 1;
+    margin-top: -3px;
+}
+
+
+.coinflip__block {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    padding: 20px;
+}
+.coinflip__block .board {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-grow: 1;
+    border: 1px solid var(--cg-border-color);
+    border-radius: 4px;
+    position: relative;
+    min-height: 280px;
+}
+.coinflip-game .board__aside {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 130px;
+    height: 120px;
+    border-top: 1px solid var(--cg-border-color);
+    border-bottom: 1px solid var(--cg-border-color);
+}
+.coinflip-game .board__aside_left {
+    border-right: 1px solid var(--cg-border-color);
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+.coinflip-game .board__aside_right {
+    border-left: 1px solid var(--cg-border-color);
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+.coinflip-game .board__aside-number {
+    font-size: 33px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    position: relative;
+    transition: color .1s;
+}
+.coinflip-game .board__aside-text {
+    font-size: 12px;
+    color: hsla(0,0%,100%,.2);
+}
+.coinflip-game .board__aside-number {
+    font-size: 33px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    position: relative;
+    transition: color .1s;
+}
+.coinflip-game .coin__side {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    transform-style: preserve-3d;
+    transform-origin: center;
+    transition: transform 1s linear;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    box-shadow: 0 12px 20px -10px rgb(0 0 0 / 40%);
+    background-size: 100%;
+}
+.coinflip-game .coin__side_eagle {
+    background-image: url('/assets/icons/coin-heads.png');
+}
+.coinflip-game .coin__side_tail {
+    background-image: url('/assets/icons/coin-tails.png');
+}
+.coinflip-game .coin__side:last-of-type {
+    transform: rotateY(-180deg);
+}
+#coin {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    position: relative;
+    transform-origin: center;
+    transform-style: preserve-3d;
+    transition: -webkit-transform 1s ease-in;
+    -webkit-transform-style: preserve-3d;
+}
+#coin div {
+    width: 100%;
+    height: 100%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    -webkit-box-shadow: inset 0 0 45px rgba(255,255,255,.3), 0 12px 20px -10px rgba(0,0,0,.4);
+    -moz-box-shadow: inset 0 0 45px rgba(255,255,255,.3), 0 12px 20px -10px rgba(0,0,0,.4);
+    box-shadow: inset 0 0 45px rgba(255,255,255,.3), 0 12px 20px -10px rgba(0,0,0,.4);
+    position: absolute;
+    -webkit-backface-visibility: hidden;
+}
+#coin.heads {
+    -webkit-animation: flipHeads 1.5s ease-out forwards;
+    -moz-animation: flipHeads 1.5s ease-out forwards;
+    -o-animation: flipHeads 1.5s ease-out forwards;
+    animation: flipHeads 1.5s ease-out forwards;
+}
+#coin.tails {
+    -webkit-animation: flipTails 1.5s ease-out forwards;
+    -moz-animation: flipTails 1.5s ease-out forwards;
+    -o-animation: flipTails 1.5s ease-out forwards;
+    animation: flipTails 1.5s ease-out forwards;
+}
+@keyframes flipHeads {
+    0% {
+        transform: scale(1) rotateY(0)
+    }
+    50% {
+        transform: scale(1.28) rotateY(864deg)
+    }
+    68% {
+        transform: scale(1.3) rotateY(900deg)
+    }
+    72% {
+        transform: scale(1.28) rotateY(936deg)
+    }
+    to {
+        transform: scale(1) rotateY(1800deg)
+    }
+}
+
+@keyframes flipTails {
+    0% {
+        transform: scale(1) rotateY(0)
+    }
+    50% {
+        transform: scale(1.28) rotateY(864deg)
+    }
+    68% {
+        transform: scale(1.3) rotateY(900deg)
+    }
+    72% {
+        transform: scale(1.28) rotateY(936deg)
+    }
+    to {
+        transform: scale(1) rotateY(1980deg)
+    }
+}
+
+
+.coinflip-game .steps {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-top: 20px;
+    padding: 0 16px;
+    border-radius: 4px;
+    background: var(--cg-background-color);
+    border: 1px solid var(--cg-border-color);
+}
+.coinflip-game .steps__step {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 7.5%;
+    height: 100px;
+    font-size: 13px;
+    position: relative;
+    transition: opacity .3s linear;
+}
+.coinflip-game .steps__step:not(.steps__step_active) {
+    opacity: .5;
+}
+.coinflip-game .steps__step-img {
+    width: 100%;
+    margin-bottom: 9px;
+    padding-top: 100%;
+    transform-origin: center;
+    transform-style: preserve-3d;
+    position: relative;
+}
+.coinflip-game .steps__step-side {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding-top: 100%;
+    border-radius: 50%;
+    transform-style: preserve-3d;
+    transform-origin: center;
+    transition: transform 1s linear;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    box-shadow: 0 12px 20px -10px rgb(0 0 0 / 40%);
+    background-size: 100%;
+    background-color: #5a5a6d;
+}
+.coinflip-game .steps__step-side_final {
+    opacity: 1;
+    transform: rotateY(-180deg);
+    transition: background-image 0s linear;
+}
+.coinflip-game .steps__step-img_eagle, .coinflip-game .steps__step-img_tail {
+    -webkit-animation: step-block-animation .5s linear forwards;
+    animation: step-block-animation .5s linear forwards;
+}
+.coinflip-game .steps__step-img_eagle .steps__step-side_final {
+    background-image: url('/assets/icons/coin-heads.png');
+}
+.coinflip-game .steps__step-img_tail .steps__step-side_final {
+    background-image: url('/assets/icons/coin-tails.png');
+}
+.coinflip-game .steps__step-side:before {
+    content: "?";
+    position: absolute;
+    top: 52%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: 20px;
+}
+
+@keyframes step-block-animation {
+    to {
+        transform: rotateY(180deg)
+    }
+}

@@ -20,6 +20,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 });
 
 Route::group(['prefix' => '/v1', 'namespace' => 'Api\V1', 'as' => 'api.'], function () {
+    Route::get('test', [MineController::class, 'test']);
     Route::post('mines/create', [MineController::class, 'create']);
     Route::post('mines/rates', [MineController::class, 'rates']);
     Route::post('mines/play', [MineController::class, 'play']);

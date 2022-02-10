@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Web\AccountController;
+use App\Http\Controllers\Web\Game\CoinFlipController;
 use App\Http\Controllers\Web\Game\DiceController;
 use App\Http\Controllers\Web\Game\KenoController;
 use App\Http\Controllers\Web\Game\MineController;
@@ -37,6 +38,16 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('/keno/getLastBets', [KenoController::class, 'getLastBets'])->name('getKenoLastBets');
         Route::post('/keno/getRates', [KenoController::class, 'getRates'])->name('getKenoRates');
 
+        Route::post('/mines/getRates', [MineController::class, 'getRates'])->name('getMineRates');
+        Route::post('/mines/create', [MineController::class, 'create']);
+        Route::post('/mines/play', [MineController::class, 'play']);
+        Route::post('/mines/collect', [MineController::class, 'collect']);
+
+        Route::post('/coinflip/create', [CoinFlipController::class, 'create']);
+        Route::post('/coinflip/play', [CoinFlipController::class, 'play']);
+        Route::post('/coinflip/collect', [CoinFlipController::class, 'collect']);
+        Route::post('/coinflip/getLastBets', [CoinFlipController::class, 'getLastBets'])->name('getCoinLastBets');
+
         Route::post('/getBalance', [AccountController::class, 'getBalance'])->name('getBalance');
         Route::post('/getFaucetHistory', [AccountController::class, 'getFaucetHistory'])->name('getFaucetHistory');
 
@@ -46,10 +57,13 @@ Route::group(['middleware' => ['web']], function () {
     });
 
 
+    Route::post('/dice/getAllLastBets', [DiceController::class, 'getAllLastBets'])->name('getDiceAllLastBets');
     Route::post('/keno/getAllLastBets', [KenoController::class, 'getAllLastBets'])->name('getKenoAllLastBets');
+    Route::post('/coinflip/getAllLastBets', [CoinFlipController::class, 'getAllLastBets'])->name('getCoinAllLastBets');
 
     Route::get('/dice/{currency}', [DiceController::class, 'index'])->name('dice');
-    Route::get('/mine/{currency}', [MineController::class, 'index'])->name('mine');
+    Route::get('/mines/{currency}', [MineController::class, 'index'])->name('mines');
+    Route::get('/coinflip/{currency}', [CoinFlipController::class, 'index'])->name('coinflip');
     Route::get('/keno/{currency}', [KenoController::class, 'index'])->name('keno');
 
 

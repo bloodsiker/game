@@ -37,8 +37,8 @@
 
     <script src="{{ asset('js/games.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/js.cookies.js') }}" type="text/javascript"></script>
-{{--    <script src="{{ asset('js/dice.js') }}" type="text/javascript"></script>--}}
-    <script src="{{ asset('js/keno.js') }}" type="text/javascript"></script>
+
+    @stack('game_scripts')
 </head>
 <body class="">
     <div class="container-fluid no-transition">

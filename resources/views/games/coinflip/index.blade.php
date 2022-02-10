@@ -1,11 +1,11 @@
 @extends('layouts.layout')
 
 @push('head_css')
-    <link href="{{ asset('css/keno.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('css/coinflip.css') }}" rel="stylesheet"/>
 @endpush
 
 @push('game_scripts')
-    <script src="{{ asset('js/keno.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/coinflip.js') }}" type="text/javascript"></script>
 @endpush
 
 @push('head_scripts')
@@ -91,44 +91,41 @@
                 <br/>
                 <div class="tab-pane fade in active" id="mine_game">
                     <div class="row">
-                        <div class="keno-game">
+                        <div class="coinflip-game">
                             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 text-center">
                                 <div class="well height-100">
                                     <span class="bet_text">Сумма ставки:</span><br/>
                                     <div class="btn-group" role="group" aria-label="..." style="width: 101%;">
-                                        <button id="btnBet1" type="button" class="btn btn-default"
+                                        <button id="btnBet1" type="button" class="btn btn-default btnSetBet"
                                                 style="width: 20%;">+1
                                         </button>
-                                        <button id="btnBet2" type="button" class="btn btn-default"
+                                        <button id="btnBet2" type="button" class="btn btn-default btnSetBet"
                                                 style="width: 20%;">+10
                                         </button>
-                                        <button id="btnBet3" type="button" class="btn btn-default"
+                                        <button id="btnBet3" type="button" class="btn btn-default btnSetBet"
                                                 style="width: 20%;">+50
                                         </button>
-                                        <button id="btnBet4" type="button" class="btn btn-default"
+                                        <button id="btnBet4" type="button" class="btn btn-default btnSetBet"
                                                 style="width: 20%;">+100
                                         </button>
-                                        <button id="btnBet5" type="button" class="btn btn-default"
+                                        <button id="btnBet5" type="button" class="btn btn-default btnSetBet"
                                                 style="width: 20%;">+250
                                         </button>
                                     </div>
                                     <div class="">
-                                        <input id="txtKenoBet" type="text" class="form-control fz-16 fw-600 text-center" value="" autocomplete="of"/>
+                                        <input id="txtCoinBet" type="text" class="form-control fz-16 fw-600 text-center" value="" autocomplete="of"/>
                                     </div>
 
-                                    <div class="game-keno__rate-block game-keno__rate-block_buttons">
-                                        <div class="game-keno__button game-keno__button_small" id="btnAutoNumber">
-                                            <span>Автовыбор</span>
-                                        </div>
-                                        <div class="game-keno__button game-keno__button_small game-keno__button_simple" id="btnClearNumber">
-                                            <span>Очистить</span>
-                                        </div>
+                                    <div class="coin-btn_buttons">
+                                        <button class="game-coinflip__button" id="btnCoinFlipStart"><span>Играть</span></button>
                                     </div>
-
-                                    <button class="game-keno__button disabled" disabled id="btnKenoStart"><span>Играть</span></button>
 
                                     <div class="message_line">
                                         <div id="divManualMessage" class="alert text-center alert-danger" role="alert"
+                                             style="display: none;">
+                                            <p></p>
+                                        </div>
+                                        <div id="divSuccessMessage" class="alert text-center alert-success" role="alert"
                                              style="display: none;">
                                             <p></p>
                                         </div>
@@ -138,136 +135,43 @@
                             <div class="col-lg-8 col-md-6 col-sm-6 col-xs-6 text-center">
                                 <div class="well height-100">
 
-                                    <div class="game-keno__block game-keno__block_game">
-                                        <div class="game-keno__winning">
-                                            <div class="game-keno__winning-close"></div>
-                                            <div class="game-keno__winning-rate">
-                                                <span class="sum" id="kenoCoeff">0.25</span>
-                                                x
-                                            </div>
-                                            <div class="game-keno__winning-amount">
-                                                <span class="game-keno__winning-amount-title">Выигрыш</span>
-                                                <span class="game-keno__winning-amount-value">
-                                                    <span class="sum" id="winKenoAmount"></span>
-                                                     <span class="sum">{{ $currency->name }}</span>
-                                                </span>
-                                            </div>
-                                        </div>
+                                   <div class="coinflip__block">
+                                       <div class="board">
+                                           <div class="board__aside board__aside_left">
+                                               <div class="board__aside-number" id="coinStep">0</div>
+                                               <div class="board__aside-text">Раунд</div>
+                                           </div>
+                                           <div class="board_inner">
+                                               <div class="coin" id="coin">
+                                                   <div class="coin__side coin__side_eagle"></div>
+                                                   <div class="coin__side coin__side_tail"></div>
+                                               </div>
+                                           </div>
+                                           <div class="board__aside board__aside_right">
+                                               <div class="board__aside-number" id="coinCoeff">x0</div>
+                                               <div class="board__aside-text">Коэфф.</div>
+                                           </div>
+                                       </div>
 
-                                        <div class="game-keno__numbers">
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="1" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="2" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="3" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="4" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="5" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="6" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="7" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="8" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="9" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="10" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="11" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="12" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="13" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="14" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="15" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="16" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="17" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="18" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="19" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="20" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="21" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="22" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="23" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="24" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="25" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="26" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="27" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="28" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="29" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="30" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="31" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="32" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="33" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="34" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="35" class="game-keno__numbers-item"></div>
-                                            </div>
-                                            <div class="game-keno__numbers-item-wrapper">
-                                                <div data-number="36" class="game-keno__numbers-item"></div>
-                                            </div>
-                                        </div>
-                                        <div class="game-keno__rates">
-                                            <div class="game-keno__rates-item game-keno__rates-item_text">Выберите от 1 до 10 номеров.</div>
-                                        </div>
-                                    </div>
+                                       <ul class="game__steps steps">
+                                           @foreach($rates as $rate)
+                                               <li class="steps__step steps__step_active" data-step="{{ $rate->step }}">
+                                                   <div class="steps__step-img steps__step-img_eagle">
+                                                       <div class="steps__step-side steps__step-side_default"></div>
+                                                       <div class="steps__step-side steps__step-side_final"></div>
+                                                   </div>
+                                                   <span>x{{ $rate->coeff }}</span>
+                                               </li>
+                                           @endforeach
+{{--                                           <li class="steps__step steps__step_active">--}}
+{{--                                               <div class="steps__step-img steps__step-img_tail">--}}
+{{--                                                   <div class="steps__step-side steps__step-side_default"></div>--}}
+{{--                                                   <div class="steps__step-side steps__step-side_final"></div>--}}
+{{--                                               </div>--}}
+{{--                                               <span>x1.9</span>--}}
+{{--                                           </li>--}}
+                                       </ul>
+                                   </div>
 
                                 </div>
                             </div>
@@ -446,13 +350,13 @@
             <ul class="nav nav-tabs " id="tab_result">
                 <li class="active">
                     <a href="#last_bets" class="fixed-tabs" data-toggle="tab"><i
-                            class="fa fa-users fa-lg" aria-hidden="true"></i>All bets <span id="allbets_pause"
+                            class="fa fa-users fa-lg" aria-hidden="true"></i>Все ставки <span id="allbets_pause"
                                                                                             class="glyphicon glyphicon-pause"
                                                                                             aria-hidden="true"></span>
                     </a>
                 </li>
                 <li><a href="#my_bets" class="fixed-tabs" data-toggle="tab"><i
-                            class="fa fa-user fa-lg" aria-hidden="true"></i>Your bets <span id="yourbets_pause"
+                            class="fa fa-user fa-lg" aria-hidden="true"></i>Мои ставки <span id="yourbets_pause"
                                                                                             class="glyphicon glyphicon-pause"
                                                                                             aria-hidden="true"></span></a>
                 </li>

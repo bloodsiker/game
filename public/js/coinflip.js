@@ -10,6 +10,10 @@ $(document).ready(function () {
     var Maxwin = parseFloat(maxwin);
     var Edge = parseFloat(edge);
     var Maxratio = calculate_maximum_payout(0.010);
+    var DefaultStep = 0;
+    var DefaultCoeff = 0;
+    var Step = 0;
+    var DisabledGame = true;
     var MyBets = [];
     var AllBets = [];
     var AllBetsId = [];
@@ -28,7 +32,6 @@ $(document).ready(function () {
     var diceAutobetCookieName = Idc + 'dice_autobet';
 
     var selectedNumbers = [];
-    var kenoRates = [];
 
     $("#allbets_pause").hide();
     $("#yourbets_pause").hide();
@@ -47,27 +50,22 @@ $(document).ready(function () {
     const manual_validate = function () { // manual validations
         var msg = "";
         var result = true;
-        var bid = parseFloat($("#txtKenoBet").val());
+        var bid = parseFloat($("#txtCoinBet").val());
 
-        $("#txtKenoBet").removeClass("red_font");
+        $("#txtCoinBet").removeClass("red_font");
 
         if (bid < Minbid) {
-            $("#txtKenoBet").addClass("red_font");
+            $("#txtCoinBet").addClass("red_font");
             msg = msg + " Ставка слишком низкая. Минимальная ставка: " + Minbid.toFixed(2) + " " + coinname + ".";
             result = false;
         }
         if (bid > Balance) {
-            $("#txtKenoBet").addClass("red_font");
+            $("#txtCoinBet").addClass("red_font");
             msg = msg + " Ставка больше вашего баланса.";
             result = false;
         }
         if ((bid).toFixed(2) > Maxwin) {
             msg = msg + " Измените ставку или выплату. Максимальный выигрыш установлен на: " + Maxwin + " " + coinname + ".";
-            result = false;
-        }
-
-        if (selectedNumbers.length < 1) {
-            msg = msg + " Нужно выбрать хоть одно число";
             result = false;
         }
 
@@ -79,9 +77,17 @@ $(document).ready(function () {
         if (msg.length > 0) {
             $("#divManualMessage p").html(msg);
             $("#divManualMessage").delay(500).show();
-        }
-        else {
+        } else {
             $("#divManualMessage").delay(500).hide();
+        }
+    };
+
+    showMessageSuccess = function (msg) {
+        if (msg.length > 0) {
+            $("#divSuccessMessage p").html(msg);
+            $("#divSuccessMessage").delay(500).show();
+        } else {
+            $("#divSuccessMessage").delay(500).hide();
         }
     };
 
@@ -129,7 +135,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'POST',
-            url: '/keno/getAllLastBets',
+            url: '/coinflip/getAllLastBets',
             contentType: "application/json",
             success: function (msg) {
                 if (msg.length > 0) {
@@ -148,7 +154,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'POST',
-            url: '/keno/getLastBets',
+            url: '/coinflip/getLastBets',
             dataType: 'json',
             success: function (msg) {
                 if (msg.d.length > 0) {
@@ -215,7 +221,7 @@ $(document).ready(function () {
     refreshBets();
 
     const setDefault = () => {
-        $("#txtKenoBet").val(Minbid.toFixed(2));
+        $("#txtCoinBet").val(Minbid.toFixed(2));
     }
     setDefault();
 
@@ -233,7 +239,7 @@ $(document).ready(function () {
 
         Runing = true;
         activateUserBets();
-        let bet = $("#txtKenoBet").val();
+        let bet = $("#txtCoinBet").val();
         if (manual_validate() === true) {
             let clientseed = getClientSeed();
             getResultManual(Longid, Idc, bet, selectedNumbers, clientseed);
@@ -242,7 +248,7 @@ $(document).ready(function () {
         }
     }
 
-    $("#txtKenoBet").keyup(function () {
+    $("#txtCoinBet").keyup(function () {
         var start = this.selectionStart;
         var end = this.selectionEnd;
         this.value = this.value.replace(/[^0-9\.]/g, '');
@@ -250,146 +256,257 @@ $(document).ready(function () {
         manual_validate();
     });
 
-    $('#btnAutoNumber').on('click', function () {
-        closeKenoWin();
-        clearKenoNumbers()
-        while (selectedNumbers.length < 10) {
-            let n = Math.floor(Math.random() * 36) + 1;
-            if (selectedNumbers.indexOf(n) === -1) {
-                selectedNumbers.push(n);
-            }
-        }
-
-        let i = 0;
-        $.each(selectedNumbers, function(index, value){
-            i++
-            setData(value, i);
-        });
-
-        function setData(n, i){
-            setTimeout(function(){
-                $(".game-keno__numbers-item[data-number="+n+"]").addClass('game-keno__numbers-item_selected');
-            }, 50 * i);
-        }
-
-        htmlRatesNumber(selectedNumbers.length);
-        $('.game-keno__button').removeClass('disabled').removeAttr('disabled');
-    });
-
-    $('#btnClearNumber').on('click', function () {
-        closeKenoWin();
-        clearKenoNumbers();
-    });
-
-    $('.game-keno__numbers-item').on('click', function () {
-        let number = $(this).data('number');
-
-        $('.game-keno__numbers-item').removeClass('game-keno__numbers-item_opened');
-
-        if (selectedNumbers.indexOf(number) === -1) {
-            if (selectedNumbers.length < 10) {
-                $(this).addClass('game-keno__numbers-item_selected')
-                selectedNumbers.push(number);
-            }
-        } else {
-            $(this).removeClass('game-keno__numbers-item_selected');
-            selectedNumbers.splice(selectedNumbers.indexOf(number),1);
-        }
-
-        if (selectedNumbers.length === 0) {
-            htmlRatesNotNumber();
-            $('#btnKenoStart').addClass('disabled');
-        } else {
-            htmlRatesNumber(selectedNumbers.length);
-            $('#btnKenoStart').removeClass('disabled');
+    //
+    $('.coin-btn_buttons').on('click', '#btnEagle', function () {
+        let bet = $("#txtCoinBet").val();
+        if (!DisabledGame) {
+            play(1, bet);
         }
     });
 
-    const htmlRatesNumber = (countNumbers) => {
-        let html = '';
-        $.each(kenoRates, function(index, value) {
-            if (value.number === countNumbers) {
-                html += `<div class="game-keno__rates-item">
-                            <div class="game-keno__rates-item-step">${value.count_win}</div>
-                            <div class="game-keno__rates-item-rate">${value.coeff}x</div>
-                        </div>`;
+    $('.coin-btn_buttons').on('click', '#btnTail', function () {
+        let bet = $("#txtCoinBet").val();
+        if (!DisabledGame) {
+            play(0, bet);
+        }
+    });
+
+    $(document).on('click', '#btnCoinFlipStart', function () {
+        if (manual_validate() === true) {
+            startGame();
+        }
+    });
+
+    $(document).on('click', '#btnPossibleWin', function () {
+        if (Step > 0 && !DisabledGame) {
+            collect();
+        }
+    })
+
+    const startGame = () => {
+        let bet = parseFloat($("#txtCoinBet").val());
+
+        $('.mines-coeff').removeClass('active');
+        $('#coinStep').text(DefaultStep);
+        $('#coinCoeff').text(DefaultCoeff);
+        $('.btnSetBet').attr('disabled', 'disabled');
+        $('#txtCoinBet').attr('disabled', 'disabled');
+
+        showMessageSuccess('');
+
+        $.ajax({
+            type: 'POST',
+            url: '/coinflip/create',
+            data: {idc: Idc, bet: bet},
+            dataType: 'json',
+            success: function (res) {
+                if (res.status === 'success') {
+                    $('#btnCoinFlipStart').remove();
+                    renderCoinFlip();
+                    DisabledGame = false;
+
+                    Balance = res.balance;
+                    showBalance(res.balance, idc);
+                    $('.steps__step').attr('class', 'steps__step');
+                    $('.steps__step-img').attr('class', 'steps__step-img');
+                    // renderBtnPossibleWin(bet);
+                    activateUserBets();
+                }
+            },
+            error: function (msg) {
+                console.log("not ok....");
             }
         });
-
-        $('.game-keno__rates').html(html);
     }
 
-    const htmlRatesNotNumber = () => {
-        let html = `<div class="game-keno__rates-item game-keno__rates-item_text">Выберите от 1 до 10 номеров.</div>`;
-        $('.game-keno__rates').html(html);
+    const play = (coin, bet) => {
+
+        $('#btnEagle, #btnTail').addClass('disabled');
+        $('#btnPossibleWin').addClass('disabled').attr('disabled');
+        DisabledGame = true;
+
+        $.ajax({
+            type: 'POST',
+            url: '/coinflip/play',
+            data: {idc: idc, bet: bet, coin: coin },
+            dataType: 'json',
+            success: function (res) {
+
+                if (res.status === 'success') {
+                    let step = res.step;
+                    Step = step;
+
+                    let flipResult = res.coin;
+                    $('#coin').removeClass();
+                    setTimeout(function () {
+                        if (flipResult === 0) {
+                            $('#coin').addClass('tails');
+                        } else {
+                            $('#coin').addClass('heads');
+                        }
+                    }, 100);
+
+                    if (res.lose === true) {
+                        let countRevealed = res.revealed.length;
+                        setTimeout(function () {
+                            Balance = res.balance;
+                            showBalance(res.balance, idc);
+                            renderBtnStart();
+                            $('.btnSetBet').removeAttr('disabled');
+                            $('#txtCoinBet').removeAttr('disabled');
+                            $.each(res.coins, function(index, value) {
+                                let step = ++index;
+                                if (step => countRevealed) {
+                                    let htmlCoin = $(".steps__step[data-step="+step+"]").find('.steps__step-img');
+                                    if (value === 0) {
+                                        htmlCoin.addClass('steps__step-img_tail');
+                                    } else {
+                                        htmlCoin.addClass('steps__step-img_eagle');
+                                    }
+                                }
+                            });
+
+                            addToTable(res.BetData, "1");
+                        }, 1600);
+                    } else {
+                        setTimeout(function () {
+                            $('#coinStep').text(res.step);
+                            $('#coinCoeff').text('x' + res.coeff);
+                            $('#possibleWin').text((res.possibleWin).toFixed(2));
+                            $('#btnPossibleText').text('Забрать');
+
+                            DisabledGame = false;
+                            $('#btnEagle, #btnTail').removeClass('disabled');
+                            $('#btnPossibleWin').removeClass('disabled').removeAttr('disabled');
+
+                            $(".steps__step[data-step="+step+"]").addClass('steps__step_active');
+                            let htmlCoin = $(".steps__step[data-step="+step+"]").find('.steps__step-img');
+                            if (res.finish) {
+                                $('.section__title, .coinflip-section__row').empty();
+                            }
+                            if (coin === 0) {
+                                htmlCoin.addClass('steps__step-img_tail');
+                            } else {
+                                htmlCoin.addClass('steps__step-img_eagle');
+                            }
+                        }, 1600);
+                    }
+                }
+            },
+            error: function (msg) {
+                showMessageManual("Ошибка связи с сервером.");
+                $("#txtManualResultNumber").hide();
+            }
+        });
     }
 
-    $('#btnKenoStart').on('click', function () {
-        closeKenoWin();
-        $('.game-keno__numbers-item').removeClass('game-keno__numbers-item_opened');
-        $('.game-keno__rates-item').removeClass('game-keno__rates-item_active');
-        manualBet();
-    });
+    const collect = () => {
+        $.ajax({
+            type: 'POST',
+            url: '/coinflip/collect',
+            data: {idc: Idc},
+            dataType: 'json',
+            success: function (res) {
+                if (res.status === 'success') {
+                    Step = 0;
+                    showMessageSuccess('Вы выиграли ' + (res.won_sum).toFixed(2));
+                    Balance = res.balance;
+                    showBalance(res.balance, idc);
+                    $('#btnPossibleWin').remove();
+                    renderBtnStart();
 
-    $('.game-keno__winning-close').on('click', function () {
-        closeKenoWin();
-    });
+                    $('.btnSetBet').removeAttr('disabled');
+                    $('#txtCoinBet').removeAttr('disabled');
 
-    let clearKenoNumbers = () => {
-        htmlRatesNotNumber();
-        $('.game-keno__numbers-item').attr('class', 'game-keno__numbers-item');
-        $('#btnKenoStart').addClass('disabled').attr('disabled', 'disabled');
-        selectedNumbers = [];
+                    // addToTable(content.BetData, "1");
+                    let countRevealed = res.revealed.length;
+
+                    $.each(res.coins, function(index, value) {
+                        let step = ++index;
+                        if (step => countRevealed) {
+                            let htmlCoin = $(".steps__step[data-step="+step+"]").find('.steps__step-img');
+                            if (value === 0) {
+                                htmlCoin.addClass('steps__step-img_tail');
+                            } else {
+                                htmlCoin.addClass('steps__step-img_eagle');
+                            }
+                        }
+                    });
+
+                    addToTable(res.BetData, "1");
+                }
+            },
+            error: function (msg) {
+                console.log("not ok....");
+            }
+        });
     }
 
-    let closeKenoWin = () => {
-        $('.game-keno__winning').removeClass('game-keno__winning_active');
+    const renderBtnStart = () => {
+        let html = `<button class="game-coinflip__button" id="btnCoinFlipStart"><span>Играть</span></button>`;
+        $('.coin-btn_buttons').html(html);
+    }
+
+    const renderCoinFlip = () => {
+        let disabled = (Step > 0) ? '' : 'disabled';
+        let html = `<h3 class="section__title">Выберите исход раунда</h3>
+                    <div class="coinflip-section__row ">
+                        <div class="section__item buttons__eagle" id="btnEagle">
+                            <div class="buttons__text">Орел</div>
+                        </div>
+                        <div class="section__item buttons__tail" id="btnTail">
+                            <div class="buttons__text">Решка</div>
+                        </div>
+                    </div>
+                    <button class="game-coinflip__button" id="btnPossibleWin" ${disabled}><span id="btnPossibleText">Сделайте ход</span>&nbsp;<span id="possibleWin"></span></button>
+                `;
+        $('.coin-btn_buttons').html(html);
     }
 
     $("#btnBet1").click(function () { // bid + 1
-        var bet = parseFloat($("#txtKenoBet").val());
-        $("#txtKenoBet").val((bet + 1).toFixed(2));
+        var bet = parseFloat($("#txtCoinBet").val());
+        $("#txtCoinBet").val((bet + 1).toFixed(2));
         if ((bet + 1) > (Balance)) {
-            $("#txtKenoBet").val((Balance).toFixed(2));
+            $("#txtCoinBet").val((Balance).toFixed(2));
         }
         manual_validate();
     });
 
     $("#btnBet2").click(function () { // bid + 10
-        var bet = parseFloat($("#txtKenoBet").val());
-        $("#txtKenoBet").val((bet + 10).toFixed(2));
+        var bet = parseFloat($("#txtCoinBet").val());
+        $("#txtCoinBet").val((bet + 10).toFixed(2));
         if ((bet + 10) > (Balance)) {
-            $("#txtKenoBet").val((Balance).toFixed(2));
+            $("#txtCoinBet").val((Balance).toFixed(2));
         }
         manual_validate();
     });
 
     $("#btnBet3").click(function () { // bid + 50
-        var bet = parseFloat($("#txtKenoBet").val());
-        $("#txtKenoBet").val((bet + 50).toFixed(2));
+        var bet = parseFloat($("#txtCoinBet").val());
+        $("#txtCoinBet").val((bet + 50).toFixed(2));
 
         if ((bet + 50) > (Balance)) {
-            $("#txtKenoBet").val((Balance).toFixed(2));
+            $("#txtCoinBet").val((Balance).toFixed(2));
         }
         manual_validate();
     });
 
     $("#btnBet4").click(function () { // bid + 100
-        var bet = parseFloat($("#txtKenoBet").val());
-        $("#txtKenoBet").val((bet + 100).toFixed(2));
+        var bet = parseFloat($("#txtCoinBet").val());
+        $("#txtCoinBet").val((bet + 100).toFixed(2));
 
         if ((bet + 100) > (Balance)) {
-            $("#txtKenoBet").val((Balance).toFixed(2));
+            $("#txtCoinBet").val((Balance).toFixed(2));
         }
         manual_validate();
     });
 
     $("#btnBet5").click(function () { // bid + 250
-        var bet = parseFloat($("#txtKenoBet").val());
-        $("#txtKenoBet").val((bet + 250).toFixed(2));
+        var bet = parseFloat($("#txtCoinBet").val());
+        $("#txtCoinBet").val((bet + 250).toFixed(2));
 
         if ((bet + 250) > (Balance)) {
-            $("#txtKenoBet").val((Balance).toFixed(2));
+            $("#txtCoinBet").val((Balance).toFixed(2));
         }
         manual_validate();
     });
@@ -432,81 +549,6 @@ $(document).ready(function () {
             }
         }
     });
-
-    let getKenoRates = () => {
-        $.ajax({
-            type: 'POST',
-            url: '/keno/getRates',
-            contentType: "application/json",
-            success: function (res) {
-                kenoRates = res;
-            },
-            error: function (msg) {
-                console.log("not ok....");
-            }
-        });
-    };
-    getKenoRates();
-
-
-    const getResultManual = (longid, idc, bet, selectedNumbers, clientseed) => {
-        $.ajax({
-            type: 'POST',
-            url: '/keno/getKenoResult',
-            data: {idc: idc, bet: bet, numbers: selectedNumbers, clientseed: clientseed},
-            dataType: 'json',
-            success: function (msg) {
-                var content = msg.d;
-                if (content.result) {
-
-                    let i = 0;
-                    $.each(content.win, function(index, value){
-                        i++
-                        setData(value, i, 'game-keno__numbers-item_opened');
-                    });
-
-                    let k = 0;
-                    $.each($('.game-keno__rates-item'), function() {
-                        k++;
-                        if (k <= content.win.length) {
-                            $(this).addClass('game-keno__rates-item_active');
-                        }
-                    });
-
-                    let j = 0;
-                    $.each(content.drop, function(index, value){
-                        j++
-                        setData(value, j, 'game-keno__numbers-item_opened');
-                    });
-
-                    function setData(n, i, el){
-                        setTimeout(function(){
-                            $(".game-keno__numbers-item[data-number="+n+"]").addClass(el);
-                        }, 50 * i);
-                    }
-
-                    let win_amount = parseFloat(content.win_amount);
-
-                    if (win_amount > 0) {
-                        setTimeout(function(){
-                            $('.game-keno__winning').addClass('game-keno__winning_active');
-                            $("#winKenoAmount").text(win_amount);
-                            $("#kenoCoeff").text(content.coeff);
-                        }, 700);
-                    }
-
-                    Wait = false;
-                    Runing = false;
-
-                    addToTable(content.BetData, "1");
-                }
-            },
-            error: function (msg) {
-                showMessageManual("Ошибка связи с сервером.");
-                $("#txtManualResultNumber").hide();
-            }
-        });
-    };
 
     addToGridAll = function () {
         if (Wait1 == true) return;

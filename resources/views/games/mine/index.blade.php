@@ -4,14 +4,16 @@
     <link href="{{ asset('css/mines.css') }}" rel="stylesheet"/>
 @endpush
 
+@push('game_scripts')
+    <script src="{{ asset('js/mines.js') }}" type="text/javascript"></script>
+@endpush
+
 @push('head_scripts')
     <script type="text/javascript">
         var coin = "{{ $currency->idc }}";
         var style = "7";
         var coinname = "{{ $currency->name }}";
         var decimals = "6";
-        var conv_currency = "BTC";
-        var conv_price = "1.000000000000000000";
         var totalchannels = "5";
         var ratio = "10000000";
         var Balance = {{ auth()->check() ? auth()->user()->getBalance(request()->route('currency')) : 0 }};
@@ -55,10 +57,10 @@
         var style = "7";
         var maxwin = "500000";
         var minbid = "0.10";
+        var minmines = 2;
+        var maxmines = 24;
         var effects = "0";
         var edge = "{{ $game->edge }}";
-        var conv_price = "1.000000000000000000";
-        var conv_currency = "BTC";
         var hotkeys = "";
         var decimals = "6";
         var highrollamount = "5000";
@@ -72,6 +74,8 @@
         }
 
     </script>
+
+    <script src="{{ asset('js/libs/slick.min.js') }}"></script>
 @endpush
 
 
@@ -96,58 +100,54 @@
                                 <div class="well height-100">
                                     <span class="bet_text">Количество бомб:</span><br/>
                                     <div class="btn-group" role="group" aria-label="..." style="width: 101%;">
-                                        <button id="btnBet1" type="button" class="btn btn-default"
+                                        <button data-mine="3" type="button" class="btn btn-default btnSetMine"
                                                 style="width: 20%;">3
                                         </button>
-                                        <button id="btnBet2" type="button" class="btn btn-default"
+                                        <button data-mine="5" type="button" class="btn btn-default btnSetMine"
                                                 style="width: 20%;">5
                                         </button>
-                                        <button id="btnBet3" type="button" class="btn btn-default"
+                                        <button data-mine="10" type="button" class="btn btn-default btnSetMine"
                                                 style="width: 20%;">10
                                         </button>
-                                        <button id="btnBet4" type="button" class="btn btn-default"
+                                        <button data-mine="20" type="button" class="btn btn-default btnSetMine"
                                                 style="width: 20%;">20
                                         </button>
-                                        <button id="btnBet4" type="button" class="btn btn-default"
+                                        <button data-mine="24" type="button" class="btn btn-default btnSetMine"
                                                 style="width: 20%;">24
                                         </button>
                                     </div>
                                     <div class="">
-                                        <input id="txtBet" type="text" class="form-control fz-16 fw-600 text-center" value="3" autocomplete="of"/>
+                                        <input id="txtMines" type="text" class="form-control fz-16 fw-600 text-center" value="3" autocomplete="of"/>
                                     </div>
                                     <br/>
 
                                     <span class="bet_text">Сумма ставки:</span><br/>
                                     <div class="group">
                                         <div class="choices">
-                                            <div class="badges"><span class="btn">Max</span><span class="btn">Min</span></div>
-                                            <input class="fz-16 fw-600" name="amount" type="text" value="10" autocomplete="off">
-                                            <div class="badges"><span class="btn">X2</span><span class="btn">/2</span></div>
+                                            <div class="badges">
+                                                <button class="btn btnOperations" id="btnMaxBet">Max</button>
+                                                <button class="btn btnOperations" id="btnMinBet">Min</button>
+                                            </div>
+                                            <input id="txtMineBet" class="fz-16 fw-600" name="amount" type="text" value="10" autocomplete="off">
+                                            <div class="badges">
+                                                <button class="btn btnOperations" id="btnX2Bet">X2</button>
+                                                <button class="btn btnOperations" id="btnDivBet">/2</button>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    <button class="play">Играть<img src="{{ asset('assets/icons/play.svg') }}" alt="Играть"></button>
+                                    <div class="game-mine_buttons">
+                                        <button class="game-mine__button" id="btnMineStart">Играть</button>
+                                    </div>
 
                                     <div class="message_line">
                                         <div id="divManualMessage" class="alert text-center alert-danger" role="alert"
                                              style="display: none;">
-                                            <p>Check your input parameters.</p>
+                                            <p></p>
                                         </div>
-                                        <div id="divConfirmBet" class="alert text-center alert-info" role="alert"
+                                        <div id="divSuccessMessage" class="alert text-center alert-success" role="alert"
                                              style="display: none;">
-                                            <div class="row">
-                                                <div class="col-lg-6">
-                                                    <p>Bet size is high.</p>
-                                                    <input type="checkbox" name="chkConfirmBetAsk" id="chkConfirmBetAsk"/> Don't
-                                                    ask me again
-                                                </div>
-                                                <div class="col-lg-6">
-                                                    <button id="btnConfirmBet" type="button" class="btn btn-default">Confirm
-                                                        bet
-                                                    </button>
-                                                    <br/>
-                                                </div>
-                                            </div>
+                                            <p></p>
                                         </div>
                                     </div>
                                 </div>
@@ -155,126 +155,40 @@
                             <div class="col-lg-8 col-md-6 col-sm-6 col-xs-6 text-center">
                                 <div class="well height-100">
                                     <div class="board">
-                                        <div  class="board__aside board__aside_left"><span>22</span></div>
+                                        <div  class="board__aside board__aside_left"><span id="countWinMines">22</span></div>
                                         <div class="game">
-                                        <span class="disabled is_opacity gameSuccess">
-                                           <img src="{{ asset('assets/icons/mine_win.png') }}" alt="Успешно">
-                                        </span>
-                                            <span class="disabled is_opacity gameDanger">
-                                           <img src="{{ asset('assets/icons/mine-loss.png') }}" alt="Неудача">
-                                        </span>
-                                            <span class="disabled gameDanger">
-                                            <img src="{{ asset('assets/icons/mine-loss.png') }}" alt="Неудача">
-                                        </span>
-                                            <span class=""></span>
-                                            <span class=""></span>
-                                            <span class="disabled is_opacity gameSuccess">
-                                            <img src="{{ asset('assets/icons/mine_win.png') }}" alt="Успешно">
-                                        </span>
-                                            <span class=""></span>
-                                            <span class="disabled gameDanger">
-                                           <img src="{{ asset('assets/icons/mine-loss.png') }}" alt="Неудача">
-                                        </span>
-                                            <span class=""></span>
-                                            <span class="disabled gameSuccess">
-                                            <img src="{{ asset('assets/icons/mine_win.png') }}" alt="Успешно">
-                                            <i class="mines-reveal-animation"></i>
-                                        </span>
-                                            <span class=""></span>
-                                            <span class=""></span>
-                                            <span class="disabled gameSuccess">
-                                           <img src="{{ asset('assets/icons/mine_win.png') }}" alt="Успешно">
-                                        </span>
-                                            <span class=""></span><span
-                                                class=""></span><span class=""></span><span class=""></span><span
-                                                class=""></span><span class=""></span><span class=""></span><span
-                                                class=""></span><span class=""></span><span class=""></span><span
-                                                class=""></span><span class=""></span>
+                                            <div data-number="1" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="2" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="3" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="4" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="5" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="6" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="7" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="8" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="9" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="10" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="11" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="12" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="13" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="14" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="15" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="16" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="17" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="18" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="19" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="20" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="21" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="22" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="23" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="24" class="game-mine__numbers-item disabled"></div>
+                                            <div data-number="25" class="game-mine__numbers-item disabled"></div>
                                         </div>
-                                        <div class="board__aside board__aside_right"><span>3</span></div>
+                                        <div class="board__aside board__aside_right"><span id="countLossMines">3</span></div>
                                     </div>
 
                                     <div class="game-footer game-footer_mines">
                                         <div class="mines-footer-wrapper">
-                                            <div class="mines-coeffs-slider" >
-                                                <div>
-                                                    <div class="mines-coeff mines-coeff-1 active">
-                                                        <div class="coeff-square">
-                                                            <div class="mines_step">Шаг <span
-                                                                    class="coeff-step">1</span></div>
-                                                            <div class="coeff-number-wrapper"><span
-                                                                    class="coeff-x">x</span><span class="coeff-number">4.84</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="mines-coeff mines-coeff-2">
-                                                        <div class="coeff-square">
-                                                            <div class="mines_step">Шаг <span
-                                                                    class="coeff-step">2</span></div>
-                                                            <div class="coeff-number-wrapper"><span
-                                                                    class="coeff-x">x</span><span class="coeff-number">29.1</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="mines-coeff mines-coeff-3">
-                                                        <div class="coeff-square">
-                                                            <div class="mines_step">Шаг <span
-                                                                    class="coeff-step">3</span></div>
-                                                            <div class="coeff-number-wrapper"><span
-                                                                    class="coeff-x">x</span><span class="coeff-number">223.1</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="mines-coeff mines-coeff-4">
-                                                        <div class="coeff-square">
-                                                            <div class="mines_step">Шаг <span
-                                                                    class="coeff-step">4</span></div>
-                                                            <div class="coeff-number-wrapper"><span
-                                                                    class="coeff-x">x</span><span class="coeff-number">2.45k</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="mines-coeff mines-coeff-5">
-                                                        <div class="coeff-square">
-                                                            <div class="mines_step">Шаг <span
-                                                                    class="coeff-step">5</span></div>
-                                                            <div class="coeff-number-wrapper"><span
-                                                                    class="coeff-x">x</span><span class="coeff-number">51.54k</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="mines-coeff mines-coeff-4">
-                                                        <div class="coeff-square">
-                                                            <div class="mines_step">Шаг <span
-                                                                    class="coeff-step">4</span></div>
-                                                            <div class="coeff-number-wrapper"><span
-                                                                    class="coeff-x">x</span><span class="coeff-number">2.45k</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <div class="mines-coeff mines-coeff-5">
-                                                        <div class="coeff-square">
-                                                            <div class="mines_step">Шаг <span
-                                                                    class="coeff-step">5</span></div>
-                                                            <div class="coeff-number-wrapper"><span
-                                                                    class="coeff-x">x</span><span class="coeff-number">51.54k</span>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
+                                            <div class="mines-coeffs-slider" ></div>
                                         </div>
                                     </div>
                                 </div>
@@ -453,52 +367,17 @@
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <ul class="nav nav-tabs " id="tab_result">
                 <li class="active">
-                    <a href="bitcoin.html#last_bets" class="fixed-tabs" data-toggle="tab"><i
-                            class="fa fa-users fa-lg" aria-hidden="true"></i>All bets <span id="allbets_pause"
+                    <a href="#last_bets" class="fixed-tabs" data-toggle="tab"><i
+                            class="fa fa-users fa-lg" aria-hidden="true"></i>Все ставки <span id="allbets_pause"
                                                                                             class="glyphicon glyphicon-pause"
                                                                                             aria-hidden="true"></span>
                     </a>
                 </li>
-                <li><a href="bitcoin.html#my_bets" class="fixed-tabs" data-toggle="tab"><i
-                            class="fa fa-user fa-lg" aria-hidden="true"></i>Your bets <span id="yourbets_pause"
-                                                                                            class="glyphicon glyphicon-pause"
-                                                                                            aria-hidden="true"></span></a>
-                </li>
-                <li role="presentation" class="dropdown">
-                    <a class="dropdown-toggle fixed-tabs" data-toggle="dropdown" href="bitcoin.html#"
-                       role="button" aria-expanded="false"><i class="fa fa-pie-chart fa-lg"
-                                                              aria-hidden="true"></i>Statistic <span
-                            class="caret"></span></a>
-                    <ul class="dropdown-menu pull-right" role="menu">
-                        <li><a href="bitcoin.html#statistic" data-toggle="tab"><i class="fa fa-line-chart fa-fw"
-                                                                                  aria-hidden="true"></i>Dice
-                                data</a></li>
-                        <li><a href="bitcoin.html#statistic_graph" data-toggle="tab"><i
-                                    class="fa fa-pie-chart fa-fw" aria-hidden="true"></i>All charts</a></li>
-
-                    </ul>
-                </li>
-
-                <li role="presentation" class="dropdown">
-                    <a class="dropdown-toggle fixed-tabs" data-toggle="dropdown" href="bitcoin.html#"
-                       role="button" aria-expanded="false"><i class="fa fa-trophy fa-lg" aria-hidden="true"></i>Top
-                        players <span class="caret"></span></a>
-                    <ul class="dropdown-menu pull-right" role="menu">
-                        <li><a href="bitcoin.html#mostwagered" data-toggle="tab"><i
-                                    class="fa fa-line-chart fa-fw" aria-hidden="true"></i>Most wagered</a></li>
-                        <li><a href="bitcoin.html#mostbids" data-toggle="tab"><i class="fa fa-bar-chart fa-fw"
-                                                                                 aria-hidden="true"></i>Most
-                                bids</a></li>
-                        <li><a href="bitcoin.html#mostprofit" data-toggle="tab"><i class="fa fa-money fa-fw"
-                                                                                   aria-hidden="true"></i>Most
-                                profit</a></li>
-                        <li><a href="bitcoin.html#mosttips" data-toggle="tab"><i class="fa fa-gift fa-fw"
-                                                                                 aria-hidden="true"></i>Most
-                                tips dealt</a></li>
-                        <li><a href="bitcoin.html#mostchat" data-toggle="tab"><i class="fa fa-comment-o fa-fw"
-                                                                                 aria-hidden="true"></i>Most
-                                chat messages</a></li>
-                    </ul>
+                <li>
+                    <a href="#my_bets" class="fixed-tabs" data-toggle="tab">
+                        <i class="fa fa-user fa-lg" aria-hidden="true">
+                        </i>Мои ставки <span id="yourbets_pause" class="glyphicon glyphicon-pause" aria-hidden="true"></span>
+                    </a>
                 </li>
             </ul>
 
@@ -540,82 +419,6 @@
                         </table>
                     </div>
                 </div>
-
-                <div class="tab-pane fade in" id="statistic">
-                    <br/>
-                    <div class="bets">
-                        <div id="global_stats">
-                            <br/>
-                            <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i>
-                            <br/>
-                        </div>
-                        <div id="user_stats"></div>
-                        <br/>
-                        <span class="small_info">Data is refreshed once every 10 minutes.</span>
-                    </div>
-                </div>
-                <div class="tab-pane fade in" id="statistic_graph">
-                    <br/>
-                    <div class="bets">
-                        <div id="chart_coins"
-                             style="min-width: 350px; height: 350px; max-width: 600px; margin: 0 auto; float: left;"></div>
-                        <div id="chart_games"
-                             style="min-width: 350px; height: 350px; max-width: 600px; margin: 0 auto; float: left;"></div>
-                    </div>
-                    <span class="small_info">Data is refreshed once every 10 minutes.</span>
-                </div>
-                <div class="tab-pane fade in" id="statistic_all">
-                    <br/>
-                    <div class="bets">
-                        <div id="all_global_stats">
-                            <br/>
-                            <i class="fa fa-circle-o-notch fa-spin fa-2x fa-fw"></i>
-                            <br/>
-                        </div>
-                    </div>
-                    <span class="small_info">Data is refreshed once every 10 minutes.</span>
-                </div>
-
-                <div class="tab-pane fade in" id="mostwagered">
-                    <br/>
-                    <div class="bets">
-                        <div id="mostwagered_table">
-                        </div>
-                        <span class="small_info">Data is refreshed once every 10 minutes.</span>
-                    </div>
-                </div>
-                <div class="tab-pane fade in" id="mostbids">
-                    <br/>
-                    <div class="bets">
-                        <div id="mostbids_table">
-                        </div>
-                        <span class="small_info">Data is refreshed once every 10 minutes.</span>
-                    </div>
-                </div>
-                <div class="tab-pane fade in" id="mostprofit">
-                    <br/>
-                    <div class="bets">
-                        <div id="mostprofit_table">
-                        </div>
-                        <span class="small_info">Data is refreshed once every 10 minutes.</span>
-                    </div>
-                </div>
-                <div class="tab-pane fade in" id="mosttips">
-                    <br/>
-                    <div class="bets">
-                        <div id="mosttips_table">
-                        </div>
-                        <span class="small_info">Data is refreshed once every 10 minutes.</span>
-                    </div>
-                </div>
-                <div class="tab-pane fade in" id="mostchat">
-                    <br/>
-                    <div class="bets">
-                        <div id="mostchat_table">
-                        </div>
-                        <span class="small_info">Data is refreshed once every 10 minutes.</span>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
@@ -623,8 +426,6 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('js/libs/slick.min.js') }}"></script>
-
     <script>
         if ($('.mines-coeffs-slider').length) {
             let slickSlider = $('.mines-coeffs-slider').slick({
@@ -634,17 +435,6 @@
                 speed: 300,
                 slidesToShow: 4,
                 slidesToScroll: 4,
-            });
-
-            // Переключаем слайд при клике на цвет товаров
-            $('.switch-colour').on('click', function () {
-                let colourId = $(this).data('option-colour');
-
-                let slide = $('.product-big-slider').find('.product-big-item[data-option-colour=' + colourId + ']');
-                if (slide[0]) {
-                    let indexSlick = slide.data('slick-index');
-                    slickSlider.slick('slickGoTo', parseInt(indexSlick));
-                }
             });
         }
     </script>
