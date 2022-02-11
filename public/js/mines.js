@@ -140,7 +140,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'POST',
-            url: '/keno/getAllLastBets',
+            url: '/mines/getAllLastBets',
             contentType: "application/json",
             success: function (msg) {
                 if (msg.length > 0) {
@@ -159,7 +159,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'POST',
-            url: '/keno/getLastBets',
+            url: '/mines/getLastBets',
             dataType: 'json',
             success: function (msg) {
                 if (msg.d.length > 0) {
@@ -173,30 +173,8 @@ $(document).ready(function () {
     };
     getLastBets(Longid, "1");
 
-    getProvablyFair = function (longid, coin) {
-        $.ajax({
-            type: 'POST',
-            url: '/stats.asmx/GetFairDice',
-            data: '{idc:"' + coin + '"}',
-            contentType: "application/json",
-            success: function (msg) {
-                if (msg.d.length > 0) {
-                    var content = JSON.parse(msg.d);
-                    $("#txtLastServerSeed256").val(content.PreviousServerSeedSHA256);
-                    $("#txtNextServerSeed256").val(content.NextServerSeedSHA256);
-                    $("#txtLastServerSeed").val(content.PreviousServerSeed);
-                    $("#txtLastClientSeed").val(content.PreviousClientSeed);
-                }
-            },
-            error: function (msg) {
-                console.log("not ok....");
-            }
-        });
-    };
-
     getBalance(Idc);
     getBets();
-    // getProvablyFair(Longid, Idc);
 
     $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
         var str = e.target.text;
@@ -471,7 +449,7 @@ $(document).ready(function () {
                         SelectedCell = [];
                         DisabledGame = true;
 
-                        // addToTable(content.BetData, "1");
+                        addToTable(res.BetData, "1");
                     } else {
                         let step = res.step;
                         Step = step;
@@ -523,8 +501,6 @@ $(document).ready(function () {
                     $('#txtMineBet').removeAttr('disabled');
                     $('#txtMines').removeAttr('disabled');
 
-                    // addToTable(content.BetData, "1");
-
                     $.each($('.game-mine__numbers-item'), function() {
                         let number = $(this).data('number');
 
@@ -538,6 +514,8 @@ $(document).ready(function () {
                             }
                         }
                     });
+
+                    addToTable(res.BetData, "1");
                 }
             },
             error: function (msg) {

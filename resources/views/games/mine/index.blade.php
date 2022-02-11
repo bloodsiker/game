@@ -387,15 +387,14 @@
                     <div class="bets">
                         <table class="table table-striped table_bets_no_effects" id="table_last_bets">
                             <tr id="table_all_bets_head">
-                                <th>BetID</th>
-                                <th class="hidden-xs">Time</th>
-                                <th>User</th>
-                                <th>Coin</th>
-                                <th>Bet</th>
-                                <th>Payout</th>
-                                <th class="text-right">Profit</th>
-                                <th>
-                                </th>
+                                <th>ID</th>
+                                <th class="hidden-xs">Время</th>
+                                <th>Игрок</th>
+                                <th>Валюта</th>
+                                <th>Ставка</th>
+                                <th>Выплата</th>
+                                <th class="text-right">Выигрыш</th>
+                                <th></th>
                             </tr>
                         </table>
                     </div>
@@ -405,15 +404,13 @@
                     <div class="bets">
                         <table class="table table-striped table_bets_no_effects" id="table_my_bets">
                             <tr id="table_my_bets_head">
-                                <th>BetID</th>
-                                <th class="hidden-xs">Time</th>
-                                <th>User</th>
-                                <th>Coin</th>
-                                <th>Bet</th>
-                                <th>Payout</th>
-                                <th>Target</th>
-                                <th>Roll</th>
-                                <th class="text-right">Profit</th>
+                                <th>ID</th>
+                                <th class="hidden-xs">Время</th>
+                                <th>Игрок</th>
+                                <th>Валюта</th>
+                                <th>Ставка</th>
+                                <th>Выплата</th>
+                                <th class="text-right">Выигрыш</th>
                                 <th></th>
                             </tr>
                         </table>

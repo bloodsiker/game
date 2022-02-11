@@ -42,6 +42,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('/mines/create', [MineController::class, 'create']);
         Route::post('/mines/play', [MineController::class, 'play']);
         Route::post('/mines/collect', [MineController::class, 'collect']);
+        Route::post('/mines/getLastBets', [MineController::class, 'getLastBets'])->name('getMinesLastBets');
 
         Route::post('/coinflip/create', [CoinFlipController::class, 'create']);
         Route::post('/coinflip/play', [CoinFlipController::class, 'play']);
@@ -59,6 +60,7 @@ Route::group(['middleware' => ['web']], function () {
 
     Route::post('/dice/getAllLastBets', [DiceController::class, 'getAllLastBets'])->name('getDiceAllLastBets');
     Route::post('/keno/getAllLastBets', [KenoController::class, 'getAllLastBets'])->name('getKenoAllLastBets');
+    Route::post('/mines/getAllLastBets', [MineController::class, 'getAllLastBets'])->name('getMinesAllLastBets');
     Route::post('/coinflip/getAllLastBets', [CoinFlipController::class, 'getAllLastBets'])->name('getCoinAllLastBets');
 
     Route::get('/dice/{currency}', [DiceController::class, 'index'])->name('dice');

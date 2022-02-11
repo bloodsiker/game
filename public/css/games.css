@@ -116,6 +116,9 @@ footer
 .fw-600 {
     font-weight: 600;
 }
+.relative {
+    position: relative;
+}
 .alert-danger {
     background: linear-gradient(45deg,#f55e5a,#f3211a);
     border-color: transparent;
@@ -244,6 +247,28 @@ h1 {
   -webkit-filter: grayscale(0%);
   filter: grayscale(0%);
   filter: none;
+}
+
+.control_buttons {
+    position: absolute;
+    height: 26px;
+    top: 50%;
+    right: 7px;
+    bottom: 0px;
+    display: flex;
+    transform: translateY(-50%);
+    align-items: center;
+    justify-content: center;
+}
+.control_btn {
+    display: flex;
+    width: 32px;
+    align-items: center;
+    justify-content: center;
+    margin-left: 6px;
+    text-transform: uppercase;
+    font-size: 12px;
+    padding: 5px;
 }
 
 footer .well {

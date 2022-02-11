@@ -66,11 +66,6 @@ $(document).ready(function () {
             result = false;
         }
 
-        if (selectedNumbers.length < 1) {
-            msg = msg + " Нужно выбрать хоть одно число";
-            result = false;
-        }
-
         showMessageManual(msg);
         return result;
     };
@@ -298,10 +293,10 @@ $(document).ready(function () {
 
         if (selectedNumbers.length === 0) {
             htmlRatesNotNumber();
-            $('#btnKenoStart').addClass('disabled');
+            $('#btnKenoStart').addClass('disabled').attr('disabled');
         } else {
             htmlRatesNumber(selectedNumbers.length);
-            $('#btnKenoStart').removeClass('disabled');
+            $('#btnKenoStart').removeClass('disabled').removeAttr('disabled');
         }
     });
 
@@ -325,10 +320,12 @@ $(document).ready(function () {
     }
 
     $('#btnKenoStart').on('click', function () {
-        closeKenoWin();
-        $('.game-keno__numbers-item').removeClass('game-keno__numbers-item_opened');
-        $('.game-keno__rates-item').removeClass('game-keno__rates-item_active');
-        manualBet();
+        if (!Runing) {
+            closeKenoWin();
+            $('.game-keno__numbers-item').removeClass('game-keno__numbers-item_opened');
+            $('.game-keno__rates-item').removeClass('game-keno__rates-item_active');
+            manualBet();
+        }
     });
 
     $('.game-keno__winning-close').on('click', function () {
@@ -389,6 +386,24 @@ $(document).ready(function () {
         $("#txtKenoBet").val((bet + 250).toFixed(2));
 
         if ((bet + 250) > (Balance)) {
+            $("#txtKenoBet").val((Balance).toFixed(2));
+        }
+        manual_validate();
+    });
+
+    $("#btnDivBet").on('click', function () { // bid / 2
+        var bet = parseFloat($("#txtKenoBet").val());
+        $("#txtKenoBet").val((bet / 2).toFixed(2));
+        if ((bet / 2) < Minbid) {
+            $("#txtKenoBet").val(Minbid.toFixed(2));
+        }
+        manual_validate();
+    });
+
+    $("#btnX2Bet").click(function () { // bid * 2
+        var bet = parseFloat($("#txtKenoBet").val());
+        $("#txtKenoBet").val((bet * 2).toFixed(2));
+        if ((bet * 2) > (Balance)) {
             $("#txtKenoBet").val((Balance).toFixed(2));
         }
         manual_validate();

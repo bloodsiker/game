@@ -26,6 +26,8 @@ class CreateMinesTable extends Migration
             $table->string('mines');
             $table->string('revealed')->nullable();
             $table->tinyInteger('step')->nullable();
+            $table->double('profit',10,2)->default(0);
+            $table->double('remainder',10,2)->default(0);
             $table->dateTime('time_game');
 
             $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade');

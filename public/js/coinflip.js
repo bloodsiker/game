@@ -256,6 +256,24 @@ $(document).ready(function () {
         manual_validate();
     });
 
+    $("#btnDivBet").on('click', function () { // bid / 2
+        var bet = parseFloat($("#txtCoinBet").val());
+        $("#txtCoinBet").val((bet / 2).toFixed(2));
+        if ((bet / 2) < Minbid) {
+            $("#txtCoinBet").val(Minbid.toFixed(2));
+        }
+        manual_validate();
+    });
+
+    $("#btnX2Bet").click(function () { // bid * 2
+        var bet = parseFloat($("#txtCoinBet").val());
+        $("#txtCoinBet").val((bet * 2).toFixed(2));
+        if ((bet * 2) > (Balance)) {
+            $("#txtCoinBet").val((Balance).toFixed(2));
+        }
+        manual_validate();
+    });
+
     //
     $('.coin-btn_buttons').on('click', '#btnEagle', function () {
         let bet = $("#txtCoinBet").val();

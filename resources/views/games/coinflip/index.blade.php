@@ -83,8 +83,6 @@
                             class="fa fa-gamepad fa-lg" aria-hidden="true"></i>Игра</a></li>
                 <li><a href="#how_to_play" class="text-def" data-toggle="tab"><i
                             class="fa fa-info-circle fa-lg" aria-hidden="true"></i>Как играть</a></li>
-                <li><a href="#provable_fair" class="text-def" data-toggle="tab"><i
-                            class="fa fa-balance-scale fa-lg" aria-hidden="true"></i>Provably fair</a></li>
             </ul>
 
             <div class="tab-content">
@@ -112,8 +110,12 @@
                                                 style="width: 20%;">+250
                                         </button>
                                     </div>
-                                    <div class="">
-                                        <input id="txtCoinBet" type="text" class="form-control fz-16 fw-600 text-center" value="" autocomplete="of"/>
+                                    <div class="relative">
+                                        <input id="txtCoinBet" type="text" class="form-control fz-16 fw-600" value="" autocomplete="of"/>
+                                        <div class="control_buttons">
+                                            <button type="button" class="btn btn-default control_btn" id="btnDivBet">/2</button>
+                                            <button type="button" class="btn btn-default control_btn" id="btnX2Bet">X2</button>
+                                        </div>
                                     </div>
 
                                     <div class="coin-btn_buttons">
@@ -155,21 +157,14 @@
 
                                        <ul class="game__steps steps">
                                            @foreach($rates as $rate)
-                                               <li class="steps__step steps__step_active" data-step="{{ $rate->step }}">
-                                                   <div class="steps__step-img steps__step-img_eagle">
+                                               <li class="steps__step" data-step="{{ $rate->step }}">
+                                                   <div class="steps__step-img">
                                                        <div class="steps__step-side steps__step-side_default"></div>
                                                        <div class="steps__step-side steps__step-side_final"></div>
                                                    </div>
                                                    <span>x{{ $rate->coeff }}</span>
                                                </li>
                                            @endforeach
-{{--                                           <li class="steps__step steps__step_active">--}}
-{{--                                               <div class="steps__step-img steps__step-img_tail">--}}
-{{--                                                   <div class="steps__step-side steps__step-side_default"></div>--}}
-{{--                                                   <div class="steps__step-side steps__step-side_final"></div>--}}
-{{--                                               </div>--}}
-{{--                                               <span>x1.9</span>--}}
-{{--                                           </li>--}}
                                        </ul>
                                    </div>
 
@@ -257,88 +252,6 @@
                             <li><i>Bet size:</i> Min [Q], 1/2 [W], x2 [E], Max [R]<br></li>
                             <li><i>Payout:</i> Min [A], -1 [S], +1 [D], Max [F]</li>
                         </ul>
-                    </div>
-                </div>
-                <div class="tab-pane fade" id="provable_fair">
-                    <div class="well">
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-addon">Last server seed SHA256:</span>
-                            <input readonly="readonly" id="txtLastServerSeed256" type="text"
-                                   class="form-control"/>
-                        </div>
-                        <br/>
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-addon">Last server seed:</span>
-                            <input readonly="readonly" id="txtLastServerSeed" type="text" class="form-control"/>
-                        </div>
-                        <br/>
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-addon">Last client seed:</span>
-                            <input readonly="readonly" id="txtLastClientSeed" type="text"
-                                   class="form-control readonly"/>
-                        </div>
-                        <br/>
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-addon">Next server seed SHA256:</span>
-                            <input readonly="readonly" id="txtNextServerSeed256" type="text"
-                                   class="form-control readonly"/>
-                        </div>
-                        <br/>
-                        <div class="input-group input-group-sm">
-                            <span class="input-group-addon">Next client seed:</span>
-                            <input id="txtNextClientSeed" type="text" class="form-control" readonly
-                                   placeholder="Type in your client seed"/>
-                            <span class="input-group-btn">
-                                        <button id="btnRandomSeed" class="btn btn-default" data-toggle="tooltip"
-                                                data-placement="top" title="Your computer generates new random seed"
-                                                type="button">Randomize</button>
-                                    </span>
-                        </div>
-                        <br/>
-                        <input type="checkbox" id="chkManualSeed" style="margin-left: 3em"/>
-                        I understand the risks, I want to manually change my client seed
-                        <div id="divManualSeedNonce" style="display: none;">
-                            <input type="checkbox" id="chkManualSeedNonce" style="margin-left: 3em"/>
-                            I wish to add nonce
-                        </div>
-                    </div>
-                    <div class="well">
-                        <h5>What is provable fairness and how does it work?</h5>
-                        Provable fairness is a technology facilitated by cryptocurrency and blockchain
-                        technology that makes it impossible for a player or casino to cheat. You no longer have
-                        to be suspicious of the house for bets lost. So, whatever game you are playing, you can
-                        be confident that the result is fair and accurate given the provable fairness of our
-                        gambling platform.
-                        To check each bet, you can click on the BetID where you will be given more detailed
-                        information for each individual bet.
-
-                        <p>
-                            <u>Seeds</u> are generated strings that are used for cryptographic purposes. The
-                            list below explains the seeds used in our process.<br/>
-                            (Seed labels italicized for some reason in Dice tab)<br/>
-                            <i>Last server seed SHA256:</i> Last seed generated on our side (encrypted
-                            SHA256)<br/>
-                            <i>Last server seed:</i> Last server seed generated by our side<br/>
-                            <i>Last client seed:</i> Last client seed generated on your side<br/>
-                            <i>Next server seed SHA256:</i> Next server seed (encrypted SHA256)<br/>
-                            <i>Next client seed:</i> Your next client seed<br/>
-                            <i>SHA512 hash:</i> Server seed and client seed combined and encrypted in
-                            SHA512<br/>
-                            <br/>
-                            To check if your last bet was truly fair, go to an online <a
-                                title="SHA512 generator" href="http://www.miniwebtool.com/sha512-hash-generator"
-                                target="_blank">SHA512 generator</a>, copy and paste the Server and Client seed
-                            to receive the SHA512 hash.<br/>
-                            Next, convert the first five characters from <a title="Hexadecimal to Decimal"
-                                                                            href="http://www.binaryhexconverter.com/hex-to-decimal-converter"
-                                                                            target="_blank">Hexadecimal to
-                                Decimal</a> and you'll receive six numbers. Take the last five numbers and you have
-                            the Dice result. If there are more than six numbers, this step is skipped the next
-                            five characters from the Hexadecimal string are used.<br/>
-                            <br/>
-                            A video about the provably fair system we use <a
-                                href="https://www.youtube.com/watch?v=oG3BgALUHRc" target="_blank">Youtube</a>.
-                        </p>
                     </div>
                 </div>
             </div>
