@@ -32,35 +32,6 @@
         </div>
 
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-            <ul class="nav navbar-nav">
-                <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-type="games" data-toggle="dropdown"
-                       role="button" aria-haspopup="true" aria-expanded="false">Сменить игру <span
-                            class="caret"></span></a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
-                        <li>
-                            <a class='game' href='{{ route('dice', ['currency' => $currency->idc]) }}' data-type='game' data-game='Dice'>
-                                <img src='{{ asset('assets/games/dice.png') }}' width=15>Dice</a></li>
-                        <li>
-                            <a class='game' href='{{ route('mines', ['currency' => $currency->idc]) }}' data-type='game'
-                               data-game='Mines'><img src='{{ asset('assets/games/minesweeper.png') }}' width=15>Mines</a>
-                        </li>
-                        <li>
-                            <a class='game' href='https://crypto.games/plinko/' data-type='game'
-                               data-game='plinko'><img src='{{ asset('assets/games/plinko.png') }}' width=15>&nbsp;Plinko</a>
-                        </li>
-                        <li>
-                            <a class='game' href='{{ route('coinflip', ['currency' => $currency->idc]) }}' data-type='game'
-                               data-game='Coin Flip'><img src='{{ asset('assets/games/dicev2.png') }}' width=15>&nbsp;Coin Flip</a>
-                        </li>
-                        <li>
-                            <a class='game' href='{{ route('keno', ['currency' => $currency->idc]) }}' data-type='game'
-                               data-game='Keno'><img src='{{ asset('assets/games/lottery.png') }}' width=15>&nbsp;Keno</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-{{--            {{ dd(request()->route()->getName())  }}--}}
             @php
                 $currencies = \App\Models\Currency::where('is_active', true)->get();
             @endphp
@@ -79,6 +50,11 @@
                     </ul>
                 </li>
             </ul>
+            <ul class="nav navbar-nav custom-menu">
+                <li><a class="a_fwindow" href="{{ route('account.reward', ['currency' => request()->route('currency')]) }}">Бонусы</a></li>
+                <li><a class="a_fwindow" href="https://crypto.games/faq">Помощь</a></li>
+            </ul>
+
             <ul class="nav navbar-nav navbar-right">
 
                 <li><a href="#switchcolor" data-color="light" title="Swith to Light color"><i class="fa fa-sun-o fa-lg fa-fw" aria-hidden="true"></i></a></li>
@@ -100,7 +76,7 @@
                         <li class="divider"></li>
                         <li>
                             <a class="a_fwindow" href="{{ route('account.reward', ['currency' => request()->route('currency')]) }}">
-                                <i class="fa fa-gift fa-fw fa-lg fa-fw" aria-hidden="true"></i>Награды</a>
+                                <i class="fa fa-gift fa-fw fa-lg fa-fw" aria-hidden="true"></i>Бонусы</a>
                         </li>
                         <li><a class="a_swindow" href="https://crypto.games/contests"><i
                                     class="fa fa-trophy fa-fw fa-lg fa-fw" aria-hidden="true"></i>Contests</a></li>
@@ -124,3 +100,39 @@
         </div>
     </div>
 </nav>
+
+<div class="sidebar">
+    <div class="sidebar-wrapper">
+        <div class="sidebar-item">
+            <a href="{{ route('dice', ['currency' => $currency->idc]) }}" class="sidebar-link @if(request()->route()->getName() === 'dice') sidebar-link_active @endif">
+{{--                <span class="sidebar-link__new-label" style="display:none;">New</span>--}}
+                <span class="sidebar-link__image"><img src="{{ asset('assets/games/dice.svg') }}" alt="Dice"></span>
+                <span class="sidebar-link__name">Dice</span>
+            </a>
+        </div>
+        <div class="sidebar-item">
+            <a href="{{ route('mines', ['currency' => $currency->idc]) }}" class="sidebar-link @if(request()->route()->getName() === 'mines') sidebar-link_active @endif">
+                <span class="sidebar-link__image"><img src="{{ asset('assets/games/miner.svg') }}" alt="Mines"></span>
+                <span class="sidebar-link__name">Mines</span>
+            </a>
+        </div>
+        <div class="sidebar-item">
+            <a href="{{ route('keno', ['currency' => $currency->idc]) }}" class="sidebar-link @if(request()->route()->getName() === 'keno') sidebar-link_active @endif">
+                <span class="sidebar-link__image"><img src="{{ asset('assets/games/keno.svg') }}" alt="Keno"></span>
+                <span class="sidebar-link__name">Keno</span>
+            </a>
+        </div>
+        <div class="sidebar-item">
+            <a href="{{ route('coinflip', ['currency' => $currency->idc]) }}" class="sidebar-link @if(request()->route()->getName() === 'coinflip') sidebar-link_active @endif">
+                <span class="sidebar-link__image"><img src="{{ asset('assets/games/coinflip.svg') }}" alt="Coin Flip"></span>
+                <span class="sidebar-link__name">Coin Flip</span>
+            </a>
+        </div>
+        <div class="sidebar-item">
+            <a href="{{ route('dice_v2', ['currency' => $currency->idc]) }}" class="sidebar-link @if(request()->route()->getName() === 'dice_v2') sidebar-link_active @endif">
+                <span class="sidebar-link__image"><img src="{{ asset('assets/games/dice.svg') }}" alt="Dice V2"></span>
+                <span class="sidebar-link__name">Dice V2</span>
+            </a>
+        </div>
+    </div>
+</div>

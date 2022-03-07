@@ -3,21 +3,22 @@
 namespace App\Http\Controllers\Web\Game;
 
 use App\Models\Currency;
-use App\Services\KenoService;
+use App\Models\DiceHistory;
+use App\Services\DiceV2Service;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 /**
- * Class KenoController
+ * Class DiceV2Controller
  */
-class KenoController extends Controller
+class DiceV2Controller extends Controller
 {
     /**
-     * @var KenoService
+     * @var DiceV2Service
      */
     private $service;
 
-    public function __construct(KenoService $service)
+    public function __construct(DiceV2Service $service)
     {
         $this->service = $service;
     }
@@ -31,12 +32,19 @@ class KenoController extends Controller
 
         $game = $this->service->getGame();
 
-        return view('games.keno.index', compact('currency', 'game'));
+        return view('games.dice_v2.index', compact('currency', 'game'));
     }
 
-    public function getKenoResult(Request $request)
+    public function getBet(Request $request, $id)
     {
-        return response()->json($this->service->getKenoResult($request));
+        $dice = DiceHistory::findOrFail($id);
+
+        return view('games.dice.bet', compact('dice'));
+    }
+
+    public function getDiceResult(Request $request)
+    {
+        return response()->json($this->service->getDiceResult($request));
     }
 
     public function getLastBets()
@@ -47,10 +55,5 @@ class KenoController extends Controller
     public function getAllLastBets()
     {
         return response()->json($this->service->getAllLastBets());
-    }
-
-    public function getRates()
-    {
-        return response()->json($this->service->getRates());
     }
 }

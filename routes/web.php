@@ -3,6 +3,7 @@
 use App\Http\Controllers\Web\AccountController;
 use App\Http\Controllers\Web\Game\CoinFlipController;
 use App\Http\Controllers\Web\Game\DiceController;
+use App\Http\Controllers\Web\Game\DiceV2Controller;
 use App\Http\Controllers\Web\Game\KenoController;
 use App\Http\Controllers\Web\Game\MineController;
 use App\Http\Controllers\Web\LoginController;
@@ -54,6 +55,7 @@ Route::group(['middleware' => ['web']], function () {
 
         Route::get('/account/info', [AccountController::class, 'index'])->name('account.info');
         Route::get('/account/player', [AccountController::class, 'infoPlayer'])->name('account.player');
+        Route::post('/account/promocode', [AccountController::class, 'usePromoCode'])->name('account.promocode');
         Route::match(['post', 'get'],'/account/reward/{currency}', [AccountController::class, 'reward'])->name('account.reward');
     });
 
@@ -64,6 +66,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::post('/coinflip/getAllLastBets', [CoinFlipController::class, 'getAllLastBets'])->name('getCoinAllLastBets');
 
     Route::get('/dice/{currency}', [DiceController::class, 'index'])->name('dice');
+    Route::get('/dicev2/{currency}', [DiceV2Controller::class, 'index'])->name('dice_v2');
     Route::get('/mines/{currency}', [MineController::class, 'index'])->name('mines');
     Route::get('/coinflip/{currency}', [CoinFlipController::class, 'index'])->name('coinflip');
     Route::get('/keno/{currency}', [KenoController::class, 'index'])->name('keno');

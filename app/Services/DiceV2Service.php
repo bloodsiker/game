@@ -9,13 +9,13 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class DiceService
+class DiceV2Service
 {
     protected $game;
 
     public function __construct()
     {
-        $this->game = Game::where('name', 'Dice')->first();
+        $this->game = Game::where('name', 'DiceV2')->first();
     }
 
     public function getDiceResult(Request $request)
@@ -117,13 +117,8 @@ class DiceService
         ];
     }
 
-//    private function randomFloat($min, $max) {
-//        return random_int($min, $max - 1) + (random_int(0, PHP_INT_MAX - 1) / PHP_INT_MAX );
-//    }
-
-    private function randomFloat($min = 0, $max = 1, $mul = 1000000)
-    {
-        return mt_rand($min * $mul, $max * $mul) / $mul;
+    private function randomFloat($min, $max) {
+        return random_int($min, $max - 1) + (random_int(0, PHP_INT_MAX - 1) / PHP_INT_MAX );
     }
 
     public function getLastBets()

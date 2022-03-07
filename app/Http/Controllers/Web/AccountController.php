@@ -4,14 +4,12 @@ namespace App\Http\Controllers\Web;
 
 use App\Models\Currency;
 use App\Models\FaucetHistory;
-use App\Models\Mine;
-use App\Models\MineRate;
-use App\Models\User;
+use App\Models\PromoCode;
+use App\Models\PromoCodeActive;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use mysql_xdevapi\Exception;
 
 /**
  * Class AccountController
@@ -76,6 +74,59 @@ class AccountController extends Controller
     public function getFaucetHistory(Request $request)
     {
         return view('account.faucet_history');
+    }
+
+    public function usePromoCode(Request $request)
+    {
+        if ($request->isMethod('POST')) {
+            $user = Auth::user();
+
+            $code = $request->get('promocode');
+
+            if (!$code) {
+                return back()->with(['error_promo' => 'Не введен промокод', 'tab' => 'promocode']);
+            }
+
+            $promoCode = PromoCode::where('code', $code)->first();
+            if (!$promoCode) {
+                return back()->with(['error_promo' => 'Не верный промокод', 'tab' => 'promocode']);
+            }
+
+            if ($promoCode->end_date < Carbon::now()) {
+                return back()->with(['error_promo' => 'Промокод не действителен', 'tab' => 'promocode']);
+            }
+
+            $promoUse = PromoCodeActive::where('promo_code_id', $promoCode->id)->where('user_id', $user->id)->first();
+            if ($promoUse) {
+                return back()->with(['error_promo' => 'Вы уже использовали этот промокод', 'tab' => 'promocode']);
+            }
+
+            if ($promoCode->promo_code_activation()->count() > $promoCode->quantity) {
+                return back()->with(['error_promo' => 'Превышено количество активаций промокода', 'tab' => 'promocode']);
+            }
+
+            $amount = $promoCode->discount;
+
+            $user->setActiveBalance($promoCode->currency->idc);
+            $user->addToBalance($amount);
+
+            PromoCodeActive::create([
+                'user_id' => $user->id,
+                'activation_date' => Carbon::now(),
+                'promo_code_id' => $promoCode->id
+            ]);
+
+            $faucetHistory = new FaucetHistory();
+            $faucetHistory->type = FaucetHistory::TYPE_O;
+            $faucetHistory->amount = $amount;
+            $faucetHistory->currency_id = $promoCode->currency->id;
+            $faucetHistory->user_id = $user->id;
+            $faucetHistory->description = sprintf('Промокод %s', $promoCode->code);
+            $faucetHistory->date = Carbon::now();
+            $faucetHistory->save();
+
+            return back()->with(['success_promo' => sprintf('Вам начислено %s %s', $promoCode->discount, $promoCode->currency->name), 'tab' => 'promocode']);
+        }
     }
 
     public function getBalance(Request $request)

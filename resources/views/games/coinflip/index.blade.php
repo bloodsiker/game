@@ -21,34 +21,6 @@
         var serverTime = "{{ \Carbon\Carbon::now()->getPreciseTimestamp(3) }}";
         var LoggedIn = "{{ auth()->check() ? 'True' : 'False' }}";
         var ShowLogIn = "True";
-
-        $(document).ready(function () {
-
-            @if(!auth()->check())
-                $.fancybox.open({
-                    href: "{{ route('register') }}",
-                    autoscale: false,
-                    autoDimensions: false,
-                    width: 500,
-                    transitionIn: 'none',
-                    transitionOut: 'none',
-                    type: 'iframe',
-                    closeClick: true,
-                    closeBtn: true,
-                    openEffect: 'none',
-                    closeEffect: 'none',
-                    helpers: {
-                        overlay: {
-                            closeClick: false,
-                        }
-                    }
-                });
-            @endif
-
-            if (window.LoggedIn == "True") {
-                document.body.classList.add("logged-in")
-            }
-        });
     </script>
 
     <script type="text/javascript">

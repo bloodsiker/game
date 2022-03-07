@@ -123,6 +123,7 @@ class MineService
                         'coinname' => $mineGame->currency->name,
                         'time' => $mineGame->time_game,
                         'bet' => $mineGame->sum,
+                        'count_mine' => $mineGame->count_mine,
                         'coeff' => $mineGame->coeff,
                         'profit' => $mineGame->profit,
                         'idc' => $idc,
@@ -184,6 +185,7 @@ class MineService
                     'coinname' => $mineGame->currency->name,
                     'time' => $mineGame->time_game,
                     'bet' => $mineGame->sum,
+                    'count_mine' => $mineGame->count_mine,
                     'coeff' => $mineGame->coeff,
                     'profit' => $mineGame->profit,
                     'idc' => $idc,
@@ -216,6 +218,7 @@ class MineService
             $results[$i]['coinname'] = $result->currency->name;
             $results[$i]['time'] = $result->time_game;
             $results[$i]['bet'] = $result->sum;
+            $results[$i]['count_mine'] = $result->count_mine;
             $results[$i]['coeff'] = $result->coeff;
             $results[$i]['profit'] = $result->profit;
             $results[$i]['idc'] = $result->currency->idc;
@@ -239,6 +242,7 @@ class MineService
             $results[$i]['coinname'] = $result->currency->name;
             $results[$i]['time'] = $result->time_game;
             $results[$i]['bet'] = $result->sum;
+            $results[$i]['count_mine'] = $result->count_mine;
             $results[$i]['coeff'] = $result->coeff;
             $results[$i]['profit'] = $result->profit;
             $results[$i]['idc'] = $result->currency->idc;

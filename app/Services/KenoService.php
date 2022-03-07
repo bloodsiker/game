@@ -40,15 +40,7 @@ class KenoService
 
         $currency = Currency::where('idc', $idc)->first();
 
-        $user->setActiveBalance($idc);
-
-        $generateNumbers = [];
-        while (count($generateNumbers) < 10) {
-            $rand = $this->randomNumbers(1, 36);
-            if (!in_array($rand, $generateNumbers)) {
-                $generateNumbers[] = $rand;
-            }
-        }
+        $generateNumbers = $this->randomNumbers();
 
         $winNumbers = array_intersect($generateNumbers, $numbers);
         $winNumbers = array_values($winNumbers);
@@ -127,9 +119,21 @@ class KenoService
         ];
     }
 
-    private function randomNumbers($min, $max) {
-        $rand = random_int($min, $max - 1) + (random_int(0, PHP_INT_MAX - 1) / PHP_INT_MAX );
-        return sprintf("%0.0f", $rand);
+//    private function randomNumbers($min, $max) {
+//        $rand = random_int($min, $max - 1) + (random_int(0, PHP_INT_MAX - 1) / PHP_INT_MAX );
+//        return sprintf("%0.0f", $rand);
+//    }
+
+    private function randomNumbers()
+    {
+        $arrayNumber = [];
+        for ($i = 1; $i <= 36; $i++) {
+            $arrayNumber[] = $i;
+        }
+
+        shuffle($arrayNumber);
+
+        return array_slice($arrayNumber, 0, 10);
     }
 
     public function getLastBets()

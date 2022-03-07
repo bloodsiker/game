@@ -1,0 +1,100 @@
+.dice-game {
+    display: flex;
+    margin-bottom: 25px;
+}
+.dice__drum {
+    height: 254px;
+    overflow: hidden;
+    position: relative;
+}
+.dice__center {
+    position: relative;
+    z-index: 1;
+    color: #fff;
+    width: 300px;
+    height: 120px;
+}
+.dice__timer {
+    display: -ms-grid;
+    display: grid;
+    -ms-grid-columns: (1fr)[5];
+    grid-template-columns: repeat(5, 1fr);
+    height: 100%;
+    overflow: hidden;
+    border: 3px solid #fcfcfd;
+    border-radius: 10px;
+}
+.dice__timer:before {
+    content: '،';
+    position: absolute;
+    font-size: 48px;
+    left: 40%;
+    font-weight: 900;
+    -webkit-transform: rotate(180deg) translateX(50%);
+    transform: rotate(180deg) translateX(50%);
+    bottom: 0;
+    z-index: 10;
+}
+.dice__timer_win {
+    border: 4px solid #b4e767;
+    color: #b4e767;
+}
+.dice__timer_lose {
+    border: 4px solid #f55a55;
+    color: #f55a55;
+}
+.dice__timer .dice-numbers {
+    font-size: 48px;
+    font-weight: 900;
+    border-right: solid 1px rgba(184, 194, 255, 0.07);
+    padding-bottom: 6px;
+    height: 120px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+.dice__slider {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.dice__slider-inner {
+    position: relative;
+    -webkit-transition: 0.3s ease;
+    transition: 0.3s ease;
+}
+.dice__slider-item {
+    position: relative;
+    width: 100%;
+    height: 125px;
+    background: var(--cg-button-bg);
+}
+.dice__timer span:nth-last-child(1) {
+    border: 0;
+}
+.dice__timer span {
+    font-size: 48px;
+    font-weight: 900;
+    border-right: solid 1px rgba(184, 194, 255, 0.07);
+    padding-bottom: 6px;
+    height: 125px;
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+}
+#btnRollOver, #btnRollUnder {
+    width: 150px;
+}

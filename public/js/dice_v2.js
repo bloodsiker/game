@@ -38,79 +38,35 @@ $(document).ready(function () {
     var HighLow = true;
     var Effects = effects;
     var AllBetsTime;
-    var MyBetsTime;
     var Style = style;
-    var AutoBet;
     var ConfirmAmount = parseFloat(highrollamount);
     var TypeClick = "1";
     var Width = $(window).width();
-    var timer1;
-    var timer2;
-    var FirstTime = true;
-    var diceAutobetCookieName = Idc + 'dice_autobet';
 
-    var AllBetsSize = Cookies.get("dicesize"); // all bets filtering
-    if (AllBetsSize != undefined) {
-        if (AllBetsSize == "high") {
-            $("#btnHighBets").addClass("active");
-        }
-        else if (AllBetsSize == "all") {
-            $("#btnAllBets").addClass("active");
-        }
-        else {
-            AllBetsSize = "medium";
-            $("#btnMediumBets").addClass("active");
-        }
-    }
-    else {
-        if (isMobile()) {
-            Cookies.set("dicesize", "high", { expires: 60000 });
-            AllBetsSize = "high";
-            $("#btnHighBets").addClass("active");
-        }
-        else {
-            Cookies.set("dicesize", "medium", { expires: 60000 });
-            AllBetsSize = "medium";
-            $("#btnMediumBets").addClass("active");
-        }
+
+    function rollDice() {
+        const dice = [...document.querySelectorAll(".die-list")];
+        dice.forEach(die => {
+            toggleClasses(die);
+            die.dataset.roll = getRandomNumber(1, 6);
+        });
     }
 
-    const numberPosition = (number) => {
-        let stepByPosition = 125;
-        return (-1 * (number * stepByPosition)) + 'px';
+    function toggleClasses(die) {
+        die.classList.toggle("odd-roll");
+        die.classList.toggle("even-roll");
     }
 
-    $("#btnHighBets").click(function () {
-        AllBetsSize = "high";
-        $("#btnHighBets").addClass("active");
-        $("#btnMediumBets").removeClass("active");
-        $("#btnAllBets").removeClass("active");
-        Cookies.set("dicesize", "high", { expires: 60000 });
-    });
+    function getRandomNumber(min, max) {
+        min = Math.ceil(min);
+        max = Math.floor(max);
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 
-    $("#btnMediumBets").click(function () {
-        AllBetsSize = "medium";
-        $("#btnHighBets").removeClass("active");
-        $("#btnMediumBets").addClass("active");
-        $("#btnAllBets").removeClass("active");
-        Cookies.set("dicesize", "medium", { expires: 60000 });
-    });
+    document.getElementById("btnRoll").addEventListener("click", rollDice);
 
-    $("#btnAllBets").click(function () {
-        AllBetsSize = "all";
-        $("#btnHighBets").removeClass("active");
-        $("#btnMediumBets").removeClass("active");
-        $("#btnAllBets").addClass("active");
-        Cookies.set("dicesize", "all", { expires: 60000 });
-    });
+    $('input').attr('autocomplete','off');
 
-    $("#txtManualResultNumber").hide();
-    $("#txtAutoResultNumber").hide();
-    $("#divManualMessage").hide();
-    $("#divAutoMessage").hide();
-    $("#manual_line_loading").hide();
-    $("#auto_line_loading").hide();
-    $("#profit_group").hide();
     $("#allbets_pause").hide();
     $("#yourbets_pause").hide();
 
@@ -134,24 +90,6 @@ $(document).ready(function () {
     });
 
 
-    $("#btnConfirmBet").click(function () {
-        showConfirmManual();
-        ConfirmAmount = parseFloat($("#txtBet").val());
-
-        if ($('#chkConfirmBetAsk').prop("checked")) {
-            setCookie("confirmbet", "true", 1000);
-            var temp = getCookie("confirmbet");
-        }
-
-        if (TypeClick == "1") {
-            $("#btnRollOver").click();
-        }
-        else {
-            $("#btnRollUnder").click();
-        }
-        return false;
-    });
-
     $("#last_bets").mouseover(function () {
         $("#allbets_pause").show();
         Wait1 = true;
@@ -172,7 +110,7 @@ $(document).ready(function () {
     const manual_validate = function () { // manual validations
         var msg = "";
         var result = true;
-        var bid = $("#txtBet").val();
+        var bid = $("#txtDiceV2Bet").val();
         var multiplier = $("#txtMultiplier").val();
         var chance = $("#txtChance").val();
 
@@ -379,11 +317,6 @@ $(document).ready(function () {
         }
     };
 
-    showConfirmManual = function () {
-        $("#divManualMessage").hide();
-        $("#divConfirmBet").delay(500).show();
-    };
-
     showMessageAuto = function (msg) {
         $("#divAutoTimeout").hide();
         if (msg.length > 0) {
@@ -462,7 +395,7 @@ $(document).ready(function () {
         }
         else if (type == "2") // multiplier
         {
-            var bid = parseFloat($("#txtBet").val());
+            var bid = parseFloat($("#txtDiceV2Bet").val());
             var multiplier = parseFloat($("#txtMultiplier").val());
 
             var temp = ((100.000 - Edge) / multiplier);
@@ -549,25 +482,6 @@ $(document).ready(function () {
         }
     };
 
-    updateDiceCookie = function () {
-        let fieldsArr = { name: {}, id: {} };
-
-        let skipSettings = "txtAutoRollOver,txtAutoRollUnder";
-
-        $('#auto_bet .well').eq(0).find('input:radio:checked').each(function () {
-            if (skipSettings.indexOf($(this)[0].name) < 0) {
-                fieldsArr.name[$(this)[0].name] = $(this).val();
-            }
-        });
-        $('#auto_bet .well').eq(0).find('input.form-control[id]').each(function () {
-            if (skipSettings.indexOf($(this)[0].id) < 0) {
-                fieldsArr.id[$(this)[0].id] = $(this).val();
-            }
-        });
-
-        setCookie(diceAutobetCookieName, JSON.stringify(fieldsArr), 30);
-    }
-
     getBets = function () {
         if (Active_tab == "All bets") {
             getAllBets();
@@ -583,7 +497,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'POST',
-            url: '/dice/getAllLastBets',
+            url: '/keno/getAllLastBets',
             contentType: "application/json",
             success: function (msg) {
                 if (msg.length > 0) {
@@ -602,7 +516,7 @@ $(document).ready(function () {
 
         $.ajax({
             type: 'POST',
-            url: '/dice/getLastBets',
+            url: '/keno/getLastBets',
             dataType: 'json',
             success: function (msg) {
                 if (msg.d.length > 0) {
@@ -617,36 +531,9 @@ $(document).ready(function () {
 
     getLastBets(Longid, "1");
 
-    getProvablyFair = function (longid, coin) {
-        $.ajax(
-            {
-                type: 'POST',
-                url: '/stats.asmx/GetFairDice',
-                data: '{idc:"' + coin + '"}',
-                contentType: "application/json",
-                success: function (msg) {
-                    if (msg.d.length > 0) {
-                        var content = JSON.parse(msg.d);
-                        $("#txtLastServerSeed256").val(content.PreviousServerSeedSHA256);
-                        $("#txtNextServerSeed256").val(content.NextServerSeedSHA256);
-                        $("#txtLastServerSeed").val(content.PreviousServerSeed);
-                        $("#txtLastClientSeed").val(content.PreviousClientSeed);
-                    }
-                },
-                error: function (msg) {
-                    console.log("not ok....");
-                }
-            });
-    };
-
-    provably_fair_reload = function () {
-        generateNewClientSeed(); // generate new client seed
-    }
-    provably_fair_reload();
 
     getBalance(Idc);
     getBets();
-    getProvablyFair(Longid, Idc);
 
     $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
         var str = e.target.text;
@@ -665,6 +552,10 @@ $(document).ready(function () {
         }
     })
 
+    const activateUserBets = () => {
+        $('.nav-tabs a[href="#my_bets"]').tab('show');
+    }
+
     activate_user_bets = function () {
         $('.nav-tabs a[href="#my_bets"]').tab('show');
     }
@@ -677,42 +568,20 @@ $(document).ready(function () {
 
     setDefault = function () {
 
-        $("#txtBet").val(Minbid.toFixed(2));
+        $("#txtDiceV2Bet").val(Minbid.toFixed(2));
         $("#txtMultiplier").val((2).toFixed(4));
 
-        let currentCookie = getCookie(diceAutobetCookieName);
+        $("#txtWinInc").val(100);
+        $("#txtLossInc").val(100);
+        $("#txtWinDec").val(20);
+        $("#txtLossDec").val(20);
+        $("#txtMaxRolls").val(BetCount);
+        $("#txtRollSec").val(100);
+        $("#txtSmallerThan").val(0);
+        $("#txtLargerThan").val(0);
+        $("#txtMaxBet").val(0);
+        $("#txtMinBet").val(Minbid.toFixed(2));
 
-        if (currentCookie != '') {
-            currentCookie = JSON.parse(currentCookie);
-
-            let nKeys = Object.keys(currentCookie.name);
-            let iKeys = Object.keys(currentCookie.id);
-
-            for (let i = 0; i < nKeys.length; i++) {
-                $('#auto_bet .well').eq(0).find('input:radio[name=' + nKeys[i] + '][value=' + currentCookie.name[nKeys[i]] + ']').attr('checked', true);
-            }
-            for (let j = 0; j < iKeys.length; j++) {
-                $('#auto_bet .well').eq(0).find('input#' + iKeys[j]).val(currentCookie.id[iKeys[j]]);
-            }
-        }
-        else {
-            $("#txtAutoBet").val(Minbid.toFixed(2));
-            $("#txtAutoMultiplier").val((2).toFixed(4));
-            $("#txtWinInc").val(100);
-            $("#txtLossInc").val(100);
-            $("#txtWinDec").val(20);
-            $("#txtLossDec").val(20);
-            $("#txtMaxRolls").val(BetCount);
-            $("#txtRollSec").val(100);
-            $("#txtSmallerThan").val(0);
-            $("#txtLargerThan").val(0);
-            $("#txtMaxBet").val(0);
-            $("#txtMinBet").val(Minbid.toFixed(2));
-
-            $('input:radio[name="rdWin"]').filter('[value="return"]').attr('checked', true);
-            $('input:radio[name="rdLoss"]').filter('[value="return"]').attr('checked', true);
-            $('input:radio[name="rdRoll"]').filter('[value="over"]').attr('checked', true);
-        }
 
         reCalc("2");
         reCalcAuto();
@@ -733,6 +602,22 @@ $(document).ready(function () {
     $("#btnRollOver").click(function (evt) {
         manual_bet("1");
     });
+
+    manualBet = function () {
+        if (Runing === true) {
+            return;
+        }
+
+        Runing = true;
+        activateUserBets();
+        let bet = $("#txtKenoBet").val();
+        if (manual_validate() === true) {
+            let clientseed = getClientSeed();
+            getResultManual(Longid, Idc, bet, clientseed);
+        } else {
+            Runing = false;
+        }
+    }
 
     manual_bet = function (type) {
         if (Runing == true) {
@@ -783,76 +668,17 @@ $(document).ready(function () {
         auto_bet();
     }
 
+    $('#btnRoll').on('click', function () {
+        if (!Runing) {
+            manualBet();
+        }
+    });
+
     $("#btnStart").on("click", function (e) {
         $(this).prop("disabled", true);
         start_click();
     });
 
-    auto_bet = function () {
-        if (Runing == false) {
-            auto_stop();
-        }
-        else {
-            $("#txtAutoBet").val(parseFloat(CurrentBet).toFixed(2));
-            var multiplier = parseFloat($("#txtAutoMultiplier").val()).toFixed(4);
-
-            if (auto_validate("3") == true) {
-                var rdroll = $('input:radio[name=rdRoll]:checked').val();
-                if (rdroll == "over") {
-                    var type = "1";
-                }
-                else if (rdroll == "under") {
-                    var type = "2";
-                }
-                else {
-                    if (HighLow) {
-                        var type = "1";
-                    }
-                    else {
-                        var type = "2";
-                    }
-                }
-                var clientseed = getClientSeed();
-                getResultAuto(Longid, Idc, CurrentBet, multiplier, type, clientseed);
-                Wait = false;
-                getBets();
-                Wait = true;
-            }
-            else {
-                Runing = false;
-                Wait = false;
-                auto_stop();
-            }
-        }
-    };
-
-    auto_stop = function () {
-        window.clearTimeout(AutoBet);
-        $("window").clearQueue();
-        Runing = false;
-        Wait = false;
-        CurrentBet = 0;
-        $("#auto_bet_left *").prop('disabled', false);
-        $("#auto_bet_right *").prop('disabled', false);
-
-        $("#btnStop").prop('disabled', true);
-        $("#btnStart").prop('disabled', true)
-        timer1 = setTimeout(function () {
-            $("#btnStart").prop('disabled', false);
-            $("#btnStop").prop('disabled', false);
-        }, 2000); // some users had issue if starting to soon
-
-        $("#auto_line_loading").hide();
-        $("#txtAutoBet").val(parseFloat(BaseBet).toFixed(2));
-        getBets();
-    }
-
-
-    $("#btnStop").click(function () {
-        $("#btnStop").prop('disabled', true);
-        $("#btnStart").prop('disabled', true)
-        auto_stop();
-    });
 
     $("#txtBet").keyup(function () {
         var start = this.selectionStart;
@@ -1091,251 +917,10 @@ $(document).ready(function () {
         reCalc("2");
     });
 
-    $("#btnAutoBet1").click(function () { //min bid
-        $("#txtAutoBet").val(Minbid.toFixed(2));
-        auto_validate("1");
-        reCalcAuto();
-    });
 
-    $("#btnAutoBet2").click(function () { // bid / 2
-        var bet = $("#txtAutoBet").val();
-        $("#txtAutoBet").val((bet / 2).toFixed(2));
-        if ((bet / 2) < Minbid) {
-            $("#txtAutoBet").val(Minbid.toFixed(2));
-        }
-        auto_validate("1");
-        reCalcAuto();
-    });
-
-    $("#btnAutoBet3").click(function () { // bid * 2
-        var bet = parseFloat($("#txtAutoBet").val());
-        var multiplier = parseFloat($("#txtAutoMultiplier").val());
-        $("#txtAutoBet").val((bet * 2).toFixed(2));
-
-        if ((bet * 2) > (Balance)) {
-            $("#txtAutoBet").val((Balance).toFixed(2));
-        }
-        auto_validate("1");
-        reCalcAuto();
-    });
-
-    $("#btnAutoBet4").click(function () { //max bid
-        var multiplier = parseFloat($("#txtAutoMultiplier").val());
-
-        $("#txtAutoBet").val((Balance).toFixed(2));
-
-        auto_validate("1");
-        reCalcAuto();
-    });
-
-    $("#btnAutoPay1").click(function () { //min ratio
-        $("#txtAutoMultiplier").val(Minratio.toFixed(4));
-        auto_validate("1");
-        reCalcAuto();
-    });
-
-    $("#btnAutoPay2").click(function () { //-1 ratio
-        var ratio = parseFloat($("#txtAutoMultiplier").val());
-        var chance = parseFloat($("#txtAutoRollUnder").val());
-        if (((ratio - 1) < Minratio) || (chance < 0.01)) {
-            $("#txtAutoMultiplier").val(Minratio.toFixed(4));
-        }
-        else {
-            if (ratio > 300) {
-                chance = (chance + 0.002).toFixed(3);
-                $("#txtAutoRollUnder").val(chance);
-            }
-            else {
-                $("#txtAutoMultiplier").val((ratio - 1).toFixed(4));
-            }
-        }
-        auto_validate("1");
-        if (ratio > 300) {
-            $("#txtAutoMultiplier").focusout();
-        }
-        reCalcAuto();
-    });
-
-    $("#btnAutoPay3").click(function () { //+1 ratio
-        var ratio = parseFloat($("#txtAutoMultiplier").val());
-        if ((ratio + 1) > Maxratio) {
-            $("#txtAutoMultiplier").val((Maxratio).toFixed(4));
-        }
-        else {
-            $("#txtAutoMultiplier").val((ratio + 1).toFixed(4));
-        }
-        auto_validate("1");
-        reCalcAuto();
-
-        console.log($("#txtAutoMultiplier").val());
-
-        $("#txtAutoMultiplier").focusout();
-    });
-
-    $("#btnAutoPay4").click(function () { //max ratio
-        $("#txtAutoMultiplier").val(Maxratio.toFixed(4));
-        auto_validate("1");
-        reCalcAuto();
-    });
-
-    $(window).keyup(function (evt) {
-        if (hotkeys == "False") {
-            return;
-        }
-        var key = evt.which;
-        if ($("#manual_bet").hasClass("active")) {
-            if (key == "72") {
-                $("#btnRollOver").click();
-            }
-            else if (key == "76") {
-                $("#btnRollUnder").click();
-            }
-            else if (key == "81") {
-                $("#btnBet1").click();
-            }
-            else if (key == "87") {
-                $("#btnBet2").click();
-            }
-            else if (key == "69") {
-                $("#btnBet3").click();
-            }
-            else if (key == "82") {
-                $("#btnBet4").click();
-            }
-            else if (key == "65") {
-                $("#btnPay1").click();
-            }
-            else if (key == "83") {
-                $("#btnPay2").click();
-            }
-            else if (key == "68") {
-                $("#btnPay3").click();
-            }
-            else if (key == "70") {
-                $("#btnPay4").click();
-            }
-        }
-    });
-
-    getStatistic = function (longid, idc) {
-        $.ajax(
-            {
-                type: 'GET',
-                url: '/api/DiceStatistics/' + idc + '/' + longid,
-                contentType: "application/json",
-                success: function (msg) {
-                    //var content = JSON.parse(msg.d);
-                    $("#global_stats").html(msg.Stats);
-                    $("#user_stats").html(msg.StatsUser);
-                    $("#all_global_stats").html(msg.StatsAll);
-                },
-                error: function (msg) {
-                    console.log("not ok....");
-                }
-            });
-    };
-    getStatistic(Longid, Idc);
-
-    getTopPlayersAll = function (longid, idc) {
-        getTopPlayers(Longid, Idc, "wagered");
-        getTopPlayers(Longid, Idc, "bids");
-        getTopPlayers(Longid, Idc, "profit");
-        getTopPlayers(Longid, Idc, "tips");
-        getTopPlayers(Longid, "All", "chat");
-    };
-
-    getTopPlayers = function (longid, idc, type) {
-        $.ajax(
-            {
-                type: 'POST',
-                url: '/stats.asmx/GetDiceTopPlayers',
-                data: '{idc:"' + idc + '",style:"' + Style + '",type:"' + type + '"}',
-                contentType: "application/json",
-                success: function (msg) {
-                    if (msg.d.length > 0) {
-                        $("#most" + type + "_table").html(msg.d);
-                    }
-                },
-                error: function (msg) {
-                    console.log("not ok....");
-                }
-            });
-    };
-    getTopPlayersAll(Longid, Idc);
-
-    setInterval(function () {
-        getTopPlayersAll(Longid, Idc);
-        getStatistic(Longid, Idc);
-    }, 600000);
-
-
-    getResultManual = function (longid, idc, bet, multiplier, under_over, clientseed) {
-        var time = new Date();
-        var time_before = time.getTime();
+    getResultManual = function (longid, idc, bet, clientseed) {
         var type = 1;
         showLoadingManual();
-    $.ajax({
-            type: 'POST',
-            url: '/dice/getDiceResult',
-            data: {idc: idc, bet: bet, multiplier: multiplier, under_over: under_over, clientseed: clientseed},
-            dataType: 'json',
-            success: function (msg) {
-                var content = msg.d;
-                if (content.result) {
-
-                    provably_fair_reload();
-
-                    $("#txtLastServerSeed256").val(content.PreviousServerSeedSHA256);
-                    $("#txtNextServerSeed256").val(content.NextServerSeedSHA256);
-                    $("#txtLastServerSeed").val(content.PreviousServerSeed);
-                    $("#txtLastClientSeed").val(content.PreviousClientSeed);
-
-                    var win = parseFloat(content.win);
-                    if (win > 0) {
-                        // var temp = (content.roll).toFixed(3);
-                        // $("#txtManualResultNumber span").text(temp);
-                        // $("#txtManualResultNumber").attr("class", "alert alert-success alert-fit");
-                        $('#dice__timer').attr('class', 'dice__timer dice__timer_win');
-                    }
-                    else {
-                        // var temp = (content.roll).toFixed(3);
-                        // $("#txtManualResultNumber span").text(temp);
-                        // $("#txtManualResultNumber").attr("class", "alert alert-danger alert-fit");
-                        $('#dice__timer').attr('class', 'dice__timer dice__timer_lose');
-                    }
-
-                    let array = [...content.roll.toString()].map(Number);
-                    $('#dice_n_1').css('transform', 'translateY(' + numberPosition(array[0]) + ')');
-                    $('#dice_n_2').css('transform', 'translateY(' + numberPosition(array[1]) + ')');
-                    $('#dice_n_3').css('transform', 'translateY(' + numberPosition(array[3]) + ')');
-                    $('#dice_n_4').css('transform', 'translateY(' + numberPosition(array[4]) + ')');
-                    $('#dice_n_5').css('transform', 'translateY(' + numberPosition(array[5]) + ')');
-
-                    addToTable(content.BetData, "1");
-                } else {
-                    if (content.comment.indexOf("client seed") > -1) { // we randomise client seed in case of client seed error
-                        $("#btnRandomSeed").click();
-                    }
-                    type = 2;
-                    showMessageManual(content.comment);
-                }
-                hideLoadingManual(time_before, content.balance, type);
-            },
-            error: function (msg) {
-                showMessageManual("Ошибка связи с сервером.");
-                $("#txtManualResultNumber").hide();
-                hideLoadingManual(time_before, 0, 2);
-            }
-        });
-    };
-
-
-    getResultAuto = function (longid, idc, bet, multiplier, under_over, clientseed) {
-        if (Runing == false) return;
-        var start = new Date().getTime();
-        if (Runing == false) {
-            return;
-        }
         $.ajax(
             {
                 type: 'POST',
@@ -1355,109 +940,31 @@ $(document).ready(function () {
                         $("#txtLastClientSeed").val(content.PreviousClientSeed);
 
                         var win = parseFloat(content.win);
-                        var rdroll = $('input:radio[name=rdRoll]:checked').val();
-                        if (rdroll == "swapall") {
-                            HighLow = !HighLow;
-                        }
-                        Profit = Profit + win;
-                        bet = parseFloat(bet);
                         if (win > 0) {
-                            if (rdroll == "swapwin") {
-                                HighLow = !HighLow;
-                            }
-                            var val = $('input:radio[name=rdWin]:checked').val();
-                            if (val == "return") {
-                                CurrentBet = BaseBet;
-                            }
-                            else if (val == "inc") {
-                                var val = parseFloat($("#txtWinInc").val());
-                                var max = parseFloat($("#txtMaxBet").val());
-                                CurrentBet = (bet + (bet * (val / 100)));
-                                if (parseFloat(CurrentBet) > max && max > 0) {
-                                    CurrentBet = max.toFixed(2)
-                                }
-                            }
-                            else if (val == "dec") {
-                                var val = parseFloat($("#txtWinDec").val());
-                                var min = parseFloat($("#txtMinBet").val());
-                                CurrentBet = (bet - (bet * (val / 100)));
-                                if (CurrentBet < min) {
-                                    CurrentBet = min;
-                                }
-                            }
+                            var temp = (content.roll).toFixed(3);
+                            $("#txtManualResultNumber span").text(temp);
+                            $("#txtManualResultNumber").attr("class", "alert alert-success alert-fit");
                         }
                         else {
-                            if (rdroll == "swaploss") {
-                                HighLow = !HighLow;
-                            }
-                            var val = $('input:radio[name=rdLoss]:checked').val();
-                            if (val == "return") {
-                                CurrentBet = BaseBet;
-                            }
-                            else if (val == "inc") {
-                                var val = parseFloat($("#txtLossInc").val());
-                                var max = parseFloat($("#txtMaxBet").val());
-                                CurrentBet = (bet + (bet * (val / 100)));
-                                if (parseFloat(CurrentBet) > max && max > 0) {
-                                    CurrentBet = max.toFixed(2)
-                                }
-                            }
-                            else if (val == "dec") {
-                                var val = parseFloat($("#txtLossDec").val());
-                                var min = parseFloat($("#txtMinBet").val());
-                                CurrentBet = (bet - (bet * (val / 100)));
-                                if (CurrentBet < min) {
-                                    CurrentBet = min;
-                                }
-                            }
+                            var temp = (content.roll).toFixed(3);
+                            $("#txtManualResultNumber span").text(temp);
+                            $("#txtManualResultNumber").attr("class", "alert alert-danger alert-fit");
                         }
-                        CurrentBet = parseFloat(CurrentBet).toFixed(2);
-                        showBalance(content.balance, idc);
-                        Balance = content.balance;
-                        var count = $("#txtMaxRolls").val() - 1;
-                        $("#txtMaxRolls").val(count);
-                        if (count <= 0) {
-                            Runing = false;
-                            $("#txtMaxRolls").val(0);
-                        }
-
-                        var stop = new Date().getTime();
-                        var time = Time - (stop - start);
-                        if (time < 0) {
-                            time = 0;
-                        }
-
-                        $("#txtProfit").val(Profit.toFixed(2));
-                        $("#profit_group").show();
 
                         addToTable(content.BetData, "1");
-
-                        window.clearTimeout(AutoBet);
-                        AutoBet = setTimeout(function () { auto_bet(); }, time);
                     } else {
-                        auto_stop();
-
                         if (content.comment.indexOf("client seed") > -1) { // we randomise client seed in case of client seed error
-                            $("#btnRandom").click();
+                            $("#btnRandomSeed").click();
                         }
-
                         type = 2;
-                        if (content.comment.indexOf("Timeout") > -1) { // in case of timeout
-                            showTimeoutAuto();
-                        }
-                        else {
-                            showMessageAuto(content.comment);
-                        }
-                        Runing = false;
-
-
+                        showMessageManual(content.comment);
                     }
+                    hideLoadingManual(time_before, content.balance, type);
                 },
                 error: function (msg) {
-                    //showMessageAuto("Error communicating with server.");
-                    //Runing = false;
-                    window.clearTimeout(AutoBet);
-                    AutoBet = setTimeout(function () { auto_bet(); }, 10000);
+                    showMessageManual("Ошибка связи с сервером.");
+                    $("#txtManualResultNumber").hide();
+                    hideLoadingManual(time_before, 0, 2);
                 }
             });
     };

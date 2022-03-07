@@ -1,171 +1,171 @@
 :root {
-  --cg-font-color-light: #d3d3d3;
-  --cg-font-color: white;
-  --cg-well-bg: #222d34;
-  --cg-header-bg: #21313b;
-  --cg-header-color: var(--cg-base-color);
-  --cg-background-color: #1e272a;
-  --cg-footer-bg: #29363c;
-  --cg-base-color: #e09320;
-  --cg-border-color: #454848;
-  --cg-box-shadow: 0 0 15px #00000033;
-  --cg-alert-info: gray;
+    --cg-font-color-light: #d3d3d3;
+    --cg-font-color: white;
+    --cg-well-bg: #222d34;
+    --cg-header-bg: #21313b;
+    --cg-header-color: var(--cg-base-color);
+    --cg-background-color: #1e272a;
+    --cg-footer-bg: #29363c;
+    --cg-base-color: #1fb3d5;
+    --cg-border-color: #454848;
+    --cg-box-shadow: 0 0 15px #00000033;
+    --cg-alert-info: gray;
 
-  --cg-input-color: white;
-  --cg-input-bg: #21313b;
-  --cg-input-bg-disabled: #1c2931;
-  --cg-input-placeholder: #ffffff54;
-  
-  --cg-button-border: #24313a;
-  --cg-button-color: white;
-  --cg-button-bg: #141a1f;
-  --cg-button-color-hover: white;
-  --cg-button-bg-hover: #2f424e;  
-  --cg-button-color-active: white;
-  --cg-button-bg-active: var(--cg-base-color);
+    --cg-input-color: white;
+    --cg-input-bg: #21313b;
+    --cg-input-bg-disabled: #1c2931;
+    --cg-input-placeholder: #ffffff54;
 
-  --cg-chat-message: #fffeee;
-  --cg-chat-message-time: #fffeee;
-  --cg-chat-username: #var(--cg-base-color);
-  --cg-red: red;
-  --cg-green: green;
+    --cg-button-border: #24313a;
+    --cg-button-color: white;
+    --cg-button-bg: #141a1f;
+    --cg-button-color-hover: white;
+    --cg-button-bg-hover: #2f424e;
+    --cg-button-color-active: white;
+    --cg-button-bg-active: var(--cg-base-color);
+
+    --cg-chat-message: #fffeee;
+    --cg-chat-message-time: #fffeee;
+    --cg-chat-username: var(--cg-base-color);
+    --cg-red: red;
+    --cg-green: green;
 }
 
 :root .light {
-  --cg-font-color-light: #444;
-  --cg-font-color: #333;
-  --cg-well-bg: #F3F7F9;
-  --cg-header-bg: #15425F;
-  --cg-header-color: #9EBFD4;
-  --cg-footer-bg: #dae6ec;
-  --cg-background-color: white;
-  --cg-base-color: #15425F;
-  --cg-border-color: #c5d7e2;
-  --cg-box-shadow: 0 0 15px #00000020;
-  --cg-alert-info: #29abe0;
+    --cg-font-color-light: #444;
+    --cg-font-color: #333;
+    --cg-well-bg: #F3F7F9;
+    --cg-header-bg: #15425F;
+    --cg-header-color: #9EBFD4;
+    --cg-footer-bg: #dae6ec;
+    --cg-background-color: white;
+    --cg-base-color: #15425F;
+    --cg-border-color: #c5d7e2;
+    --cg-box-shadow: 0 0 15px #00000020;
+    --cg-alert-info: #29abe0;
 
-  --cg-input-color: #333;
-  --cg-input-bg: white;
-  --cg-input-bg-disabled: #f8fafc;
-  --cg-input-placeholder: #0000002e;
-  
-  --cg-button-border: #9EBFD4;
-  --cg-button-color: white;
-  --cg-button-bg: #15425F;
-  --cg-button-color-hover: var(--cg-button-color);
-  --cg-button-bg-hover: #1e4d6d;  
-  --cg-button-color-active: white;
-  --cg-button-bg-active: #0a3755;
+    --cg-input-color: #333;
+    --cg-input-bg: white;
+    --cg-input-bg-disabled: #f8fafc;
+    --cg-input-placeholder: #0000002e;
 
-  --cg-chat-message: #fffeee;
-  --cg-chat-message-time: #fffeee;
-  --cg-chat-username: #FFC251;
-  --cg-red: red;
-  --cg-green: green;
+    --cg-button-border: #9EBFD4;
+    --cg-button-color: white;
+    --cg-button-bg: #15425F;
+    --cg-button-color-hover: var(--cg-button-color);
+    --cg-button-bg-hover: #1e4d6d;
+    --cg-button-color-active: white;
+    --cg-button-bg-active: #0a3755;
+
+    --cg-chat-message: #fffeee;
+    --cg-chat-message-time: #fffeee;
+    --cg-chat-username: #FFC251;
+    --cg-red: red;
+    --cg-green: green;
 }
 
 
 body {
-  min-width: 300px;
+    min-width: 300px;
 }
 
 #frame_terms {
-  width: 100%;
-  height: 310px;
-  border: none;
-  -webkit-overflow-scrolling: touch;
-  overflow-y: scroll;
+    width: 100%;
+    height: 310px;
+    border: none;
+    -webkit-overflow-scrolling: touch;
+    overflow-y: scroll;
 }
 
 .question {
-  font-weight: bold;
+    font-weight: bold;
 }
 
 #history_table {
-  font-size: 10px;
+    font-size: 10px;
 }
 
 #other_history_table {
-  font-size: 10px;
+    font-size: 10px;
 }
 
 .table {
-  font-size: 12px;
+    font-size: 12px;
 }
 
 #frame_invite {
-  width: 100%;
-  height: 530px;
-  border: none;
-  overflow-y: auto;
+    width: 100%;
+    height: 530px;
+    border: none;
+    overflow-y: auto;
 }
 
 #frame_stats {
-  width: 100%;
-  height: 630px;
-  border: none;
-  overflow-y: auto;
+    width: 100%;
+    height: 630px;
+    border: none;
+    overflow-y: auto;
 }
 
 .small-content {
-  height: 500px;
-  max-height: 500px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  width: 100%;
+    height: 500px;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 .withdraw-content {
-  height: 540px;
-  max-height: 540px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  width: 100%;
+    height: 540px;
+    max-height: 540px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 .account-content {
-  height: 670px;
-  max-height: 670px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  width: 100%;
+    height: 670px;
+    max-height: 670px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 .contests-content {
-  height: 670px;
-  max-height: 670px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  width: 100%;
+    height: 670px;
+    max-height: 670px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 .rewards-content {
-  height: 540px;
-  max-height: 540px;
-  overflow-y: auto;
-  overflow-x: hidden;
-  width: 100%;
+    height: 540px;
+    max-height: 540px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    width: 100%;
 }
 
 .fixed-width {
-  width: 180px !important;
-  text-align: left !important;
+    width: 180px !important;
+    text-align: left !important;
 }
 
 .fixed-width2 {
-  width: 260px !important;
-  text-align: left !important;
+    width: 260px !important;
+    text-align: left !important;
 }
 
 .history_cell {
-  max-width: 200px !important;
-  overflow: hidden;
+    max-width: 200px !important;
+    overflow: hidden;
 }
 
 th {
-  font-weight: 500;
+    font-weight: 500;
 }
 
 .input-range {
-  background: var(--cg-input-bg);
+    background: var(--cg-input-bg);
 }

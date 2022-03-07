@@ -90,25 +90,6 @@ $(document).ready(function () {
         return result;
     };
 
-    updateDiceCookie = function () {
-        let fieldsArr = { name: {}, id: {} };
-
-        let skipSettings = "txtAutoRollOver,txtAutoRollUnder";
-
-        $('#auto_bet .well').eq(0).find('input:radio:checked').each(function () {
-            if (skipSettings.indexOf($(this)[0].name) < 0) {
-                fieldsArr.name[$(this)[0].name] = $(this).val();
-            }
-        });
-        $('#auto_bet .well').eq(0).find('input.form-control[id]').each(function () {
-            if (skipSettings.indexOf($(this)[0].id) < 0) {
-                fieldsArr.id[$(this)[0].id] = $(this).val();
-            }
-        });
-
-        setCookie(diceAutobetCookieName, JSON.stringify(fieldsArr), 30);
-    }
-
     getBets = function () {
         if (Active_tab === "All bets") {
             getAllBets();
@@ -157,30 +138,8 @@ $(document).ready(function () {
     };
     getLastBets(Longid, "1");
 
-    getProvablyFair = function (longid, coin) {
-        $.ajax({
-            type: 'POST',
-            url: '/stats.asmx/GetFairDice',
-            data: '{idc:"' + coin + '"}',
-            contentType: "application/json",
-            success: function (msg) {
-                if (msg.d.length > 0) {
-                    var content = JSON.parse(msg.d);
-                    $("#txtLastServerSeed256").val(content.PreviousServerSeedSHA256);
-                    $("#txtNextServerSeed256").val(content.NextServerSeedSHA256);
-                    $("#txtLastServerSeed").val(content.PreviousServerSeed);
-                    $("#txtLastClientSeed").val(content.PreviousClientSeed);
-                }
-            },
-            error: function (msg) {
-                console.log("not ok....");
-            }
-        });
-    };
-
     getBalance(Idc);
     getBets();
-    // getProvablyFair(Longid, Idc);
 
     $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
         var str = e.target.text;

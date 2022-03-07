@@ -227,6 +227,16 @@ getTime = function (datetime) {
     return result;
 }
 
+const numberWithSpaces = (x) => {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+}
+
+const numberWithSpacesDouble = (x) => {
+    var parts = x.toString().split(".");
+    parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    return parts.join(".");
+}
+
 
 $(document).ready(function () {
     Connected(false);
@@ -242,7 +252,7 @@ $(document).ready(function () {
 
      showBalance = function (balance, idc) {
         if (balance >= 0) {
-            $("#lblBalance").html("Баланс: " + convert_number(balance, 2));
+            $("#lblBalance").html("Баланс: " + numberWithSpacesDouble(convert_number(balance, 2)));
             $("#lblCoinName").html(idc);
         }
     }
@@ -675,15 +685,6 @@ $(document).ready(function () {
 
     });
 
-    $(".dropdown-menu li a.game").each(function (index, element) {
-        let game = $(this).data("game");
-        if (game == gamename) {
-            $(this).hide();
-        }
-        // $(this).attr("href", "/" + game + "/" + name);
-    });
-
-
     convert_number = function (number, fixed) {
         if (fixed == 0) {
             var result = number.toLocaleString('en-US');
@@ -711,8 +712,8 @@ $(document).ready(function () {
                         try {
                             window.updateBalance(Math.floor(BalanceCredits));
                         }
-                        catch (e) {
-                        };
+                            catch (e) {
+                        }
                     }
                 },
                 error: function (msg) {
@@ -793,80 +794,6 @@ $(document).ready(function () {
                 },
             });
     };
-
-
-    refreshCharts = function () {
-
-        // games data
-        $.getJSON('/api/betschart/' + idc + '/games/', function (data) {
-
-            Highcharts.chart('chart_games', {
-                chart: {
-                    backgroundColor: 'rgba(0,0,0,0)',
-                    plotBorderWidth: null,
-                    plotShadow: false,
-                    type: 'pie'
-                },
-                title: {
-                    text: 'Total wagered in ' + idc + ' per game'
-                },
-                tooltip: {
-                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-                },
-                plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        dataLabels: {
-                            enabled: false
-                        },
-                        showInLegend: true
-                    }
-                },
-                series: [{
-                    name: 'Wagered',
-                    colorByPoint: true,
-                    data: data,
-                }]
-            });
-        })
-
-        // coins data
-        $.getJSON('/api/betschart/all/coins/', function (data) {
-
-            Highcharts.chart('chart_coins', {
-                chart: {
-                    backgroundColor: 'rgba(0,0,0,0)',
-                    plotBorderWidth: null,
-                    plotShadow: false,
-                    type: 'pie'
-                },
-                title: {
-                    text: 'Total wagered per coin'
-                },
-                tooltip: {
-                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-                },
-                plotOptions: {
-                    pie: {
-                        allowPointSelect: true,
-                        cursor: 'pointer',
-                        dataLabels: {
-                            enabled: false
-                        },
-                        showInLegend: true
-                    }
-                },
-                series: [{
-                    name: 'Wagered',
-                    colorByPoint: true,
-                    data: data,
-                }]
-            });
-        })
-    };
-
-    refreshCharts();
 
     function setCookie(cname, cvalue, exdays) {
         var d = new Date();

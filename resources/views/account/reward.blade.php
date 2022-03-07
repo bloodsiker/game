@@ -110,23 +110,25 @@
 
             <div class="row">
                 <ul class="nav nav-tabs" id="tab_slot">
-                    <li class='active'><a href="#faucet" data-toggle="tab" class="text-def">Кран</a></li>
+                    <li class='@if(!in_array(session('tab'), ['promocode'])) active @endif'><a href="#faucet" data-toggle="tab" class="text-def">Кран</a></li>
                     <li><a href="#levels" data-toggle="tab" class="text-def">Уровень крана</a></li>
                     <li><a href="#history" data-toggle="tab" class="text-def">История крана</a></li>
                     <li><a href="#invite" data-toggle="tab" class="text-def">Пригласить друга</a></li>
-                    <li><a href="#voucher" data-toggle="tab" class="text-def">Промокод</a></li>
+                    <li class=" @if(session('tab') === 'promocode') active @endif"><a href="#voucher" data-toggle="tab" class="text-def">Промокод</a></li>
                     <li><a href="#other" data-toggle="tab" class="text-def">Другие награды</a></li>
                 </ul>
 
                 <br/>
                 <div class="tab-content rewards-content">
-                    <div class="tab-pane fade in active" id="faucet">
+                    <div class="tab-pane fade in @if(!in_array(session('tab'), ['promocode'])) active @endif" id="faucet">
                         <form method="post" action="{{ route('account.reward', ['currency' => $currency->idc]) }}" id="popup">
                             @csrf
                             <div class="well">
                                 <span>Вы можете запрашивать монеты, когда ваш баланс монет пуст и каждые 3 минуты с одного IP-адреса.</span><br/>
                                 <span>Ваш уровень 11. Чтобы увеличить количество кранов, перейдите на вкладку «Уровень крана». У вас осталось 7 запросов на ближайшие 24 часа.</span>
                                 <span id="lblTime"></span>
+                                <br>
+                                <p>Мультиаккаунты, использующие кран, будут заморожены</p>
                             </div>
                             <div class="input-group">
                                 <span class="input-group-addon">Сумма запроса:</span>
@@ -138,17 +140,7 @@
                             </div>
                             <br/>
 
-                            @if (session('error'))
-                                <div class="alert alert-danger" role="alert">
-                                    <span id="RewardError">{{ session('error') }}</span>
-                                </div>
-                            @endif
-
-                            @if (session('success'))
-                                <div class="alert alert-success" role="alert">
-                                    <span id="RewardSuccess">{{ session('success') }}</span>
-                                </div>
-                            @endif
+                            @include('components.alert')
 
                             <input type="submit" name="btnRequest" value="Запрос" id="btnRequest" class="btn btn-default center-block"/><br/>
                         </form>
@@ -574,27 +566,16 @@
                     </div>
                     <div class="tab-pane fade in " id="invite">
                         <div class="well">
-                            <span>For every friend you invite, we share a portion of the house edge with you.</span><br/>
-                            <span>For Slot, Blackjack, Roulette, Video Poker, Plinko and Minesweeper you get <b>
-                        <span id="ContentPlaceHolder1_lblFee">25.00</span>%</b> of house edge, and for Dice, <b>
-                            <span id="ContentPlaceHolder1_lblFeeDice">25.00</span>%</b> of house edge on any bet made by someone you invited.
-                    </span><br/>
-                            <span>To negotiate a custom rate contact us on <a
-                                    href="../cdn-cgi/l/email-protection#eb868a99808e9f82858cab8899929b9f84c58c8a868e98"
-                                    target="_blank"><span class="__cf_email__"
-                                                          data-cfemail="ef828e9d848a9b868188af8c9d969f9b80c1888e828a9c">[email&#160;protected]</span></a>.</span>
+                            <p>Мы предлагаем современную партнерскую систему. Вы всегда будете получать комиссию с каждого пользователя, которого вы привлечете.</p>
+                            <p> Зарабатывайте 25% от преимущества казино с каждой ставки, сделанной вашим рефералом.</p>
+                            <p>В отличие от традиционных партнерских программ, вы зарабатываете ту же комиссию независимо от того, выиграл игрок или проиграл!</p>
                         </div>
                         <div class="well">
                             <div class="form-group">
-                                <label for="Referer">Your personal referrer link:</label>
+                                <label for="Referer">Ваша ссылка для привлечения рефералов:</label>
                                 <input id="txtRefID" style="width: 500px;" type="text" class="form-control readonly"
                                        readonly="true" aria-describedby="basic-addon1"
                                        value="https://crypto.games?i=MmYmsKdNaP"/>
-                            </div>
-                            <div>Please do not create multiple accounts, or all of your accounts will be blocked.<br/>
-                                Banners for promotion can be found <a
-                                    href="https://crypto.games/banners/animated/list.html"
-                                    target="_blank">here</a>.
                             </div>
                         </div>
                         <div class="well">
@@ -608,7 +589,8 @@
                             <span id="ContentPlaceHolder1_lblFriends">2</span><span> friends and earned:</span><br/>
                             <br/>
 
-                            <span id="ContentPlaceHolder1_lblEarn"> <table class='table'><tr class='small'><th>Coin</th><th>Pending earnings</th><th>Dice earned</th><th>Slot earned</th><th>Blackjack earned</th><th>Roulette earned</th><th>Video Poker earned</th><th>Plinko earned</th><th>Minesweeper earned</th></tr> <tr
+                            <span id="ContentPlaceHolder1_lblEarn">
+                                <table class='table'><tr class='small'><th>Coin</th><th>Pending earnings</th><th>Dice earned</th><th>Slot earned</th><th>Blackjack earned</th><th>Roulette earned</th><th>Video Poker earned</th><th>Plinko earned</th><th>Minesweeper earned</th></tr> <tr
                                         class='small'><td>Bitcoin</td><td>0.000047120270</td><td>0.00004711</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td></tr><tr
                                         class='small'><td>BitcoinCash</td><td>0.000000000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td></tr><tr
                                         class='small'><td>Dash</td><td>0.000000000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td></tr><tr
@@ -620,24 +602,40 @@
                                         class='small'><td>NeoGas</td><td>0.000000000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td></tr><tr
                                         class='small'><td>PlayMoney</td><td>500.819848388400</td><td>37.67499839</td><td>3.50000000</td><td>0.18000000</td><td>5.13000000</td><td>10.31625000</td><td>444.01860000</td><td>0.00000000</td></tr><tr
                                         class='small'><td>Solana</td><td>0.000000000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td><td>0.00000000</td></tr>
-                                    </tr></table><br><a href='/details.aspx'
-                                                        target='_blank'>Detailed view of invited players.</a><br></span><br/>
+                                    </table>
+                            </span>
+                                <br>
 
-                            <span class="small">Referrer rewards are calculated once every hour.</span>
+                            <span class="small">Реферальные вознаграждения рассчитываются один раз в час.</span>
                         </div>
                     </div>
-                    <div class="tab-pane fade in " id="voucher">
+                    <div class="tab-pane fade in @if(session('tab') === 'promocode') active @endif" id="voucher">
                         <div class="well">
                             <span>Введите свой промокод, чтобы получить вознаграждение</span>
                         </div>
-                        <div class="input-group">
-                            <span class="input-group-addon">Промокод:</span>
-                            <input name="promocode" type="text" id="promocode" class="form-control"/>
-                        </div>
-                        <br/>
+                        <form action="{{ route('account.promocode') }}" method="POST">
+                            @csrf
+                            <div class="input-group">
+                                <span class="input-group-addon">Промокод:</span>
+                                <input name="promocode" type="text" id="promocode" class="form-control" value="" autocomplete="off"/>
+                            </div>
+                            <br/>
 
-                        <input type="submit" name="ctl00$ContentPlaceHolder1$btnRequestVoucher" value="Request"
-                               id="ContentPlaceHolder1_btnRequestVoucher" class="btn btn-default center-block"/><br/>
+                            @if (session('error_promo'))
+                                <div class="alert alert-danger" role="alert">
+                                    <span>{{ session('error_promo') }}</span>
+                                </div>
+                            @endif
+
+                            @if (session('success_promo'))
+                                <div class="alert alert-success" role="alert">
+                                    <span>{{ session('success_promo') }}</span>
+                                </div>
+                            @endif
+
+                            <input type="submit" name="" value="Применить"
+                                   id="btnRequestVoucher" class="btn btn-default center-block"/>
+                        </form>
                     </div>
                     <div class="tab-pane fade in" id="other">
                         <span>The list below shows the tips, rain and other rewards that you have sent or received:</span>

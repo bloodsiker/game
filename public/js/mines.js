@@ -628,7 +628,9 @@ $(document).ready(function () {
                     append = append + "<td><a class='a_bwindow' href='/keno/getBet/" + v.id + "'>" + id + "</a></td><td class='hidden-xs'>" + date + "</td>" +
                         "<td><a class='a_swindow' href='/player/" + v.user_id + "'>" + v.user_id + "</a></td>" +
                         "<td>" + v.coinname + "</td>" +
-                        "<td>" + convert_number(v.bet, 2) + "</td><td>" + convert_number(v.coeff, 2) + "x</td>";
+                        "<td>" + v.count_mine + "</td>" +
+                        "<td>" + convert_number(v.bet, 2) + "</td>" +
+                        "<td>" + convert_number(v.coeff, 2) + "x</td>";
 
                     if (v.profit >= 0) {
                         append = append + "<td class='green_font text-right'>" + convert_number(v.profit, 2) + "</td>"
@@ -684,7 +686,9 @@ $(document).ready(function () {
                     append = append + "<td><a class='a_bwindow' href='/keno/getBet/" + v.id + "'>" + id + "</a></td><td class='hidden-xs'>" + date + "</td>" +
                         "<td><a class='a_swindow' href='/player/" + v.user_id + "'>" + v.user_id + "</a></td>" +
                         "<td>" + v.coinname + "</td>" +
-                        "<td>" + convert_number(v.bet, 2) + "</td><td>" + convert_number(v.coeff, 2) + "x</td>";
+                        "<td>" + v.count_mine + "</td>" +
+                        "<td>" + convert_number(v.bet, 2) + "</td>" +
+                        "<td>" + convert_number(v.coeff, 2) + "x</td>";
 
                     if (v.profit >= 0) {
                         append = append + "<td class='green_font text-right'>" + convert_number(v.profit, 2) + "</td>"

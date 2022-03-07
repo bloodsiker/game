@@ -1,4 +1,8 @@
-@extends('layouts.layout-fluid')
+@extends('layouts.layout')
+
+@push('head_css')
+    <link href="{{ asset('css/dice.css') }}" rel="stylesheet"/>
+@endpush
 
 @push('game_scripts')
     <script src="{{ asset('js/dice.js') }}" type="text/javascript"></script>
@@ -17,34 +21,6 @@
         var serverTime = "{{ \Carbon\Carbon::now()->getPreciseTimestamp(3) }}";
         var LoggedIn = "{{ auth()->check() ? 'True' : 'False' }}";
         var ShowLogIn = "True";
-
-        $(document).ready(function () {
-
-            @if(!auth()->check())
-                $.fancybox.open({
-                    href: "{{ route('register') }}",
-                    autoscale: false,
-                    autoDimensions: false,
-                    width: 500,
-                    transitionIn: 'none',
-                    transitionOut: 'none',
-                    type: 'iframe',
-                    closeClick: true,
-                    closeBtn: true,
-                    openEffect: 'none',
-                    closeEffect: 'none',
-                    helpers: {
-                        overlay: {
-                            closeClick: false,
-                        }
-                    }
-                });
-            @endif
-
-            if (window.LoggedIn == "True") {
-                document.body.classList.add("logged-in")
-            }
-        });
     </script>
 
     <script type="text/javascript">
@@ -73,7 +49,7 @@
 
 @section('content')
     <div class="row">
-        <div class="col-lg-6 col-md-8 col-sm-10 col-xs-12 col-lg-offset-0 col-md-offset-2 col-sm-offset-1">
+        <div class="col-lg-12 col-md-8 col-sm-10 col-xs-12 col-lg-offset-0 col-md-offset-2 col-sm-offset-1">
             <ul class="nav nav-tabs">
                 <li class="active"><a href="#manual_bet" class="text-def" data-toggle="tab"><i
                             class="fa fa-gamepad fa-lg" aria-hidden="true"></i>Ручная ставка</a></li>
@@ -88,93 +64,295 @@
             <div class="tab-content">
                 <br/>
                 <div class="tab-pane fade in active" id="manual_bet">
-                    <div class="well">
-                        <div class="row">
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-center">
-                                <span class="bet_text">Размер ставки:</span><br/>
-                                <div class="btn-group" role="group" aria-label="..." style="width: 101%;">
-                                    <button id="btnBet1" type="button" class="btn btn-default"
-                                            style="width: 25%;">Min
-                                    </button>
-                                    <button id="btnBet2" type="button" class="btn btn-default"
-                                            style="width: 25%;">1/2
-                                    </button>
-                                    <button id="btnBet3" type="button" class="btn btn-default"
-                                            style="width: 25%;">x2
-                                    </button>
-                                    <button id="btnBet4" type="button" class="btn btn-default"
-                                            style="width: 25%;">Max
-                                    </button>
-                                </div>
-                                <div class="input-group">
-                                    <input id="txtBet" type="text" class="form-control text-right"/>
-                                    <span class="input-group-addon">{{ $currency->name }}</span>
-                                </div>
-                                <br/>
-                                <span class="bet_text">Сумма выигрыша:</span>
-                                <div class="input-group">
-                                    <input id="txtWinAmount" type="text"
-                                           class="form-control text-right form-control-readonly"
-                                           readonly="true"/>
-                                    <span class="input-group-addon">{{ $currency->name }}</span>
+                    <div class="row">
+                        <div class="dice-game">
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 text-center">
+                                <div class="well height-100">
+                                    <span class="bet_text">Размер ставки:</span><br/>
+                                    <div class="btn-group" role="group" aria-label="..." style="width: 101%;">
+                                        <button id="btnBet1" type="button" class="btn btn-default"
+                                                style="width: 25%;">Min
+                                        </button>
+                                        <button id="btnBet2" type="button" class="btn btn-default"
+                                                style="width: 25%;">1/2
+                                        </button>
+                                        <button id="btnBet3" type="button" class="btn btn-default"
+                                                style="width: 25%;">x2
+                                        </button>
+                                        <button id="btnBet4" type="button" class="btn btn-default"
+                                                style="width: 25%;">Max
+                                        </button>
+                                    </div>
+                                    <div class="input-group">
+                                        <input id="txtBet" type="text" class="form-control text-right" autocomplete="off"/>
+                                        <span class="input-group-addon">{{ $currency->name }}</span>
+                                    </div>
+
+                                    <br>
+
+                                    <span class="bet_text">Выплата:</span><br/>
+                                    <div class="btn-group" role="group" aria-label="..." style="width: 101%;">
+                                        <button id="btnPay1" type="button" class="btn btn-default"
+                                                style="width: 25%;">Min
+                                        </button>
+                                        <button id="btnPay2" type="button" class="btn btn-default"
+                                                style="width: 25%;"><i class="fa fa-minus" aria-hidden="true"></i>
+                                        </button>
+                                        <button id="btnPay3" type="button" class="btn btn-default"
+                                                style="width: 25%;"><i class="fa fa-plus" aria-hidden="true"></i>
+                                        </button>
+                                        <button id="btnPay4" type="button" class="btn btn-default"
+                                                style="width: 25%;">Max
+                                        </button>
+                                    </div>
+                                    <div class="input-group">
+                                        <input id="txtMultiplier" type="text" class="form-control text-right" autocomplete="off"/>
+                                        <span class="input-group-addon">X</span>
+                                    </div>
+
+
+                                    <div class="message_line">
+                                        <div id="divManualMessage" class="alert text-center alert-danger" role="alert"
+                                             style="display: none;">
+                                            <p></p>
+                                        </div>
+                                        <div id="divSuccessMessage" class="alert text-center alert-success" role="alert"
+                                             style="display: none;">
+                                            <p></p>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-center">
-                                <span class="bet_text">Выплата:</span><br/>
-                                <div class="btn-group" role="group" aria-label="..." style="width: 101%;">
-                                    <button id="btnPay1" type="button" class="btn btn-default"
-                                            style="width: 25%;">Min
-                                    </button>
-                                    <button id="btnPay2" type="button" class="btn btn-default"
-                                            style="width: 25%;"><i class="fa fa-minus" aria-hidden="true"></i>
-                                    </button>
-                                    <button id="btnPay3" type="button" class="btn btn-default"
-                                            style="width: 25%;"><i class="fa fa-plus" aria-hidden="true"></i>
-                                    </button>
-                                    <button id="btnPay4" type="button" class="btn btn-default"
-                                            style="width: 25%;">Max
-                                    </button>
-                                </div>
-                                <div class="input-group">
-                                    <input id="txtMultiplier" type="text" class="form-control text-right"/>
-                                    <span class="input-group-addon">X</span>
-                                </div>
-                                <br/>
-                                <span class="bet_text">Шанс выигрыша:</span>
-                                <div class="input-group">
-                                    <input id="txtChance" type="text"
-                                           class="form-control text-right form-control-readonly"
-                                           readonly="true"/>
-                                    <span class="input-group-addon">%</span>
+                            <div class="col-lg-8 col-md-6 col-sm-6 col-xs-6 text-center">
+                                <div class="well height-100">
+                                    <div class="board">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-addon form-control-readonly">Сумма выигрыша:</span>
+                                                    <input id="txtWinAmount" type="text" class="form-control text-right form-control-readonly" readonly="true">
+                                                    <span class="input-group-addon">{{ $currency->name }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="input-group input-group-sm">
+                                                    <span class="input-group-addon form-control-readonly">Шанс выигрыша:</span>
+                                                    <input id="txtChance" type="text" class="form-control text-right form-control-readonly" readonly="true">
+                                                    <span class="input-group-addon">%</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row">
+
+                                            <div class="dice__drum d-flex justify-center align-center" id="dice__result">
+                                                <div class="dice__center">
+                                                    <div class="dice__timer" id="dice__timer">
+                                                        <div class="d-flex justify-center align-center dice-numbers">
+                                                            <div class="dice__slider">
+                                                                <div class="dice__slider-inner d-flex flex-column" id="dice_n_1">
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>0</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>1</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>2</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>3</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>4</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>5</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>6</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>7</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>8</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>9</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex justify-center align-center dice-numbers">
+                                                            <div class="dice__slider">
+                                                                <div class="dice__slider-inner d-flex flex-column" id="dice_n_2">
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>0</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>1</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>2</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>3</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>4</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>5</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>6</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>7</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>8</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>9</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex justify-center align-center dice-numbers">
+                                                            <div class="dice__slider">
+                                                                <div class="dice__slider-inner d-flex flex-column" id="dice_n_3">
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>0</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>1</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>2</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>3</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>4</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>5</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>6</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>7</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>8</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>9</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex justify-center align-center dice-numbers">
+                                                            <div class="dice__slider">
+                                                                <div class="dice__slider-inner d-flex flex-column" id="dice_n_4">
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>0</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>1</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>2</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>3</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>4</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>5</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>6</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>7</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>8</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>9</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex justify-center align-center dice-numbers">
+                                                            <div class="dice__slider">
+                                                                <div class="dice__slider-inner d-flex flex-column" id="dice_n_5">
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>0</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>1</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>2</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>3</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>4</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>5</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>6</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>7</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>8</span>
+                                                                    </div>
+                                                                    <div class="dice__slider-item d-flex align-center justify-center">
+                                                                        <span>9</span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-right">
+                                                <button id="btnRollOver" type="button" class="btn btn-default">
+                                                <span>Больше<br/>
+                                                    51.00</span>
+                                                </button>
+                                            </div>
+                                            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6 text-left">
+                                                <button id="btnRollUnder" type="button" class="btn btn-default">
+                                                <span>Меньше<br/>
+                                                    49.00</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="well" style="min-height: 130px;">
-                        <div class="row">
-                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-right">
-                                <button id="btnRollOver" type="button" class="btn btn-default">
-                                        <span>Больше<br/>
-                                            51.00</span>
-                                </button>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-center">
-                                <div id="txtManualResultNumber" class="alert alert-success alert-fit"
-                                     role="alert" style="display: none;">
-                                    <span></span>
-                                </div>
-                                <div id="manual_line_loading" class="line_loading">
-                                    <i class="fa fa-circle-o-notch fa-2x fa-fw fast-spin"></i>
-                                </div>
-                            </div>
-                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4 text-left">
-                                <button id="btnRollUnder" type="button" class="btn btn-default">
-                                        <span>Меньше<br/>
-                                            49.00</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
+
                     <div class="message_line">
                         <div id="divManualMessage" class="alert text-center alert-danger" role="alert"
                              style="display: none;">
@@ -576,7 +754,7 @@
             </div>
 
         </div>
-        <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
             <ul class="nav nav-tabs " id="tab_result">
                 <li class="active">
                     <a href="#last_bets" class="fixed-tabs" data-toggle="tab"><i
