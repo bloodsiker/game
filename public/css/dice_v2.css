@@ -222,3 +222,166 @@
 [data-side="6"] .dot:nth-of-type(6) {
     grid-area: nine;
 }
+
+.dice-bet {
+    margin-top: 30px;
+}
+.container-bet {
+    display: inline-block;
+}
+.container-bet:nth-child(1) {
+    width: 80px;
+}
+.container-bet:nth-last-child(1) {
+    width: 80px;
+}
+.cell-bet {
+    background-color: var(--cg-button-bg);
+    position: relative;
+    display: inline-block;
+    padding-top: 10px;
+    border: 1px solid #737676;
+    width: 60px;
+    margin: 3px 2px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.cell-bet-wide {
+    width: 75px;
+}
+.arrow-top {
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-bottom: 5px solid #363e44;
+    border-left: 30px solid transparent;
+    border-right: 30px solid transparent;
+    right: 0;
+    bottom: 17px;
+}
+.bet-number {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+.bet-coef {
+    background: #363e45;
+    font-size: 12px;
+}
+.cell-bet-wide .bet-number {
+    font-size: 14px;
+    font-weight: 400;
+}
+.cell-bet-wide .arrow-top {
+    border-bottom: 6px solid #363e44;
+    border-left: 40px solid transparent;
+    border-right: 35px solid transparent;
+}
+
+
+
+.chips {
+    padding: 20px 0;
+    text-align: center;
+    background-color: #222d34;
+    box-shadow: 0 0 0 2px #141a1f inset, 0 0 0 3px var(--cg-border-color) inset;
+}
+.pokerchip {
+    margin: 0 1px;
+    position: relative;
+    display: inline-block;
+    width: 55px;
+    height: 55px;
+    box-shadow: 0 0 5px 1px rgb(0 0 0 / 50%), 0 0 3px 0 rgb(0 0 0 / 40%) inset;
+    border-radius: 50%;
+    background-size: 151px 151px;
+    background-position: center center;
+    cursor: pointer;
+}
+.pokerchip:before {
+    position: absolute;
+    content: "";
+    z-index: 1;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    top: 5px;
+    left: 5px;
+    background-size: 43px 50px;
+    background-position: center center;
+}
+.pokerchip:after {
+    z-index: 2;
+    position: absolute;
+    content: "25";
+    text-align: center;
+    font: bold 20px/36px Arial;
+    white-space: pre;
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    top: 10px;
+    left: 10px;
+    text-shadow: -1px -1px 0px rgb(0 0 0 / 30%), 1px 1px 0px rgb(255 255 255 / 20%);
+}
+/* Colors */
+.white {
+    background-image: linear-gradient(0deg, transparent 0, transparent 67.5px, #fff 67.5px, #fff 83.5px, transparent 83.5px, transparent 151px), linear-gradient(60deg, transparent 0, transparent 97.4304px, #fff 97.4304px, #fff 113.4304px, transparent 113.4304px, transparent 151px), linear-gradient(120deg, #dddddd 0, #dddddd 97.4304px, #fff 97.4304px, #fff 113.4304px, #dddddd 113.4304px, #dddddd 151px);
+}
+.white:before {
+    border: 8px solid #dddddd;
+    background-image: linear-gradient(0deg, transparent 0, transparent 69.5px, #EBEBEB 69.5px, #EBEBEB 81.5px, transparent 81.5px, transparent 151px), linear-gradient(30deg, transparent 0, transparent 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, transparent 110.7104px, transparent 151px), linear-gradient(60deg, transparent 0, transparent 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, transparent 110.7104px, transparent 151px), linear-gradient(90deg, transparent 0, transparent 69.5px, #EBEBEB 69.5px, #EBEBEB 81.5px, transparent 81.5px, transparent 151px), linear-gradient(120deg, transparent 0, transparent 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, transparent 110.7104px, transparent 151px), linear-gradient(150deg, #C1C1C1 0, #C1C1C1 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, #C1C1C1 110.7104px, #C1C1C1 151px);
+}
+.white:after {
+    content: "1";
+    background: #dddddd;
+    color: #C1C1C1;
+}
+.red {
+    background-image: linear-gradient(0deg, transparent 0, transparent 67.5px, #fff 67.5px, #fff 83.5px, transparent 83.5px, transparent 151px), linear-gradient(60deg, transparent 0, transparent 97.4304px, #fff 97.4304px, #fff 113.4304px, transparent 113.4304px, transparent 151px), linear-gradient(120deg, #800000 0, #800000 97.4304px, #fff 97.4304px, #fff 113.4304px, #800000 113.4304px, #800000 151px);
+}
+.red:before {
+    border: 8px solid #800000;
+    background-image: linear-gradient(0deg, transparent 0, transparent 69.5px, #EBEBEB 69.5px, #EBEBEB 81.5px, transparent 81.5px, transparent 151px), linear-gradient(30deg, transparent 0, transparent 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, transparent 110.7104px, transparent 151px), linear-gradient(60deg, transparent 0, transparent 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, transparent 110.7104px, transparent 151px), linear-gradient(90deg, transparent 0, transparent 69.5px, #EBEBEB 69.5px, #EBEBEB 81.5px, transparent 81.5px, transparent 151px), linear-gradient(120deg, transparent 0, transparent 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, transparent 110.7104px, transparent 151px), linear-gradient(150deg, #6C0000 0, #6C0000 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, #6C0000 110.7104px, #6C0000 151px);
+}
+.red:after {
+    content: "5";
+    background: #800000;
+    color: #6C0000;
+}
+.blue {
+    background-image: linear-gradient(0deg, transparent 0, transparent 67.5px, #fff 67.5px, #fff 83.5px, transparent 83.5px, transparent 151px), linear-gradient(60deg, transparent 0, transparent 97.4304px, #fff 97.4304px, #fff 113.4304px, transparent 113.4304px, transparent 151px), linear-gradient(120deg, #000099 0, #000099 97.4304px, #fff 97.4304px, #fff 113.4304px, #000099 113.4304px, #000099 151px);
+}
+.blue:before {
+    border: 8px solid #000099;
+    background-image: linear-gradient(0deg, transparent 0, transparent 69.5px, #EBEBEB 69.5px, #EBEBEB 81.5px, transparent 81.5px, transparent 151px), linear-gradient(30deg, transparent 0, transparent 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, transparent 110.7104px, transparent 151px), linear-gradient(60deg, transparent 0, transparent 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, transparent 110.7104px, transparent 151px), linear-gradient(90deg, transparent 0, transparent 69.5px, #EBEBEB 69.5px, #EBEBEB 81.5px, transparent 81.5px, transparent 151px), linear-gradient(120deg, transparent 0, transparent 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, transparent 110.7104px, transparent 151px), linear-gradient(150deg, #00016C 0, #00016C 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, #00016C 110.7104px, #00016C 151px);
+}
+.blue:after {
+    content: "10";
+    background: #000099;
+    color: #00016C;
+}
+.green {
+    background-image: linear-gradient(0deg, transparent 0, transparent 67.5px, #fff 67.5px, #fff 83.5px, transparent 83.5px, transparent 151px), linear-gradient(60deg, transparent 0, transparent 97.4304px, #fff 97.4304px, #fff 113.4304px, transparent 113.4304px, transparent 151px), linear-gradient(120deg, #008000 0, #008000 97.4304px, #fff 97.4304px, #fff 113.4304px, #008000 113.4304px, #008000 151px);
+}
+.green:before {
+    border: 8px solid #008000;
+    background-image: linear-gradient(0deg, transparent 0, transparent 69.5px, #EBEBEB 69.5px, #EBEBEB 81.5px, transparent 81.5px, transparent 151px), linear-gradient(30deg, transparent 0, transparent 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, transparent 110.7104px, transparent 151px), linear-gradient(60deg, transparent 0, transparent 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, transparent 110.7104px, transparent 151px), linear-gradient(90deg, transparent 0, transparent 69.5px, #EBEBEB 69.5px, #EBEBEB 81.5px, transparent 81.5px, transparent 151px), linear-gradient(120deg, transparent 0, transparent 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, transparent 110.7104px, transparent 151px), linear-gradient(150deg, #016C00 0, #016C00 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, #016C00 110.7104px, #016C00 151px);
+}
+.green:after {
+    content: "25";
+    background: #008000;
+    color: #016C00;
+}
+.black {
+    background-image: linear-gradient(0deg, transparent 0, transparent 67.5px, #fff 67.5px, #fff 83.5px, transparent 83.5px, transparent 151px), linear-gradient(60deg, transparent 0, transparent 97.4304px, #fff 97.4304px, #fff 113.4304px, transparent 113.4304px, transparent 151px), linear-gradient(120deg, #222222 0, #222222 97.4304px, #fff 97.4304px, #fff 113.4304px, #222222 113.4304px, #222222 151px);
+}
+.black:before {
+    border: 8px solid #222222;
+    background-image: linear-gradient(0deg, transparent 0, transparent 69.5px, #EBEBEB 69.5px, #EBEBEB 81.5px, transparent 81.5px, transparent 151px), linear-gradient(30deg, transparent 0, transparent 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, transparent 110.7104px, transparent 151px), linear-gradient(60deg, transparent 0, transparent 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, transparent 110.7104px, transparent 151px), linear-gradient(90deg, transparent 0, transparent 69.5px, #EBEBEB 69.5px, #EBEBEB 81.5px, transparent 81.5px, transparent 151px), linear-gradient(120deg, transparent 0, transparent 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, transparent 110.7104px, transparent 151px), linear-gradient(150deg, #000000 0, #000000 98.7104px, #EBEBEB 98.7104px, #EBEBEB 110.7104px, #000000 110.7104px, #000000 151px);
+}
+.black:after {
+    content: "100";
+    background: #222222;
+    color: #000000;
+}

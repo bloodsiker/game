@@ -65,161 +65,22 @@
                             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 text-center">
                                 <div class="well height-100">
                                     <span class="bet_text">Сумма ставки:</span><br/>
-                                    <div class="btn-group" role="group" aria-label="..." style="width: 101%;">
-                                        <button id="btnBet1" type="button" class="btn btn-default"
-                                                style="width: calc(100% /6);">1
-                                        </button>
-                                        <button id="btnBet2" type="button" class="btn btn-default"
-                                                style="width: calc(100% /6)">10
-                                        </button>
-                                        <button id="btnBet3" type="button" class="btn btn-default"
-                                                style="width: calc(100% /6)">50
-                                        </button>
-                                        <button id="btnBet4" type="button" class="btn btn-default"
-                                                style="width: calc(100% /6);">100
-                                        </button>
-                                        <button id="btnBet5" type="button" class="btn btn-default"
-                                                style="width: calc(100% /6);">250
-                                        </button>
-                                        <button id="btnBet6" type="button" class="btn btn-default"
-                                                style="width: calc(100% /6);">x2
-                                        </button>
+
+                                    <div class="chips">
+                                        <div class="pokerchip white"></div>
+                                        <div class="pokerchip red"></div>
+                                        <div class="pokerchip blue"></div>
+                                        <div class="pokerchip green"></div>
+                                        <div class="pokerchip black"></div>
                                     </div>
 
-                                    <h3 class="section__title">Выберите исход раунда</h3>
-                                    <div class="row">
-                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12  text-center mg-bt-15">
-                                            <div class="input-group input-group-sm width-100">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">Low 2 - 9</span>
-                                                <input id="txtDiceNumberLow" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x2</span>
-                                            </div>
-                                            <div class="input-group input-group-sm width-100">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">High 12 - 18</span>
-                                                <input id="txtDiceNumberHigh" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x2</span>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6  text-center">
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">3</span>
-                                                <span class="input-group-addon">-</span>
-                                                <input id="txtDiceNumber3" data-number="3" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon">+</span>
-                                                <span class="input-group-addon dice_v2_multiplier">x150</span>
-                                            </div>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">4</span>
-                                                <input id="txtDiceNumber4" data-number="4" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x50</span>
-                                            </div>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">5</span>
-                                                <input id="txtDiceNumber5" data-number="5" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x25</span>
-                                            </div>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">6</span>
-                                                <input id="txtDiceNumber6" data-number="6" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x15</span>
-                                            </div>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">7</span>
-                                                <input id="txtDiceNumber7" data-number="7" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x10</span>
-                                            </div>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">8</span>
-                                                <input id="txtDiceNumber8" data-number="8" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x7</span>
-                                            </div>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">9</span>
-                                                <input id="txtDiceNumber9" data-number="9" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x6</span>
-                                            </div>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">10</span>
-                                                <input id="txtDiceNumber10" data-number="10" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x5</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-6  text-center">
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">11</span>
-                                                <input id="txtDiceNumber11" data-number="11" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x5</span>
-                                            </div>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">12</span>
-                                                <input id="txtDiceNumber12" data-number="12" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x6</span>
-                                            </div>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">13</span>
-                                                <input id="txtDiceNumber13" data-number="13" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x7</span>
-                                            </div>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">14</span>
-                                                <input id="txtDiceNumber14" data-number="14" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x10</span>
-                                            </div>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">15</span>
-                                                <input id="txtDiceNumber15" data-number="15" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x15</span>
-                                            </div>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">16</span>
-                                                <input id="txtDiceNumber16" data-number="16" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x25</span>
-                                            </div>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">17</span>
-                                                <input id="txtDiceNumber17" data-number="17" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x50</span>
-                                            </div>
-                                            <div class="input-group input-group-sm">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">18</span>
-                                                <input id="txtDiceNumber318" data-number="18" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x150</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12  text-center mg-top-15">
-                                            <div class="input-group input-group-sm width-100">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">Double</span>
-                                                <input id="txtDiceDouble" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x2</span>
-                                            </div>
-                                            <div class="input-group input-group-sm width-100">
-                                                <span class="input-group-addon form-control-readonly dice_v2_number">Triple</span>
-                                                <input id="txtDiceTriple" type="text" class="form-control number"
-                                                       aria-label="..."/>
-                                                <span class="input-group-addon dice_v2_multiplier">x25</span>
-                                            </div>
-                                        </div>
+                                    <div class="btn-group" role="group" aria-label="..." style="width: 101%;">
+                                        <button id="btnBet1" type="button" class="btn btn-default"
+                                                style="width: calc(100% /2);"> Отмена
+                                        </button>
+                                        <button id="btnBet2" type="button" class="btn btn-default"
+                                                style="width: calc(100% /2)">x2 Удвоить
+                                        </button>
                                     </div>
 
                                     <button class="game-dice_v2__button" id="btnRoll"><span>Играть</span></button>
@@ -343,6 +204,128 @@
                                                 <span class="dot"></span>
                                             </li>
                                         </ol>
+                                    </div>
+
+                                    <div class="dice-bet">
+                                        <div class="container-bet">
+                                            <div class="row-bet">
+                                                <div class="cell-bet cell-bet-wide">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">Low <br> 2 - 9</div>
+                                                    <div class="bet-coef">x2</div>
+                                                </div>
+                                            </div>
+                                            <div class="row-bet">
+                                                <div class="cell-bet cell-bet-wide">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">Any <br> Double</div>
+                                                    <div class="bet-coef">x2</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="container-bet">
+                                            <div class="row-bet">
+                                                <div class="cell-bet">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">3</div>
+                                                    <div class="bet-coef">x150</div>
+                                                </div>
+                                                <div class="cell-bet">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">4</div>
+                                                    <div class="bet-coef">x50</div>
+                                                </div>
+                                                <div class="cell-bet">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">5</div>
+                                                    <div class="bet-coef">x25</div>
+                                                </div>
+                                                <div class="cell-bet">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">6</div>
+                                                    <div class="bet-coef">x15</div>
+                                                </div>
+                                                <div class="cell-bet">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">7</div>
+                                                    <div class="bet-coef">x10</div>
+                                                </div>
+                                                <div class="cell-bet">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">8</div>
+                                                    <div class="bet-coef">x7</div>
+                                                </div>
+                                                <div class="cell-bet">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">9</div>
+                                                    <div class="bet-coef">x6</div>
+                                                </div>
+                                                <div class="cell-bet">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">10</div>
+                                                    <div class="bet-coef">x5</div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row-bet">
+                                                <div class="cell-bet">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">11</div>
+                                                    <div class="bet-coef">x5</div>
+                                                </div>
+                                                <div class="cell-bet">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">12</div>
+                                                    <div class="bet-coef">x6</div>
+                                                </div>
+                                                <div class="cell-bet">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">13</div>
+                                                    <div class="bet-coef">x7</div>
+                                                </div>
+                                                <div class="cell-bet">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">14</div>
+                                                    <div class="bet-coef">x10</div>
+                                                </div>
+                                                <div class="cell-bet">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">15</div>
+                                                    <div class="bet-coef">x10</div>
+                                                </div>
+                                                <div class="cell-bet">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">16</div>
+                                                    <div class="bet-coef">x25</div>
+                                                </div>
+                                                <div class="cell-bet">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">17</div>
+                                                    <div class="bet-coef">x50</div>
+                                                </div>
+                                                <div class="cell-bet">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">18</div>
+                                                    <div class="bet-coef">x150</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="container-bet">
+                                            <div class="row-bet">
+                                                <div class="cell-bet cell-bet-wide">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">High <br> 12 - 18</div>
+                                                    <div class="bet-coef">x2</div>
+                                                </div>
+                                            </div>
+                                            <div class="row-bet">
+                                                <div class="cell-bet cell-bet-wide">
+                                                    <div class="arrow-top"></div>
+                                                    <div class="bet-number">Any <br> Triple</div>
+                                                    <div class="bet-coef">x25</div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                 </div>
