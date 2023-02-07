@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\StrHelperService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -44,6 +45,8 @@ class User extends Authenticatable
     public function getBalance($currency)
     {
         switch ($currency) {
+            case 'btc':
+                return $this->btc;
             case 'usd':
                 return $this->usd;
             case 'rub':
@@ -75,15 +78,17 @@ class User extends Authenticatable
         return $this->{$this->balance};
     }
 
-    public function addToBalance($amount)
+    public function addToBalance($amount, $accuracy = 8)
     {
-        $this->{$this->balance} += $amount;
+        $balance = bcadd(StrHelperService::numberFormat($this->{$this->balance}), StrHelperService::numberFormat($amount), $accuracy);
+        $this->{$this->balance} = $balance;
         $this->save();
     }
 
-    public function writeOffBalance($amount)
+    public function writeOffBalance($amount, $accuracy = 8)
     {
-        $this->{$this->balance} -= $amount;
+        $balance = bcsub(StrHelperService::numberFormat($this->{$this->balance}), StrHelperService::numberFormat($amount), $accuracy);
+        $this->{$this->balance} = $balance;
         $this->save();
     }
 }

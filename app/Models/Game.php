@@ -9,6 +9,6 @@ class Game extends Model
     protected $hidden = ['created_at', 'updated_at'];
 
     protected $fillable = [
-        'name', 'edge', 'max_win', 'min_bid', 'is_active'
+        'name', 'slug', 'edge', 'max_win', 'min_bid', 'is_active'
     ];
 }

@@ -7,6 +7,79 @@
     justify-content: space-between;
     align-items: center;
 }
+.game-coinflip__winning {
+    position: absolute;
+    z-index: 2;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-60%);
+    width: 100%;
+    max-width: 340px;
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(33,34,51,.95);
+    border: 2px solid #71e1f3;
+    border-radius: 8px;
+    box-shadow: 0 0 20px 2px rgb(0 0 0 / 50%);
+    visibility: hidden;
+    opacity: 0;
+    transition: all .3s ease-in-out;
+}
+.game-coinflip__winning_active {
+    visibility: visible;
+    opacity: 1;
+    transform: translate(-50%,-50%);
+}
+.game-coinflip__winning-close {
+    position: absolute;
+    top: -16px;
+    right: -16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #4fb6da url('/assets/icons/close.svg') 50% no-repeat;
+    background-size: 12px 12px;
+    cursor: pointer;
+    transition: all .2s ease-in-out;
+    box-shadow: 0 0 10px 2px rgb(0 0 0 / 20%);
+}
+.game-coinflip__winning-close:hover {
+    background-color: #5bc8e3;
+    transform: rotate(180deg);
+}
+.game-coinflip__winning-rate {
+    font-size: 60px;
+    font-weight: 700;
+    text-shadow: 2px 2px 40px #72f3fb;
+    white-space: nowrap;
+    color: #72f3fb;
+    background: linear-gradient(45deg,#3eb6eb,#72f3fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.game-coinflip__winning-amount {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+    font-size: 20px;
+}
+.game-coinflip__winning-amount-value {
+    display: inline-block;
+    white-space: nowrap;
+    margin-left: 10px;
+    font-size: 24px;
+    font-weight: 700;
+    color: #72f3fb;
+    background: linear-gradient(
+        45deg
+        ,#3eb6eb,#72f3fb);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
 .coinflip-game .section__item {
     display: flex;
     justify-content: center;
@@ -88,6 +161,7 @@
     flex-direction: column;
     min-height: 100%;
     padding: 20px;
+    position: relative;
 }
 .coinflip__block .board {
     display: flex;

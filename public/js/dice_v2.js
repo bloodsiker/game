@@ -9,6 +9,7 @@ $(document).ready(function () {
     }
 
     var Idc = idc;
+    var Accuracy = accuracy;
     var Longid = getCookie("LongId");
     var Minbid = parseFloat(minbid);
     var Maxwin = parseFloat(maxwin);
@@ -335,10 +336,9 @@ $(document).ready(function () {
 
     convert_number = function (number, fixed) {
         if (fixed == 0) {
-            var result = number.toLocaleString('en-US');
-        }
-        else {
-            var result = number.toFixed(fixed).toLocaleString('en-US');
+            var result = parseInt(number).toLocaleString('en-US');
+        } else {
+            var result = parseFloat(number).toFixed(fixed).toLocaleString('en-US');
         }
 
         return result;
@@ -532,7 +532,7 @@ $(document).ready(function () {
     getLastBets(Longid, "1");
 
 
-    getBalance(Idc);
+    getBalance(Idc, Accuracy);
     getBets();
 
     $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {

@@ -12,7 +12,6 @@
     <meta name='description' content='Best bitcoin dice gambling game. Only 1% house edge and super fast rolls. Progressive jackpot included!'/>
     <meta name='keywords' content='bitcoin dice,bitcoin gambling dice,low house edge dice,jackpot dice,fast dice,popular dice,fast rolls dice'/>
     <meta name="csrf-token" content="{{ csrf_token() }}">
-{{--    <script src="{{ asset('js/CgqVO0jQpd_D3fHKSXQKZ_VwbLA.js') }}"></script>--}}
     <link rel="stylesheet" href="{{ asset('css/app.css') }}"/>
     <link rel="stylesheet" href="{{ asset('js/jquery-ui-1.11.4/jquery-ui.min.css') }}"/>
     <link href="{{ asset('css/chat_7.css') }}" rel="stylesheet"/>
@@ -38,26 +37,25 @@
 
     <script>
         $(document).ready(function () {
-
             @if(!auth()->check())
-            $.fancybox.open({
-                href: "{{ route('register') }}",
-                autoscale: false,
-                autoDimensions: false,
-                width: 500,
-                transitionIn: 'none',
-                transitionOut: 'none',
-                type: 'iframe',
-                closeClick: false,
-                closeBtn: false,
-                openEffect: 'none',
-                closeEffect: 'none',
-                helpers: {
-                    overlay: {
-                        closeClick: false,
+                $.fancybox.open({
+                    href: "{{ route('register') }}",
+                    autoscale: false,
+                    autoDimensions: false,
+                    width: 500,
+                    transitionIn: 'none',
+                    transitionOut: 'none',
+                    type: 'iframe',
+                    closeClick: false,
+                    closeBtn: false,
+                    openEffect: 'none',
+                    closeEffect: 'none',
+                    helpers: {
+                        overlay: {
+                            closeClick: false,
+                        }
                     }
-                }
-            });
+                });
             @endif
 
             if (window.LoggedIn == "True") {
@@ -89,7 +87,7 @@
         </div>
     </div>
 
-@stack('scripts')
+    @stack('scripts')
 
 </body>
 </html>

@@ -22,7 +22,7 @@ class CoinFlipController extends Controller
 
     public function index(Request $request, $currency)
     {
-        $currency = Currency::where('idc', $currency)->first();
+        $currency = Currency::where('code', $currency)->first();
         if (!$currency) {
             abort(404);
         }

@@ -22,7 +22,7 @@ class MineService
     public function start(Request $request)
     {
         $user = Auth::user();
-        $idc = $request->get('idc');
+        $code = $request->get('code');
         $sum = (float) $request->get('sum');
 
         if (!$request->get('mines_count')) {
@@ -33,9 +33,9 @@ class MineService
             return ['status' => 'error', 'message'  => 'need bet'];
         }
 
-        $currency = Currency::where('idc', $idc)->first();
+        $currency = Currency::where('code', $code)->first();
 
-        $user->setActiveBalance($idc);
+        $user->setActiveBalance($code);
 
         $count = $request->get('mines_count') ?? 2;
 
@@ -58,7 +58,7 @@ class MineService
         $game->time_game = Carbon::now();
         $game->save();
 
-        $user->writeOffBalance($sum);
+        $user->writeOffBalance($sum, $currency->accuracy);
 
         return [
             'balance' => $user->getActiveBalance(),
@@ -70,13 +70,13 @@ class MineService
     public function play(Request $request)
     {
         $cell = (int)$request->get('cell');
-        $idc = $request->get('idc');
+        $code = $request->get('code');
         if (!$cell) {
             return response()->json(['status' => 'error', 'message'  => 'need cell'], 400);
         }
 
         $user = Auth::user();
-        $user->setActiveBalance($idc);
+        $user->setActiveBalance($code);
 
         $mineGame = MineHistory::where(['user_id' => $user->id, 'active'=> true])->orderBy('id', 'DESC')->first();
 
@@ -126,7 +126,7 @@ class MineService
                         'count_mine' => $mineGame->count_mine,
                         'coeff' => $mineGame->coeff,
                         'profit' => $mineGame->profit,
-                        'idc' => $idc,
+                        'code' => $code,
                     ],
                 ]
             ];
@@ -149,7 +149,7 @@ class MineService
 
     public function collect(Request $request)
     {
-        $idc = $request->get('idc');
+        $code = $request->get('code');
         $user = Auth::user();
         $mineGame = MineHistory::where(['user_id' => $user->id, 'active'=> true])->orderBy('id', 'DESC')->first();
 
@@ -157,10 +157,12 @@ class MineService
             return ['status' => 'error', 'message'  => 'Game not found'];
         }
 
+        $currency = Currency::where('code', $code)->first();
+
         $profit = $mineGame->sum * $mineGame->coeff;
 
-        $user->setActiveBalance($idc);
-        $user->addToBalance($mineGame->won_sum);
+        $user->setActiveBalance($code);
+        $user->addToBalance($profit, $currency->accuracy);
 
         $mineGame->won_sum = $profit;
         $mineGame->active = false;
@@ -188,7 +190,7 @@ class MineService
                     'count_mine' => $mineGame->count_mine,
                     'coeff' => $mineGame->coeff,
                     'profit' => $mineGame->profit,
-                    'idc' => $idc,
+                    'code' => $code,
                 ],
             ]
         ];
@@ -221,7 +223,7 @@ class MineService
             $results[$i]['count_mine'] = $result->count_mine;
             $results[$i]['coeff'] = $result->coeff;
             $results[$i]['profit'] = $result->profit;
-            $results[$i]['idc'] = $result->currency->idc;
+            $results[$i]['code'] = $result->currency->code;
             $i++;
         }
 
@@ -245,7 +247,7 @@ class MineService
             $results[$i]['count_mine'] = $result->count_mine;
             $results[$i]['coeff'] = $result->coeff;
             $results[$i]['profit'] = $result->profit;
-            $results[$i]['idc'] = $result->currency->idc;
+            $results[$i]['code'] = $result->currency->code;
             $i++;
         }
 

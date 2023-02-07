@@ -33,7 +33,7 @@ class AccountController extends Controller
 
     public function reward(Request $request, $currency)
     {
-        $currency = Currency::where('idc', $currency)->first();
+        $currency = Currency::where('code', $currency)->first();
         if (!$currency) {
             abort(404);
         }
@@ -41,7 +41,7 @@ class AccountController extends Controller
         $user = Auth::user();
 
         $prev = FaucetHistory::where('user_id', $user->id)->where('type', FaucetHistory::TYPE_F)->orderByDesc('id')->first();
-        $diff = $prev->date->diffInSeconds(Carbon::now());
+        $diff = $prev ? $prev->date->diffInSeconds(Carbon::now()) : 180;
 
         if ($request->isMethod('POST')) {
             $amount = $request->get('amount');
@@ -50,11 +50,11 @@ class AccountController extends Controller
                 return back()->with(['error' => 'Слишком много запросов с одного и того же IP-адреса с интервалом в 3 минуты']);
             }
 
-            if ($user->getBalance($currency->idc) > 0) {
+            if ($user->getBalance($currency->code) > 0) {
                 return back()->with(['error' => 'Ваш баланс слишком велик для запроса крана.']);
             }
 
-            $user->{$currency->idc} = $amount;
+            $user->{$currency->code} = $amount;
             $user->save();
 
             $faucetHistory = new FaucetHistory();
@@ -107,7 +107,7 @@ class AccountController extends Controller
 
             $amount = $promoCode->discount;
 
-            $user->setActiveBalance($promoCode->currency->idc);
+            $user->setActiveBalance($promoCode->currency->code);
             $user->addToBalance($amount);
 
             PromoCodeActive::create([
@@ -129,12 +129,20 @@ class AccountController extends Controller
         }
     }
 
+    public function setting(Request $request)
+    {
+        return view('account.setting');
+    }
+
     public function getBalance(Request $request)
     {
-        $currency = $request->get('idc');
+        $code = $request->get('code');
+
+        $currency = Currency::where('code', $code)->first();
 
         return response()->json([
-            'd' => Auth::user()->{$currency},
+            'balance' => Auth::user()->{$code},
+            'accuracy' => $currency->accuracy,
         ]);
     }
 }

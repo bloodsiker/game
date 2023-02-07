@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Web\AccountController;
+use App\Http\Controllers\Web\DepositController;
 use App\Http\Controllers\Web\Game\CoinFlipController;
 use App\Http\Controllers\Web\Game\DiceController;
 use App\Http\Controllers\Web\Game\DiceV2Controller;
@@ -9,6 +10,7 @@ use App\Http\Controllers\Web\Game\MineController;
 use App\Http\Controllers\Web\LoginController;
 use App\Http\Controllers\Web\MainController;
 use App\Http\Controllers\Web\RegisterController;
+use App\Http\Controllers\Web\WithdrawController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,7 +35,7 @@ Route::group(['middleware' => ['web']], function () {
     Route::group(['middleware' => ['auth']], function () {
         Route::post('/dice/getDiceResult', [DiceController::class, 'getDiceResult'])->name('getDiceResult');
         Route::post('/dice/getLastBets', [DiceController::class, 'getLastBets'])->name('getDiceLastBets');
-        Route::get('/dice/getBet/{id}', [DiceController::class, 'getBet'])->name('getBet');
+        Route::get('/dice/getBet/{id}', [DiceController::class, 'getBet'])->name('getBetDice');
 
         Route::post('/keno/getKenoResult', [KenoController::class, 'getKenoResult'])->name('getKenoResult');
         Route::post('/keno/getLastBets', [KenoController::class, 'getLastBets'])->name('getKenoLastBets');
@@ -44,6 +46,7 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('/mines/play', [MineController::class, 'play']);
         Route::post('/mines/collect', [MineController::class, 'collect']);
         Route::post('/mines/getLastBets', [MineController::class, 'getLastBets'])->name('getMinesLastBets');
+        Route::get('/mines/getBet/{id}', [MineController::class, 'getBet'])->name('getBetMine');
 
         Route::post('/coinflip/create', [CoinFlipController::class, 'create']);
         Route::post('/coinflip/play', [CoinFlipController::class, 'play']);
@@ -53,8 +56,12 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('/getBalance', [AccountController::class, 'getBalance'])->name('getBalance');
         Route::post('/getFaucetHistory', [AccountController::class, 'getFaucetHistory'])->name('getFaucetHistory');
 
+        Route::get('/deposit/{currency}', [DepositController::class, 'index'])->name('deposit');
+        Route::get('/withdraw/{currency}', [WithdrawController::class, 'index'])->name('withdraw');
+
         Route::get('/account/info', [AccountController::class, 'index'])->name('account.info');
         Route::get('/account/player', [AccountController::class, 'infoPlayer'])->name('account.player');
+        Route::get('/account/setting', [AccountController::class, 'setting'])->name('account.setting');
         Route::post('/account/promocode', [AccountController::class, 'usePromoCode'])->name('account.promocode');
         Route::match(['post', 'get'],'/account/reward/{currency}', [AccountController::class, 'reward'])->name('account.reward');
     });

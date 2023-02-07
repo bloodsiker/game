@@ -11,7 +11,7 @@ class KenoHistory extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'user_id', 'currency_id', 'bet', 'profit', 'coeff', 'user_numbers', 'drop_numbers', 'win_numbers', 'remainder', 'time_game'
+        'user_id', 'currency_id', 'bet', 'type', 'profit', 'coeff', 'user_numbers', 'drop_numbers', 'win_numbers', 'remainder', 'time_game'
     ];
 
     protected $dates = ['time_game'];

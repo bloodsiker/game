@@ -181,7 +181,7 @@ function IncreaseMessageCount(channel) {
 };
 
 function UsersOnline(users) {
-    $(".caption_users").text('Users online: ' + users);
+    $(".caption_users").text('Пользователей онлайн: ' + users);
 }
 
 
@@ -250,10 +250,11 @@ $(document).ready(function () {
     var Jackpot = 0;
     var FirstTime = true;
 
-     showBalance = function (balance, idc) {
-        if (balance >= 0) {
-            $("#lblBalance").html("Баланс: " + numberWithSpacesDouble(convert_number(balance, 2)));
-            $("#lblCoinName").html(idc);
+     showBalance = function (balance, code, accuracy = 8) {
+         console.log(balance, accuracy);
+         if (balance >= 0) {
+            $("#lblBalance").html("Баланс: " + numberWithSpacesDouble(convert_number(balance, accuracy)));
+            $("#lblCoinName").html(code);
         }
     }
 
@@ -277,25 +278,24 @@ $(document).ready(function () {
     })
 
     getJackpots = function () {
-        $.ajax(
-            {
-                type: 'GET',
-                url: '/api/dicejackpots/',
-                contentType: "application/json",
-                success: function (msg) {
-                    if (msg.length > 0) {
-                        addToTableJackpots(msg);
-                    }
-                },
-                error: function (msg) {
-                    console.log("not ok....")
+        $.ajax({
+            type: 'GET',
+            url: '/api/dicejackpots/',
+            contentType: "application/json",
+            success: function (msg) {
+                if (msg.length > 0) {
+                    addToTableJackpots(msg);
                 }
-            });
+            },
+            error: function (msg) {
+                console.log("not ok....")
+            }
+        });
     };
 
     refreshJackpots1 = function () {
-        getJackpots();
-        setTimeout(function () { refreshJackpots1(); }, 5000);
+        // getJackpots();
+        // setTimeout(function () { refreshJackpots1(); }, 5000);
     }
     refreshJackpots1();
 
@@ -349,28 +349,28 @@ $(document).ready(function () {
         }
     };
 
-    getHighRolls = function () {
-        $.ajax(
-            {
-                type: 'GET',
-                url: '/api/allhighrolls/',
-                contentType: "application/json",
-                success: function (msg) {
-                    if (msg.length > 0) {
-                        addToTableHighRolls(msg);
-                    }
-                },
-                error: function (msg) {
-                    console.log("not ok....")
-                }
-            });
-    };
-
-    refreshHighRollers1 = function () {
-        getHighRolls();
-        setTimeout(function () { refreshHighRollers1(); }, 5000);
-    }
-    refreshHighRollers1();
+    // getHighRolls = function () {
+    //     $.ajax(
+    //         {
+    //             type: 'GET',
+    //             url: '/api/allhighrolls/',
+    //             contentType: "application/json",
+    //             success: function (msg) {
+    //                 if (msg.length > 0) {
+    //                     addToTableHighRolls(msg);
+    //                 }
+    //             },
+    //             error: function (msg) {
+    //                 console.log("not ok....")
+    //             }
+    //         });
+    // };
+    //
+    // refreshHighRollers1 = function () {
+    //     getHighRolls();
+    //     setTimeout(function () { refreshHighRollers1(); }, 5000);
+    // }
+    // refreshHighRollers1();
 
     $(document).click(function (event) {
         var clickover = $(event.target);
@@ -559,6 +559,7 @@ $(document).ready(function () {
     }, 1000);
 
     var idc = coin;
+    var Accuracy = accuracy;
     var loop = 3;
     var timer1;
     var logedin = false;
@@ -687,32 +688,31 @@ $(document).ready(function () {
 
     convert_number = function (number, fixed) {
         if (fixed == 0) {
-            var result = number.toLocaleString('en-US');
+            var result = parseInt(number).toLocaleString('en-US');
         }
         else {
-            var result = number.toFixed(fixed).toLocaleString('en-US');
+            var result = parseFloat(number).toFixed(fixed).toLocaleString('en-US');
         }
 
         return result;
     };
 
-    getBalance = function (idc) {
+    getBalance = function (code) {
         if (balancerefresh) {
             $.ajax({
                 type: 'POST',
                 url: '/getBalance',
-                data: {idc: idc},
+                data: {code: code},
                 dataType: 'json',
                 success: function (msg) {
-                    let balance = parseFloat(msg.d);
+                    let balance = parseFloat(msg.balance);
                     if (balance >= 0) {
-                        showBalance(balance, idc);
+                        showBalance(balance, code, msg.accuracy);
                         Balance = balance;
                         BalanceCredits = balance * parseFloat(ratio);
                         try {
                             window.updateBalance(Math.floor(BalanceCredits));
-                        }
-                            catch (e) {
+                        } catch (e) {
                         }
                     }
                 },
@@ -760,8 +760,7 @@ $(document).ready(function () {
 
                         if (parseFloat(content.JackpotChange) > 0) {
                             TempChange = parseFloat(content.JackpotChange) / 3480 / 10; // that is average change in a second
-                        }
-                        else {
+                        } else {
                             TempChange = 0;
                         }
 
@@ -772,8 +771,7 @@ $(document).ready(function () {
 
                         if (parseFloat(content.PendingDeposits) > 0) {
                             $("#lblPending").html("[Pending " + parseFloat(content.PendingDeposits).toFixed(8) + " " + coin + "]");
-                        }
-                        else {
+                        } else {
                             $("#lblPending").html("");
                         }
 
@@ -785,8 +783,7 @@ $(document).ready(function () {
 
                             if (notice != "") {
                                 showNotice(notice);
-                            }
-                            else {
+                            } else {
                                 hideNotice();
                             }
                         }
@@ -805,7 +802,7 @@ $(document).ready(function () {
     refreshData = function () {
         getBalance(idc);
         if (loop % 5 == 0) {
-            getUsersOnline();
+            // getUsersOnline();
         }
         loop++;
         setTimeout(function () { refreshData(); }, 2000);

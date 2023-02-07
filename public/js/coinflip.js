@@ -4,7 +4,8 @@ $(document).ready(function () {
         return Math.floor(((100 - Edge) / (100 * (under / 100))));
     }
 
-    var Idc = idc;
+    var Code = code;
+    var Accuracy = accuracy;
     var Longid = getCookie("LongId");
     var Minbid = parseFloat(minbid);
     var Maxwin = parseFloat(maxwin);
@@ -29,7 +30,7 @@ $(document).ready(function () {
     var AllBetsAdded = 0;
     var HighRoll = 0;
     var AllBetsTime;
-    var diceAutobetCookieName = Idc + 'dice_autobet';
+    var diceAutobetCookieName = Code + 'dice_autobet';
 
     var selectedNumbers = [];
 
@@ -93,9 +94,9 @@ $(document).ready(function () {
 
     convert_number = function (number, fixed) {
         if (fixed == 0) {
-            var result = number.toLocaleString('en-US');
+            var result = parseInt(number).toLocaleString('en-US');
         } else {
-            var result = number.toFixed(fixed).toLocaleString('en-US');
+            var result = parseFloat(number).toFixed(fixed).toLocaleString('en-US');
         }
 
         return result;
@@ -172,7 +173,7 @@ $(document).ready(function () {
         $.ajax({
             type: 'POST',
             url: '/stats.asmx/GetFairDice',
-            data: '{idc:"' + coin + '"}',
+            data: '{code:"' + coin + '"}',
             contentType: "application/json",
             success: function (msg) {
                 if (msg.d.length > 0) {
@@ -189,15 +190,15 @@ $(document).ready(function () {
         });
     };
 
-    getBalance(Idc);
+    getBalance(Code, Accuracy);
     getBets();
-    // getProvablyFair(Longid, Idc);
+    // getProvablyFair(Longid, Code);
 
     $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
         var str = e.target.text;
         str = str.trim();
         //if (str == "Provably fair") {
-        //    getProvablyFair(Longid, Idc);
+        //    getProvablyFair(Longid, Code);
         //}
         TabChange = true;
         var active = "Active_tab";
@@ -242,7 +243,7 @@ $(document).ready(function () {
         let bet = $("#txtCoinBet").val();
         if (manual_validate() === true) {
             let clientseed = getClientSeed();
-            getResultManual(Longid, Idc, bet, selectedNumbers, clientseed);
+            getResultManual(Longid, Code, bet, selectedNumbers, clientseed);
         } else {
             Runing = false;
         }
@@ -301,21 +302,35 @@ $(document).ready(function () {
         }
     })
 
+    $('.game-coinflip__winning-close').on('click', function () {
+        closeCoinflipWin();
+    });
+
+    let closeCoinflipWin = () => {
+        $('.game-coinflip__winning').removeClass('game-coinflip__winning_active');
+    }
+
+    let showWinCoinflip = (amount, coeff) => {
+        $('.game-coinflip__winning').addClass('game-coinflip__winning_active');
+        $("#winСoinflipAmount").text(amount);
+        $("#coinflipCoeff").text(coeff);
+    }
+
     const startGame = () => {
         let bet = parseFloat($("#txtCoinBet").val());
 
         $('.mines-coeff').removeClass('active');
         $('#coinStep').text(DefaultStep);
         $('#coinCoeff').text(DefaultCoeff);
-        $('.btnSetBet').attr('disabled', 'disabled');
-        $('#txtCoinBet').attr('disabled', 'disabled');
+        $('#txtCoinBet, #btnDivBet, #btnX2Bet, .btnSetBet').attr('disabled', 'disabled');
 
-        showMessageSuccess('');
+        closeCoinflipWin();
+        // showMessageSuccess('');
 
         $.ajax({
             type: 'POST',
             url: '/coinflip/create',
-            data: {idc: Idc, bet: bet},
+            data: {code: Code, bet: bet},
             dataType: 'json',
             success: function (res) {
                 if (res.status === 'success') {
@@ -324,7 +339,7 @@ $(document).ready(function () {
                     DisabledGame = false;
 
                     Balance = res.balance;
-                    showBalance(res.balance, idc);
+                    showBalance(res.balance, Code, Accuracy);
                     $('.steps__step').attr('class', 'steps__step');
                     $('.steps__step-img').attr('class', 'steps__step-img');
                     // renderBtnPossibleWin(bet);
@@ -346,7 +361,7 @@ $(document).ready(function () {
         $.ajax({
             type: 'POST',
             url: '/coinflip/play',
-            data: {idc: idc, bet: bet, coin: coin },
+            data: {code: Code, bet: bet, coin: coin },
             dataType: 'json',
             success: function (res) {
 
@@ -368,10 +383,9 @@ $(document).ready(function () {
                         let countRevealed = res.revealed.length;
                         setTimeout(function () {
                             Balance = res.balance;
-                            showBalance(res.balance, idc);
+                            showBalance(res.balance, Code, Accuracy);
                             renderBtnStart();
-                            $('.btnSetBet').removeAttr('disabled');
-                            $('#txtCoinBet').removeAttr('disabled');
+                            $('#txtCoinBet, #btnDivBet, #btnX2Bet, .btnSetBet').removeAttr('disabled');
                             $.each(res.coins, function(index, value) {
                                 let step = ++index;
                                 if (step => countRevealed) {
@@ -422,21 +436,20 @@ $(document).ready(function () {
         $.ajax({
             type: 'POST',
             url: '/coinflip/collect',
-            data: {idc: Idc},
+            data: {code: Code},
             dataType: 'json',
             success: function (res) {
                 if (res.status === 'success') {
                     Step = 0;
-                    showMessageSuccess('Вы выиграли ' + (res.won_sum).toFixed(2));
+                    showWinCoinflip(convert_number(res.won_sum, Accuracy), res.coeff);
+                    // showMessageSuccess('Вы выиграли ' + convert_number(res.won_sum, Accuracy));
                     Balance = res.balance;
-                    showBalance(res.balance, idc);
+                    showBalance(res.balance, Code, Accuracy);
                     $('#btnPossibleWin').remove();
                     renderBtnStart();
 
-                    $('.btnSetBet').removeAttr('disabled');
-                    $('#txtCoinBet').removeAttr('disabled');
+                    $('#txtCoinBet, #btnDivBet, #btnX2Bet, .btnSetBet').removeAttr('disabled');
 
-                    // addToTable(content.BetData, "1");
                     let countRevealed = res.revealed.length;
 
                     $.each(res.coins, function(index, value) {
@@ -634,7 +647,7 @@ $(document).ready(function () {
                     else {
                         append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
                     }
-                    append = append + "<td class='coin_column'><img class='result_coin' src='/assets/currency/" + v.idc.trim() + ".png' height='25' width='25'></td></tr>"
+                    append = append + "<td class='coin_column'><img class='result_coin' src='/assets/currency/" + v.code.trim() + ".png' height='25' width='25'></td></tr>"
 
                     AllBets.push(append);
 
@@ -690,7 +703,7 @@ $(document).ready(function () {
                     else {
                         append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
                     }
-                    append = append + "<td><img class='result_coin' src='/assets/currency/" + v.idc.trim() + ".png' height='25' width='25'></td></tr>";
+                    append = append + "<td><img class='result_coin' src='/assets/currency/" + v.code.trim() + ".png' height='25' width='25'></td></tr>";
 
                     var row = $(append);
                     $("#table_my_bets_head").after(row);
@@ -734,7 +747,7 @@ $(document).ready(function () {
                     else {
                         append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
                     }
-                    append = append + "<td><img class='result_coin' src='/assets/currency/" + v.idc.trim() + ".png' height='25' width='25'></td></tr>";
+                    append = append + "<td><img class='result_coin' src='/assets/currency/" + v.code.trim() + ".png' height='25' width='25'></td></tr>";
 
                     var row = $(append);
                     $("#table_high_rollers_head").after(row);

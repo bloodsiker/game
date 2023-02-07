@@ -21,15 +21,14 @@ class DiceService
     public function getDiceResult(Request $request)
     {
         $user = Auth::user();
-        $idc = $request->get('idc');
+        $code = $request->get('code');
         $bet = (float)$request->get('bet');
         $multiplier = (float)$request->get('multiplier');
         $underOver = (int)$request->get('under_over');
-        $clientseed = $request->get('clientseed');
 
-        $currency = Currency::where('idc', $idc)->first();
+        $currency = Currency::where('code', $code)->first();
 
-        $user->setActiveBalance($idc);
+        $user->setActiveBalance($code);
 
 
         $maxRatio = floor(((100 - $this->game->edge) / (100 * (0.010 / 100))));
@@ -54,19 +53,40 @@ class DiceService
         if ($underOver === 1) {
             $chance = 99.999 - $chance;
             if ($randRoll > $chance) {
-                $user->addToBalance($winAmount);
+                $user->addToBalance($winAmount, $currency->accuracy);
             } else {
                 $winAmount = -1 * $bet;
-                $user->writeOffBalance($bet);
+                $user->writeOffBalance($bet, $currency->accuracy);
             }
         } elseif ($underOver === 2) {
             if ($randRoll < $chance) {
-                $user->addToBalance($winAmount);
+                $user->addToBalance($winAmount, $currency->accuracy);
             } else {
                 $winAmount = -1 * $bet;
-                $user->writeOffBalance($bet);
+                $user->writeOffBalance($bet, $currency->accuracy);
             }
         }
+
+        $explodeRoll = explode('.', (string) $randRoll);
+
+        $first = str_split($explodeRoll[0]);
+        $last = ['0', '0', '0'];
+        if (count($first) === 1) {
+            array_unshift($first, '0');
+        }
+
+        if (isset($explodeRoll[0], $explodeRoll[1])) {
+            $last = str_split($explodeRoll[1]);
+            if (count($last) === 0) {
+                array_push($last, '0', '0', '0');
+            } elseif (count($last) === 1) {
+                array_push($last, '0', '0');
+            } elseif (count($last) === 2) {
+                $last[] = '0';
+            }
+        }
+
+        $rollArray = array_merge($first, $last);
 
         $diceHistory = DiceHistory::create([
             'user_id' => $user->id,
@@ -84,12 +104,13 @@ class DiceService
         return [
             'd' => [
                 'roll' => $randRoll,
+                'roll_array' => $rollArray,
                 'bet' => $bet,
                 'multiplier' => $multiplier,
                 'under_over' => $underOver,
                 'balance' => $user->getActiveBalance(),
                 'win' => $winAmount,
-                'idc' => $idc,
+                'code' => $code,
                 'longid' => null,
                 'comment' => null,
                 'client_seed' => null,
@@ -110,7 +131,8 @@ class DiceService
                         'target' => $diceHistory->target,
                         'roll' => $randRoll,
                         'profit' => $winAmount,
-                        'idc' => $idc,
+                        'code' => $code,
+                        'accuracy' => $currency->accuracy,
                     ],
                 ]
             ]
@@ -142,7 +164,8 @@ class DiceService
             $results[$i]['target'] = $result->target;
             $results[$i]['roll'] = $result->roll;
             $results[$i]['profit'] = $result->profit;
-            $results[$i]['idc'] = $result->currency->idc;
+            $results[$i]['code'] = $result->currency->code;
+            $results[$i]['accuracy'] = $result->currency->accuracy;
             $i++;
         }
 
@@ -167,7 +190,8 @@ class DiceService
             $results[$i]['target'] = $result->target;
             $results[$i]['roll'] = $result->roll;
             $results[$i]['profit'] = $result->profit;
-            $results[$i]['idc'] = $result->currency->idc;
+            $results[$i]['code'] = $result->currency->code;
+            $results[$i]['accuracy'] = $result->currency->accuracy;
             $i++;
         }
 

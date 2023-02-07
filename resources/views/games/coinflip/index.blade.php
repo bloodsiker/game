@@ -10,7 +10,7 @@
 
 @push('head_scripts')
     <script type="text/javascript">
-        var coin = "{{ $currency->idc }}";
+        var coin = "{{ $currency->code }}";
         var style = "7";
         var coinname = "{{ $currency->name }}";
         var decimals = "6";
@@ -24,7 +24,8 @@
     </script>
 
     <script type="text/javascript">
-        var idc = "{{ $currency->idc }}";
+        var code = "{{ $currency->code }}";
+        var accuracy = "{{ $currency->accuracy }}";
         var coinname = "{{ $currency->name }}";
         var style = "7";
         var maxwin = "500000";
@@ -110,6 +111,21 @@
                                 <div class="well height-100">
 
                                    <div class="coinflip__block">
+                                       <div class="game-coinflip__winning">
+                                           <div class="game-coinflip__winning-close"></div>
+                                           <div class="game-coinflip__winning-rate">
+                                               <span class="sum" id="coinflipCoeff">0.25</span>
+                                               x
+                                           </div>
+                                           <div class="game-coinflip__winning-amount">
+                                               <span class="game-coinflip__winning-amount-title">Выиграш</span>
+                                               <span class="game-coinflip__winning-amount-value">
+                                                    <span class="sum" id="winСoinflipAmount"></span>
+                                                     <span class="sum">{{ $currency->name }}</span>
+                                                </span>
+                                           </div>
+                                       </div>
+
                                        <div class="board">
                                            <div class="board__aside board__aside_left">
                                                <div class="board__aside-number" id="coinStep">0</div>

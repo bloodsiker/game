@@ -104,7 +104,7 @@
                                 <tr>
                                     <td>{{ $currency->idc }}</td>
                                     <td>{{ $currency->name }}</td>
-                                    <td>0.00000001</td>
+                                    <td>{{ Auth::user()->{$currency->idc} }}</td>
                                 </tr>
                             @endforeach
                         </table>

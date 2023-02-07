@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Auth;
 
 class KenoService
 {
+    const MAX_NUMBERS = 40;
+
     protected $game;
 
     public function __construct()
@@ -22,7 +24,8 @@ class KenoService
     public function getKenoResult(Request $request)
     {
         $user = Auth::user();
-        $idc = $request->get('idc');
+        $code = $request->get('code');
+        $type = $request->get('type', 1);
         $bet = (float) $request->get('bet');
         $clientseed = $request->get('clientseed');
 
@@ -32,13 +35,13 @@ class KenoService
 
         $count = count($numbers);
 
-        $user->setActiveBalance($idc);
+        $user->setActiveBalance($code);
 
         if ($bet > $user->getActiveBalance()) {
             return ['status' => 'error', 'message'  => 'Не достаточно средств на счету'];
         }
 
-        $currency = Currency::where('idc', $idc)->first();
+        $currency = Currency::where('code', $code)->first();
 
         $generateNumbers = $this->randomNumbers();
 
@@ -53,21 +56,21 @@ class KenoService
 
             $winAmount = (float) sprintf("%0.2f", $winAmount);
 
-            $user->writeOffBalance($bet);
+            $user->writeOffBalance($bet, $currency->accuracy);
         } else {
-            $rate = KenoRate::where(['number' => $count, 'count_win' => $countWinNumbers])->first();
+            $rate = KenoRate::where(['number' => $count, 'count_win' => $countWinNumbers, 'type' => $type])->first();
             $coeff = $rate->coeff;
 
             if ($coeff > 0) {
                 $winAmount = $bet * $coeff;
                 $winAmount = (float) sprintf("%0.2f", $winAmount);
 
-                $user->addToBalance($winAmount - $bet);
+                $user->addToBalance($winAmount - $bet, $currency->accuracy);
             } else {
                 $winAmount = -1 * $bet;
                 $winAmount = (float) sprintf("%0.2f", $winAmount);
 
-                $user->writeOffBalance($bet);
+                $user->writeOffBalance($bet, $currency->accuracy);
             }
         }
 
@@ -75,6 +78,7 @@ class KenoService
             'user_id'     => $user->id,
             'currency_id' => $currency->id,
             'bet'         => $bet,
+            'type'        => $type,
             'profit'      => $winAmount,
             'coeff'       => $coeff,
             'user_numbers' => json_encode($numbers),
@@ -93,7 +97,7 @@ class KenoService
                 'balance' => $user->getActiveBalance(),
                 'win_amount' => $winAmount,
                 'coeff' => $coeff,
-                'idc' => $idc,
+                'idc' => $code,
                 'longid' => null,
                 'comment' => null,
                 'client_seed' => null,
@@ -112,7 +116,7 @@ class KenoService
                         'bet' => $bet,
                         'coeff' => $coeff,
                         'profit' => $winAmount,
-                        'idc' => $idc,
+                        'code' => $code,
                     ],
                 ]
             ]
@@ -127,7 +131,7 @@ class KenoService
     private function randomNumbers()
     {
         $arrayNumber = [];
-        for ($i = 1; $i <= 36; $i++) {
+        for ($i = 1; $i <= self::MAX_NUMBERS; $i++) {
             $arrayNumber[] = $i;
         }
 
@@ -150,7 +154,7 @@ class KenoService
             $results[$i]['bet'] = $result->bet;
             $results[$i]['coeff'] = $result->coeff;
             $results[$i]['profit'] = $result->profit;
-            $results[$i]['idc'] = $result->currency->idc;
+            $results[$i]['code'] = $result->currency->code;
             $i++;
         }
 
@@ -173,7 +177,7 @@ class KenoService
             $results[$i]['bet'] = $result->bet;
             $results[$i]['coeff'] = $result->coeff;
             $results[$i]['profit'] = $result->profit;
-            $results[$i]['idc'] = $result->currency->idc;
+            $results[$i]['code'] = $result->currency->code;
             $i++;
         }
 
@@ -182,7 +186,13 @@ class KenoService
 
     public function getRates()
     {
-        return KenoRate::query()->get();
+        $result = [];
+        $rates = KenoRate::query()->get();
+        foreach ($rates as $rate) {
+            $result[$rate->type][] = $rate;
+        }
+
+        return $result;
     }
 
     public function getGame()

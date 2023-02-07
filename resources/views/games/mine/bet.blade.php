@@ -12,7 +12,7 @@
     <form method="post" action="" id="popup">
         <div class="container-fluid">
 
-            <h4>Номер ставки {{ number_format($dice->id, 0, ',', ',') }}
+            <h4>Номер ставки {{ number_format($mine->id, 0, ',', ',') }}
                 <button id="btnCopy" class="btn btn-default" type="button" title="Copy bet URL to clipboard">
                     <i class="fa fa-clipboard" aria-hidden="true"></i>
                 </button>
@@ -29,7 +29,7 @@
                             <tr>
                                 <td>Игрок</td>
                                 <td>
-                                    <input name="user" type="text" value="{{ $dice->user->login }}"
+                                    <input name="user" type="text" value="{{ $mine->user->login }}"
                                            readonly="readonly" id="user"
                                            class="form-control readonly"/>
                                 </td>
@@ -37,7 +37,7 @@
                             <tr>
                                 <td>ID ставки</td>
                                 <td>
-                                    <input name="bet" type="text" value="{{ number_format($dice->id, 0, ',', ',') }}"
+                                    <input name="bet" type="text" value="{{ number_format($mine->id, 0, ',', ',') }}"
                                            readonly="readonly" id="bet"
                                            class="form-control readonly"/>
                                 </td>
@@ -47,7 +47,7 @@
                                 <td>Дата и время</td>
                                 <td>
                                     <input name="ctl00$ContentPlaceHolder1$txtDatetime" type="text"
-                                           value="{{ $dice->time_game->format('d.m.Y H:i:s') }}" readonly="readonly"
+                                           value="{{ $mine->time_game->format('d.m.Y H:i:s') }}" readonly="readonly"
                                            id="ContentPlaceHolder1_txtDatetime" class="form-control readonly"/>
                                 </td>
                             </tr>
@@ -56,18 +56,36 @@
                                 <td>Ставка</td>
                                 <td>
                                     <div class="input-group">
-                                        <input name="bet" type="text" value="{{ $dice->bet }}"
+                                        <input name="bet" type="text" value="{{ $mine->sum }}"
                                                readonly="readonly" id="bet"
                                                class="form-control readonly"/>
-                                        <span class="input-group-addon">{{ $dice->currency->name }}</span>
+                                        <span class="input-group-addon">{{ $mine->currency->name }}</span>
                                     </div>
                                 </td>
                             </tr>
 
                             <tr>
-                                <td>Цель</td>
+                                <td>Мины</td>
                                 <td>
-                                    <input name="target" type="text" value="{{ $dice->target }}"
+                                    <input name="bet" type="text" value="{{ $mine->mines }}"
+                                           readonly="readonly" id="bet"
+                                           class="form-control readonly"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Количество мин</td>
+                                <td>
+                                    <input name="bet" type="text" value="{{ $mine->count_mine }}"
+                                           readonly="readonly" id="bet"
+                                           class="form-control readonly"/>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Выбранные поля</td>
+                                <td>
+                                    <input name="target" type="text" value="{{ $mine->revealed }}"
                                            readonly="readonly" id="target"
                                            class="form-control readonly"/>
                                 </td>
@@ -76,43 +94,20 @@
                             <tr>
                                 <td>Выплата</td>
                                 <td>
-                                    <input name="multiplier" type="text" value="{{ $dice->multiplier }}x"
+                                    <input name="multiplier" type="text" value="{{ $mine->coeff }}x"
                                            readonly="readonly" id="multiplier"
                                            class="form-control readonly"/>
                                 </td>
                             </tr>
 
                             <tr>
-                                <td>Результат</td>
-                                <td>
-                                    <input name="roll" type="text" value="{{ $dice->roll }}"
-                                           readonly="readonly" id="roll"
-                                           class="form-control readonly"/>
-                                </td>
-                            </tr>
-
-{{--                            <tr>--}}
-{{--                                <td>--}}
-{{--                                    <div class="cg-tooltip">--}}
-{{--                                        <span>Jackpot number*</span>--}}
-{{--                                        <span class="cg-tooltip-text">Check FAQ how to win Jackpot</span>--}}
-{{--                                    </div>--}}
-{{--                                </td>--}}
-{{--                                <td>--}}
-{{--                                    <input name="ctl00$ContentPlaceHolder1$txtJackpotNumber" type="text" value="12"--}}
-{{--                                           readonly="readonly" id="ContentPlaceHolder1_txtJackpotNumber"--}}
-{{--                                           class="form-control readonly"/>--}}
-{{--                                </td>--}}
-{{--                            </tr>--}}
-
-                            <tr>
                                 <td>Прибыль</td>
                                 <td>
                                     <div class="input-group">
-                                        <input name="profit" type="text" value="{{ $dice->profit }}"
+                                        <input name="profit" type="text" value="{{ $mine->profit }}"
                                                readonly="readonly" id="profit"
                                                class="form-control readonly"/>
-                                        <span class="input-group-addon">{{ $dice->currency->name }}</span>
+                                        <span class="input-group-addon">{{ $mine->currency->name }}</span>
                                     </div>
                                 </td>
                             </tr>

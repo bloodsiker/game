@@ -10,7 +10,7 @@
 
 @push('head_scripts')
     <script type="text/javascript">
-        var coin = "{{ $currency->idc }}";
+        var coin = "{{ $currency->code }}";
         var style = "7";
         var coinname = "{{ $currency->name }}";
         var decimals = "6";
@@ -24,7 +24,8 @@
     </script>
 
     <script type="text/javascript">
-        var idc = "{{ $currency->idc }}";
+        var idc = "{{ $currency->code }}";
+        var accuracy = "{{ $currency->accuracy }}";
         var coinname = "{{ $currency->name }}";
         var style = "7";
         var maxwin = "500000";
@@ -211,7 +212,7 @@
                                             <div class="row-bet">
                                                 <div class="cell-bet cell-bet-wide">
                                                     <div class="arrow-top"></div>
-                                                    <div class="bet-number">Low <br> 2 - 9</div>
+                                                    <div class="bet-number">Low <br> 3 - 9</div>
                                                     <div class="bet-coef">x2</div>
                                                 </div>
                                             </div>

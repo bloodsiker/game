@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Web\Game;
 
 use App\Models\Currency;
+use App\Models\MineHistory;
 use App\Services\MineService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -24,7 +25,7 @@ class MineController extends Controller
 
     public function index(Request $request, $currency)
     {
-        $currency = Currency::where('idc', $currency)->first();
+        $currency = Currency::where('code', $currency)->first();
         if (!$currency) {
             abort(404);
         }
@@ -62,5 +63,12 @@ class MineController extends Controller
     public function getAllLastBets()
     {
         return response()->json($this->service->getAllLastBets());
+    }
+
+    public function getBet(Request $request, $id)
+    {
+        $mine = MineHistory::findOrFail($id);
+
+        return view('games.mine.bet', compact('mine'));
     }
 }

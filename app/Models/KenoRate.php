@@ -9,6 +9,6 @@ class KenoRate extends Model
     protected $hidden = ['created_at', 'updated_at'];
 
     protected $fillable = [
-        'number', 'count_win', 'coeff'
+        'number', 'count_win', 'coeff', 'type'
     ];
 }

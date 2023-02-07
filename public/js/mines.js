@@ -4,7 +4,8 @@ $(document).ready(function () {
         return Math.floor(((100 - Edge) / (100 * (under / 100))));
     }
 
-    var Idc = idc;
+    var Code = code;
+    var Accuracy = accuracy;
     var Longid = getCookie("LongId");
     var Minbid = parseFloat(minbid);
     var Maxwin = parseFloat(maxwin);
@@ -34,7 +35,7 @@ $(document).ready(function () {
     var AllBetsAdded = 0;
     var HighRoll = 0;
     var AllBetsTime;
-    var diceAutobetCookieName = Idc + 'dice_autobet';
+    var diceAutobetCookieName = Code + 'dice_autobet';
 
     var selectedNumbers = [];
     var mineRates = [];
@@ -98,9 +99,9 @@ $(document).ready(function () {
 
     convert_number = function (number, fixed) {
         if (fixed == 0) {
-            var result = number.toLocaleString('en-US');
+            var result = parseInt(number).toLocaleString('en-US');
         } else {
-            var result = number.toFixed(fixed).toLocaleString('en-US');
+            var result = parseFloat(number).toFixed(fixed).toLocaleString('en-US');
         }
 
         return result;
@@ -173,7 +174,7 @@ $(document).ready(function () {
     };
     getLastBets(Longid, "1");
 
-    getBalance(Idc);
+    getBalance(Code, Accuracy);
     getBets();
 
     $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
@@ -292,7 +293,7 @@ $(document).ready(function () {
                                         <div class="mines_step">Шаг <span
                                                 class="coeff-step">${rate.step}</span></div>
                                         <div class="coeff-number-wrapper"><span
-                                                class="coeff-x">x</span><span class="coeff-number">${rate.coeff}</span>
+                                                class="coeff-x">x</span><span class="coeff-number">${convert_number(rate.coeff, 2)}</span>
                                         </div>
                                     </div>
                                 </div>
@@ -408,13 +409,13 @@ $(document).ready(function () {
         $.ajax({
             type: 'POST',
             url: '/mines/create',
-            data: {idc: Idc, sum: bet, mines_count: mines, clientseed: clientseed},
+            data: {code: Code, sum: bet, mines_count: mines, clientseed: clientseed},
             dataType: 'json',
             success: function (res) {
                 if (res.status === 'success') {
                     DisabledGame = false;
                     Balance = res.balance;
-                    showBalance(res.balance, idc);
+                    showBalance(res.balance, Code, Accuracy);
                     $('#btnMineStart').remove();
                     $('.game-mine__numbers-item').attr('class', 'game-mine__numbers-item');
                     $('.mine-img').remove();
@@ -432,13 +433,13 @@ $(document).ready(function () {
         $.ajax({
             type: 'POST',
             url: '/mines/play',
-            data: {idc: Idc, cell: cell},
+            data: {code: Code, cell: cell},
             dataType: 'json',
             success: function (res) {
                 if (res.status === 'success') {
                     if (res.lose === true) {
                         Balance = res.balance;
-                        showBalance(res.balance, idc);
+                        showBalance(res.balance, Code, Accuracy);
                         renderLossCell(cell, res.mines, res.revealed);
                         renderBtnStart();
                         $('.btnSetMine').removeAttr('disabled');
@@ -483,7 +484,7 @@ $(document).ready(function () {
         $.ajax({
             type: 'POST',
             url: '/mines/collect',
-            data: {idc: Idc},
+            data: {code: Code},
             dataType: 'json',
             success: function (res) {
                 if (res.status === 'success') {
@@ -491,7 +492,7 @@ $(document).ready(function () {
                     Step = 0;
                     showMessageSuccess('Вы выиграли ' + (res.won_sum).toFixed(2));
                     Balance = res.balance;
-                    showBalance(res.balance, idc);
+                    showBalance(res.balance, Code, Accuracy);
                     $('#btnPossibleWin').remove();
                     renderBtnStart();
                     SelectedCell = [];
@@ -564,7 +565,7 @@ $(document).ready(function () {
 <!--                    <div class="fz-12 text-center auto-count-desc">Количество ячеек</div>-->
 <!--                    <button class="game-mine__button game-mine__button_small" id="btnMineAuto">Автовыбор</button>-->
 <!--                </div>-->
-                 <button class="game-mine__button game-mine__button_small" id="btnMineAuto">Автовыбор</button>
+                <button class="game-mine__button game-mine__button_small" id="btnMineAuto">Автовыбор</button>
                 <button class="game-mine__button" id="btnPossibleWin" ${disabled}><span>Забрать</span>&nbsp;<span id="possibleWin">${bet}</span></button>
             `;
         $('.game-mine_buttons').html(html);
@@ -625,7 +626,7 @@ $(document).ready(function () {
                     id = convert_number(id, 0);
                     var date = getTime(new Date(v.time));
 
-                    append = append + "<td><a class='a_bwindow' href='/keno/getBet/" + v.id + "'>" + id + "</a></td><td class='hidden-xs'>" + date + "</td>" +
+                    append = append + "<td><a class='a_bwindow' href='/mines/getBet/" + v.id + "'>" + id + "</a></td><td class='hidden-xs'>" + date + "</td>" +
                         "<td><a class='a_swindow' href='/player/" + v.user_id + "'>" + v.user_id + "</a></td>" +
                         "<td>" + v.coinname + "</td>" +
                         "<td>" + v.count_mine + "</td>" +
@@ -638,7 +639,7 @@ $(document).ready(function () {
                     else {
                         append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
                     }
-                    append = append + "<td class='coin_column'><img class='result_coin' src='/assets/currency/" + v.idc.trim() + ".png' height='25' width='25'></td></tr>"
+                    append = append + "<td class='coin_column'><img class='result_coin' src='/assets/currency/" + v.code.trim() + ".png' height='25' width='25'></td></tr>"
 
                     AllBets.push(append);
 
@@ -683,7 +684,7 @@ $(document).ready(function () {
                     id = convert_number(id, 0);
                     var date = getTime(new Date(v.time));
 
-                    append = append + "<td><a class='a_bwindow' href='/keno/getBet/" + v.id + "'>" + id + "</a></td><td class='hidden-xs'>" + date + "</td>" +
+                    append = append + "<td><a class='a_bwindow' href='/mines/getBet/" + v.id + "'>" + id + "</a></td><td class='hidden-xs'>" + date + "</td>" +
                         "<td><a class='a_swindow' href='/player/" + v.user_id + "'>" + v.user_id + "</a></td>" +
                         "<td>" + v.coinname + "</td>" +
                         "<td>" + v.count_mine + "</td>" +
@@ -696,7 +697,7 @@ $(document).ready(function () {
                     else {
                         append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
                     }
-                    append = append + "<td><img class='result_coin' src='/assets/currency/" + v.idc.trim() + ".png' height='25' width='25'></td></tr>";
+                    append = append + "<td><img class='result_coin' src='/assets/currency/" + v.code.trim() + ".png' height='25' width='25'></td></tr>";
 
                     var row = $(append);
                     $("#table_my_bets_head").after(row);

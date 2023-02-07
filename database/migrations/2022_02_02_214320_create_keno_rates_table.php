@@ -17,6 +17,7 @@ class CreateKenoRatesTable extends Migration
             $table->id();
             $table->tinyInteger('number');
             $table->tinyInteger('count_win');
+            $table->tinyInteger('type')->default(1);
             $table->float('coeff',10,2);
         });
 
@@ -26,6 +27,7 @@ class CreateKenoRatesTable extends Migration
             $table->bigInteger('user_id')->unsigned();
             $table->double('bet',10,2);
             $table->double('profit',10,2);
+            $table->tinyInteger('type')->default(1);
             $table->double('coeff',10,2);
             $table->double('remainder',10,2);
             $table->string('user_numbers');

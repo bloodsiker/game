@@ -16,6 +16,10 @@ class CreateGamesTable extends Migration
         Schema::create('games', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('slug');
+            $table->double('edge');
+            $table->double('max_win');
+            $table->double('min_bid');
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });

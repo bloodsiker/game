@@ -110,7 +110,7 @@
         <br/>
         <div class="row small text-center">
             <p><span class="caption_users"></span></p>
-            <p>Current server time: <span id="txtServerTime"></span></p>
+            <p>Текущее время сервера: <span id="txtServerTime"></span></p>
             <p>
                 CryptoGames is owned and operated by MuchGaming B.V. situated at Fransche Bloemweg 4,
                 Willemstad, Curaçao.<br/>

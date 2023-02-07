@@ -22,16 +22,16 @@ class CoinFlipService
     public function start(Request $request)
     {
         $user = Auth::user();
-        $idc = $request->get('idc');
+        $code = $request->get('code');
         $bet = (float) $request->get('bet');
 
         if (!$bet) {
             return ['status' => 'error', 'message'  => 'need bet'];
         }
 
-        $currency = Currency::where('idc', $idc)->first();
+        $currency = Currency::where('code', $code)->first();
 
-        $user->setActiveBalance($idc);
+        $user->setActiveBalance($code);
 
         if ($user->getActiveBalance() < $bet) {
             return ['status' => 'error', 'message'  => 'Не достаточно средств на счету'];
@@ -39,7 +39,7 @@ class CoinFlipService
 
         $coins = $this->generateCoins();
 
-        $user->writeOffBalance($bet);
+        $user->writeOffBalance($bet, $currency->accuracy);
 
         $game = new CoinFlipHistory();
         $game->user_id = $user->id;
@@ -63,10 +63,10 @@ class CoinFlipService
     public function play(Request $request)
     {
         $coin = (int)$request->get('coin');
-        $idc = $request->get('idc');
+        $code = $request->get('code');
 
         $user = Auth::user();
-        $user->setActiveBalance($idc);
+        $user->setActiveBalance($code);
 
         $coinGame = CoinFlipHistory::where(['user_id' => $user->id, 'active'=> true])->orderBy('id', 'DESC')->first();
 
@@ -117,7 +117,7 @@ class CoinFlipService
                         'bet' => $coinGame->bet,
                         'coeff' => $coinGame->coeff,
                         'profit' => $coinGame->profit,
-                        'idc' => $idc,
+                        'code' => $code,
                     ],
                 ],
             ];
@@ -142,7 +142,7 @@ class CoinFlipService
 
     public function collect(Request $request)
     {
-        $idc = $request->get('idc');
+        $code = $request->get('code');
         $user = Auth::user();
         $coinGame = CoinFlipHistory::where(['user_id' => $user->id, 'active'=> true])->orderBy('id', 'DESC')->first();
 
@@ -150,10 +150,12 @@ class CoinFlipService
             return response()->json(['status' => 'error', 'message'  => 'Game not found'], 404);
         }
 
-        $profit = $coinGame->bet * $coinGame->coeff;
+        $currency = Currency::where('code', $code)->first();
 
-        $user->setActiveBalance($idc);
-        $user->addToBalance($coinGame->won_sum);
+        $profit = bcmul(StrHelperService::numberFormat($coinGame->bet), StrHelperService::numberFormat($coinGame->coeff), $currency->accuracy);
+
+        $user->setActiveBalance($code);
+        $user->addToBalance($profit, $currency->accuracy);
 
         $coinGame->won_sum = $profit;
         $coinGame->active = false;
@@ -182,7 +184,7 @@ class CoinFlipService
                     'bet' => $coinGame->bet,
                     'coeff' => $coinGame->coeff,
                     'profit' => $coinGame->profit,
-                    'idc' => $idc,
+                    'code' => $code,
                 ],
             ]
         ];
@@ -214,7 +216,7 @@ class CoinFlipService
             $results[$i]['bet'] = $result->bet;
             $results[$i]['coeff'] = $result->coeff;
             $results[$i]['profit'] = $result->profit;
-            $results[$i]['idc'] = $result->currency->idc;
+            $results[$i]['code'] = $result->currency->code;
             $i++;
         }
 
@@ -237,7 +239,7 @@ class CoinFlipService
             $results[$i]['bet'] = $result->bet;
             $results[$i]['coeff'] = $result->coeff;
             $results[$i]['profit'] = $result->profit;
-            $results[$i]['idc'] = $result->currency->idc;
+            $results[$i]['code'] = $result->currency->code;
             $i++;
         }
 

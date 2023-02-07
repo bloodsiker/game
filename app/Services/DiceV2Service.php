@@ -21,13 +21,13 @@ class DiceV2Service
     public function getDiceResult(Request $request)
     {
         $user = Auth::user();
-        $idc = $request->get('idc');
+        $idc = $request->get('code');
         $bet = (float)$request->get('bet');
         $multiplier = (float)$request->get('multiplier');
         $underOver = (int)$request->get('under_over');
         $clientseed = $request->get('clientseed');
 
-        $currency = Currency::where('idc', $idc)->first();
+        $currency = Currency::where('code', $idc)->first();
 
         $user->setActiveBalance($idc);
 
@@ -137,7 +137,7 @@ class DiceV2Service
             $results[$i]['target'] = $result->target;
             $results[$i]['roll'] = $result->roll;
             $results[$i]['profit'] = $result->profit;
-            $results[$i]['idc'] = $result->currency->idc;
+            $results[$i]['idc'] = $result->currency->code;
             $i++;
         }
 
@@ -162,7 +162,7 @@ class DiceV2Service
             $results[$i]['target'] = $result->target;
             $results[$i]['roll'] = $result->roll;
             $results[$i]['profit'] = $result->profit;
-            $results[$i]['idc'] = $result->currency->idc;
+            $results[$i]['idc'] = $result->currency->code;
             $i++;
         }
 

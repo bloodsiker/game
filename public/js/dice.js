@@ -9,6 +9,7 @@ $(document).ready(function () {
     }
 
     var Idc = idc;
+    var Accuracy = accuracy;
     var Longid = getCookie("LongId");
     var Minbid = parseFloat(minbid);
     var Maxwin = parseFloat(maxwin);
@@ -63,16 +64,16 @@ $(document).ready(function () {
         }
     }
     else {
-        if (isMobile()) {
-            Cookies.set("dicesize", "high", { expires: 60000 });
-            AllBetsSize = "high";
-            $("#btnHighBets").addClass("active");
-        }
-        else {
-            Cookies.set("dicesize", "medium", { expires: 60000 });
-            AllBetsSize = "medium";
-            $("#btnMediumBets").addClass("active");
-        }
+        // if (isMobile()) {
+        //     Cookies.set("dicesize", "high", { expires: 60000 });
+        //     AllBetsSize = "high";
+        //     $("#btnHighBets").addClass("active");
+        // }
+        // else {
+        //     Cookies.set("dicesize", "medium", { expires: 60000 });
+        //     AllBetsSize = "medium";
+        //     $("#btnMediumBets").addClass("active");
+        // }
     }
 
     const numberPosition = (number) => {
@@ -402,10 +403,10 @@ $(document).ready(function () {
 
     convert_number = function (number, fixed) {
         if (fixed == 0) {
-            var result = number.toLocaleString('en-US');
+            var result = parseInt(number).toLocaleString('en-US');
         }
         else {
-            var result = number.toFixed(fixed).toLocaleString('en-US');
+            var result = parseFloat(number).toFixed(fixed).toLocaleString('en-US');
         }
 
         return result;
@@ -430,7 +431,7 @@ $(document).ready(function () {
         if (type == 1) {
             $("#txtManualResultNumber").fadeIn("slow");
         }
-        showBalance(balance, idc);
+        showBalance(balance, idc, Accuracy);
         getBets();
         Runing = false;
         //      }, 800 - diff);
@@ -617,36 +618,36 @@ $(document).ready(function () {
 
     getLastBets(Longid, "1");
 
-    getProvablyFair = function (longid, coin) {
-        $.ajax(
-            {
-                type: 'POST',
-                url: '/stats.asmx/GetFairDice',
-                data: '{idc:"' + coin + '"}',
-                contentType: "application/json",
-                success: function (msg) {
-                    if (msg.d.length > 0) {
-                        var content = JSON.parse(msg.d);
-                        $("#txtLastServerSeed256").val(content.PreviousServerSeedSHA256);
-                        $("#txtNextServerSeed256").val(content.NextServerSeedSHA256);
-                        $("#txtLastServerSeed").val(content.PreviousServerSeed);
-                        $("#txtLastClientSeed").val(content.PreviousClientSeed);
-                    }
-                },
-                error: function (msg) {
-                    console.log("not ok....");
-                }
-            });
-    };
+    // getProvablyFair = function (longid, coin) {
+    //     $.ajax(
+    //         {
+    //             type: 'POST',
+    //             url: '/stats.asmx/GetFairDice',
+    //             data: '{idc:"' + coin + '"}',
+    //             contentType: "application/json",
+    //             success: function (msg) {
+    //                 if (msg.d.length > 0) {
+    //                     var content = JSON.parse(msg.d);
+    //                     $("#txtLastServerSeed256").val(content.PreviousServerSeedSHA256);
+    //                     $("#txtNextServerSeed256").val(content.NextServerSeedSHA256);
+    //                     $("#txtLastServerSeed").val(content.PreviousServerSeed);
+    //                     $("#txtLastClientSeed").val(content.PreviousClientSeed);
+    //                 }
+    //             },
+    //             error: function (msg) {
+    //                 console.log("not ok....");
+    //             }
+    //         });
+    // };
+    //
+    // provably_fair_reload = function () {
+    //     generateNewClientSeed(); // generate new client seed
+    // }
+    // provably_fair_reload();
 
-    provably_fair_reload = function () {
-        generateNewClientSeed(); // generate new client seed
-    }
-    provably_fair_reload();
-
-    getBalance(Idc);
+    getBalance(Idc, Accuracy);
     getBets();
-    getProvablyFair(Longid, Idc);
+    // getProvablyFair(Longid, Idc);
 
     $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
         var str = e.target.text;
@@ -1217,78 +1218,78 @@ $(document).ready(function () {
         }
     });
 
-    getStatistic = function (longid, idc) {
-        $.ajax(
-            {
-                type: 'GET',
-                url: '/api/DiceStatistics/' + idc + '/' + longid,
-                contentType: "application/json",
-                success: function (msg) {
-                    //var content = JSON.parse(msg.d);
-                    $("#global_stats").html(msg.Stats);
-                    $("#user_stats").html(msg.StatsUser);
-                    $("#all_global_stats").html(msg.StatsAll);
-                },
-                error: function (msg) {
-                    console.log("not ok....");
-                }
-            });
-    };
-    getStatistic(Longid, Idc);
+    // getStatistic = function (longid, idc) {
+    //     $.ajax(
+    //         {
+    //             type: 'GET',
+    //             url: '/api/DiceStatistics/' + idc + '/' + longid,
+    //             contentType: "application/json",
+    //             success: function (msg) {
+    //                 //var content = JSON.parse(msg.d);
+    //                 $("#global_stats").html(msg.Stats);
+    //                 $("#user_stats").html(msg.StatsUser);
+    //                 $("#all_global_stats").html(msg.StatsAll);
+    //             },
+    //             error: function (msg) {
+    //                 console.log("not ok....");
+    //             }
+    //         });
+    // };
+    // getStatistic(Longid, Idc);
 
-    getTopPlayersAll = function (longid, idc) {
-        getTopPlayers(Longid, Idc, "wagered");
-        getTopPlayers(Longid, Idc, "bids");
-        getTopPlayers(Longid, Idc, "profit");
-        getTopPlayers(Longid, Idc, "tips");
-        getTopPlayers(Longid, "All", "chat");
-    };
+    // getTopPlayersAll = function (longid, idc) {
+    //     getTopPlayers(Longid, Idc, "wagered");
+    //     getTopPlayers(Longid, Idc, "bids");
+    //     getTopPlayers(Longid, Idc, "profit");
+    //     getTopPlayers(Longid, Idc, "tips");
+    //     getTopPlayers(Longid, "All", "chat");
+    // };
+    //
+    // getTopPlayers = function (longid, idc, type) {
+    //     $.ajax(
+    //         {
+    //             type: 'POST',
+    //             url: '/stats.asmx/GetDiceTopPlayers',
+    //             data: '{idc:"' + idc + '",style:"' + Style + '",type:"' + type + '"}',
+    //             contentType: "application/json",
+    //             success: function (msg) {
+    //                 if (msg.d.length > 0) {
+    //                     $("#most" + type + "_table").html(msg.d);
+    //                 }
+    //             },
+    //             error: function (msg) {
+    //                 console.log("not ok....");
+    //             }
+    //         });
+    // };
+    // getTopPlayersAll(Longid, Idc);
 
-    getTopPlayers = function (longid, idc, type) {
-        $.ajax(
-            {
-                type: 'POST',
-                url: '/stats.asmx/GetDiceTopPlayers',
-                data: '{idc:"' + idc + '",style:"' + Style + '",type:"' + type + '"}',
-                contentType: "application/json",
-                success: function (msg) {
-                    if (msg.d.length > 0) {
-                        $("#most" + type + "_table").html(msg.d);
-                    }
-                },
-                error: function (msg) {
-                    console.log("not ok....");
-                }
-            });
-    };
-    getTopPlayersAll(Longid, Idc);
-
-    setInterval(function () {
-        getTopPlayersAll(Longid, Idc);
-        getStatistic(Longid, Idc);
-    }, 600000);
+    // setInterval(function () {
+    //     getTopPlayersAll(Longid, Idc);
+    //     getStatistic(Longid, Idc);
+    // }, 600000);
 
 
-    getResultManual = function (longid, idc, bet, multiplier, under_over, clientseed) {
+    getResultManual = function (longid, code, bet, multiplier, under_over, clientseed) {
         var time = new Date();
         var time_before = time.getTime();
         var type = 1;
         showLoadingManual();
-    $.ajax({
+        $.ajax({
             type: 'POST',
             url: '/dice/getDiceResult',
-            data: {idc: idc, bet: bet, multiplier: multiplier, under_over: under_over, clientseed: clientseed},
+            data: {code: code, bet: bet, multiplier: multiplier, under_over: under_over, clientseed: clientseed},
             dataType: 'json',
             success: function (msg) {
                 var content = msg.d;
                 if (content.result) {
 
-                    provably_fair_reload();
-
-                    $("#txtLastServerSeed256").val(content.PreviousServerSeedSHA256);
-                    $("#txtNextServerSeed256").val(content.NextServerSeedSHA256);
-                    $("#txtLastServerSeed").val(content.PreviousServerSeed);
-                    $("#txtLastClientSeed").val(content.PreviousClientSeed);
+                    // provably_fair_reload();
+                    //
+                    // $("#txtLastServerSeed256").val(content.PreviousServerSeedSHA256);
+                    // $("#txtNextServerSeed256").val(content.NextServerSeedSHA256);
+                    // $("#txtLastServerSeed").val(content.PreviousServerSeed);
+                    // $("#txtLastClientSeed").val(content.PreviousClientSeed);
 
                     var win = parseFloat(content.win);
                     if (win > 0) {
@@ -1304,12 +1305,13 @@ $(document).ready(function () {
                         $('#dice__timer').attr('class', 'dice__timer dice__timer_lose');
                     }
 
-                    let array = [...content.roll.toString()].map(Number);
+                    // let array = [...content.roll.toString()].map(Number);
+                    let array = content.roll_array;
                     $('#dice_n_1').css('transform', 'translateY(' + numberPosition(array[0]) + ')');
                     $('#dice_n_2').css('transform', 'translateY(' + numberPosition(array[1]) + ')');
-                    $('#dice_n_3').css('transform', 'translateY(' + numberPosition(array[3]) + ')');
-                    $('#dice_n_4').css('transform', 'translateY(' + numberPosition(array[4]) + ')');
-                    $('#dice_n_5').css('transform', 'translateY(' + numberPosition(array[5]) + ')');
+                    $('#dice_n_3').css('transform', 'translateY(' + numberPosition(array[2]) + ')');
+                    $('#dice_n_4').css('transform', 'translateY(' + numberPosition(array[3]) + ')');
+                    $('#dice_n_5').css('transform', 'translateY(' + numberPosition(array[4]) + ')');
 
                     addToTable(content.BetData, "1");
                 } else {
@@ -1330,7 +1332,7 @@ $(document).ready(function () {
     };
 
 
-    getResultAuto = function (longid, idc, bet, multiplier, under_over, clientseed) {
+    getResultAuto = function (longid, code, bet, multiplier, under_over, clientseed) {
         if (Runing == false) return;
         var start = new Date().getTime();
         if (Runing == false) {
@@ -1340,19 +1342,19 @@ $(document).ready(function () {
             {
                 type: 'POST',
                 url: '/dice/getDiceResult',
-                data: {idc: idc, bet: bet, multiplier: multiplier, under_over: under_over, clientseed: clientseed},
+                data: {code: code, bet: bet, multiplier: multiplier, under_over: under_over, clientseed: clientseed},
                 dataType: 'json',
                 success: function (msg) {
                     // var content = JSON.parse(msg.d);
                     var content = msg.d;
                     if (content.result) {
 
-                        provably_fair_reload();
-
-                        $("#txtLastServerSeed256").val(content.PreviousServerSeedSHA256);
-                        $("#txtNextServerSeed256").val(content.NextServerSeedSHA256);
-                        $("#txtLastServerSeed").val(content.PreviousServerSeed);
-                        $("#txtLastClientSeed").val(content.PreviousClientSeed);
+                        // provably_fair_reload();
+                        //
+                        // $("#txtLastServerSeed256").val(content.PreviousServerSeedSHA256);
+                        // $("#txtNextServerSeed256").val(content.NextServerSeedSHA256);
+                        // $("#txtLastServerSeed").val(content.PreviousServerSeed);
+                        // $("#txtLastClientSeed").val(content.PreviousClientSeed);
 
                         var win = parseFloat(content.win);
                         var rdroll = $('input:radio[name=rdRoll]:checked').val();
@@ -1368,16 +1370,14 @@ $(document).ready(function () {
                             var val = $('input:radio[name=rdWin]:checked').val();
                             if (val == "return") {
                                 CurrentBet = BaseBet;
-                            }
-                            else if (val == "inc") {
+                            } else if (val == "inc") {
                                 var val = parseFloat($("#txtWinInc").val());
                                 var max = parseFloat($("#txtMaxBet").val());
                                 CurrentBet = (bet + (bet * (val / 100)));
                                 if (parseFloat(CurrentBet) > max && max > 0) {
                                     CurrentBet = max.toFixed(2)
                                 }
-                            }
-                            else if (val == "dec") {
+                            } else if (val == "dec") {
                                 var val = parseFloat($("#txtWinDec").val());
                                 var min = parseFloat($("#txtMinBet").val());
                                 CurrentBet = (bet - (bet * (val / 100)));
@@ -1412,7 +1412,7 @@ $(document).ready(function () {
                             }
                         }
                         CurrentBet = parseFloat(CurrentBet).toFixed(2);
-                        showBalance(content.balance, idc);
+                        showBalance(content.balance, code, Accuracy);
                         Balance = content.balance;
                         var count = $("#txtMaxRolls").val() - 1;
                         $("#txtMaxRolls").val(count);
@@ -1526,12 +1526,12 @@ $(document).ready(function () {
                         "<td>" + v.target.replace(/\s/g, "") + "</td><td>" + convert_number(v.roll, 3) + "</td>";
 
                     if (v.profit >= 0) {
-                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, 2) + "</td>"
+                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, v.accuracy) + "</td>"
                     }
                     else {
-                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
+                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, v.accuracy) + "</td>"
                     }
-                    append = append + "<td class='coin_column'><img class='result_coin' src='/assets/currency/" + v.idc.trim() + ".png' height='25' width='25'></td></tr>"
+                    append = append + "<td class='coin_column'><img class='result_coin' src='/assets/currency/" + v.code.trim() + ".png' height='25' width='25'></td></tr>"
 
                     AllBets.push(append);
 
@@ -1585,12 +1585,11 @@ $(document).ready(function () {
                         "<td>" + v.target.replace(/\s/g, "") + "</td><td>" + convert_number(v.roll, 3) + "</td>";
 
                     if (v.profit >= 0) {
-                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, 2) + "</td>"
+                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, v.accuracy) + "</td>"
+                    } else {
+                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, v.accuracy) + "</td>"
                     }
-                    else {
-                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
-                    }
-                    append = append + "<td><img class='result_coin' src='/assets/currency/" + v.idc.trim() + ".png' height='25' width='25'></td></tr>";
+                    append = append + "<td><img class='result_coin' src='/assets/currency/" + v.code.trim() + ".png' height='25' width='25'></td></tr>";
 
                     var row = $(append);
                     $("#table_my_bets_head").after(row);
@@ -1630,12 +1629,11 @@ $(document).ready(function () {
                         "<td>" + v.target.replace(/\s/g, "") + "</td><td>" + convert_number(v.roll, 3) + "</td>";
 
                     if (v.profit >= 0) {
-                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, 2) + "</td>"
+                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, v.accuracy) + "</td>"
+                    } else {
+                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, v.accuracy) + "</td>"
                     }
-                    else {
-                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
-                    }
-                    append = append + "<td><img class='result_coin' src='/assets/currency/" + v.idc.trim() + ".png' height='25' width='25'></td></tr>";
+                    append = append + "<td><img class='result_coin' src='/assets/currency/" + v.code.trim() + ".png' height='25' width='25'></td></tr>";
 
                     var row = $(append);
                     $("#table_high_rollers_head").after(row);

@@ -13,6 +13,16 @@ class CreateMinesTable extends Migration
      */
     public function up()
     {
+        Schema::create('currencies', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('code');
+            $table->integer('accuracy')->default(8);
+            $table->boolean('is_active')->default(1);
+            $table->integer('position')->default(1);
+            $table->timestamps();
+        });
+
         Schema::create('mine_histories', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('currency_id')->unsigned();
@@ -43,5 +53,6 @@ class CreateMinesTable extends Migration
     public function down()
     {
         Schema::dropIfExists('mine_histories');
+        Schema::dropIfExists('currency');
     }
 }

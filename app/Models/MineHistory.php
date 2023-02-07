@@ -6,13 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class MineHistory extends Model
 {
-    protected $hidden = ['created_at', 'updated_at'];
-
-    public $timestamps = false;
-
     protected $fillable = [
         'sum', 'count_mine', 'coeff', 'won_sum', 'active', 'lose', 'mines', 'revealed', 'step', 'profit', 'remainder', 'time_game'
     ];
+
+    public $timestamps = false;
+
+    protected $hidden = ['created_at', 'updated_at'];
+
+    protected $dates = ['time_game'];
 
     public function user()
     {

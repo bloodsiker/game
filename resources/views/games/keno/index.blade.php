@@ -10,7 +10,7 @@
 
 @push('head_scripts')
     <script type="text/javascript">
-        var coin = "{{ $currency->idc }}";
+        var coin = "{{ $currency->code }}";
         var style = "7";
         var coinname = "{{ $currency->name }}";
         var decimals = "6";
@@ -24,7 +24,8 @@
     </script>
 
     <script type="text/javascript">
-        var idc = "{{ $currency->idc }}";
+        var code = "{{ $currency->code }}";
+        var accuracy = "{{ $currency->accuracy }}";
         var coinname = "{{ $currency->name }}";
         var style = "7";
         var maxwin = "500000";
@@ -66,19 +67,19 @@
                                 <div class="well height-100">
                                     <span class="bet_text">Сумма ставки:</span><br/>
                                     <div class="btn-group" role="group" aria-label="..." style="width: 101%;">
-                                        <button id="btnBet1" type="button" class="btn btn-default"
+                                        <button id="btnBet1" type="button" class="btn btn-default btnSetBet"
                                                 style="width: 20%;">+1
                                         </button>
-                                        <button id="btnBet2" type="button" class="btn btn-default"
+                                        <button id="btnBet2" type="button" class="btn btn-default btnSetBet"
                                                 style="width: 20%;">+10
                                         </button>
-                                        <button id="btnBet3" type="button" class="btn btn-default"
+                                        <button id="btnBet3" type="button" class="btn btn-default btnSetBet"
                                                 style="width: 20%;">+50
                                         </button>
-                                        <button id="btnBet4" type="button" class="btn btn-default"
+                                        <button id="btnBet4" type="button" class="btn btn-default btnSetBet"
                                                 style="width: 20%;">+100
                                         </button>
-                                        <button id="btnBet5" type="button" class="btn btn-default"
+                                        <button id="btnBet5" type="button" class="btn btn-default btnSetBet"
                                                 style="width: 20%;">+250
                                         </button>
                                     </div>
@@ -88,6 +89,12 @@
                                             <button type="button" class="btn btn-default control_btn" id="btnDivBet">/2</button>
                                             <button type="button" class="btn btn-default control_btn" id="btnX2Bet">X2</button>
                                         </div>
+                                    </div>
+
+                                    <div class="game-keno_group_type">
+                                        <button data-type="1" class="change_type active">Low</button>
+                                        <button data-type="2" class="change_type">Medium</button>
+                                        <button data-type="3" class="change_type">High</button>
                                     </div>
 
                                     <div class="game-keno__rate-block game-keno__rate-block_buttons">
@@ -120,7 +127,7 @@
                                                 x
                                             </div>
                                             <div class="game-keno__winning-amount">
-                                                <span class="game-keno__winning-amount-title">Выигрыш</span>
+                                                <span class="game-keno__winning-amount-title">Выиграш</span>
                                                 <span class="game-keno__winning-amount-value">
                                                     <span class="sum" id="winKenoAmount"></span>
                                                      <span class="sum">{{ $currency->name }}</span>
@@ -236,6 +243,18 @@
                                             </div>
                                             <div class="game-keno__numbers-item-wrapper">
                                                 <div data-number="36" class="game-keno__numbers-item"></div>
+                                            </div>
+                                            <div class="game-keno__numbers-item-wrapper">
+                                                <div data-number="37" class="game-keno__numbers-item"></div>
+                                            </div>
+                                            <div class="game-keno__numbers-item-wrapper">
+                                                <div data-number="38" class="game-keno__numbers-item"></div>
+                                            </div>
+                                            <div class="game-keno__numbers-item-wrapper">
+                                                <div data-number="39" class="game-keno__numbers-item"></div>
+                                            </div>
+                                            <div class="game-keno__numbers-item-wrapper">
+                                                <div data-number="40" class="game-keno__numbers-item"></div>
                                             </div>
                                         </div>
                                         <div class="game-keno__rates">

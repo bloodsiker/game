@@ -31,7 +31,7 @@
 
         };
 
-        var Idc = "{{ $currency->idc }}";
+        var Idc = "{{ $currency->code }}";
 
         var time = {{ $diff }};
 
@@ -121,7 +121,7 @@
                 <br/>
                 <div class="tab-content rewards-content">
                     <div class="tab-pane fade in @if(!in_array(session('tab'), ['promocode'])) active @endif" id="faucet">
-                        <form method="post" action="{{ route('account.reward', ['currency' => $currency->idc]) }}" id="popup">
+                        <form method="post" action="{{ route('account.reward', ['currency' => $currency->code]) }}" id="popup">
                             @csrf
                             <div class="well">
                                 <span>Вы можете запрашивать монеты, когда ваш баланс монет пуст и каждые 3 минуты с одного IP-адреса.</span><br/>
@@ -649,6 +649,6 @@
 
 @endsection
 
-@push('scripts')
-    <script src="{{ asset('js/register.js') }}" type="text/javascript"></script>
-@endpush
+{{--@push('scripts')--}}
+{{--    <script src="{{ asset('js/register.js') }}" type="text/javascript"></script>--}}
+{{--@endpush--}}
