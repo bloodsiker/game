@@ -68,36 +68,39 @@
                 <div class="tab-pane fade @if(session('tab') === 'register') in active @endif" id="register">
                     <form method="post" action="{{ route('register') }}" id="popup">
                         @csrf
-                        <div class="well">
-                            <span>Добро пожаловать в CryptoGames. Зарегистрируйте свой аккаунт. </span>
-                            <br/>
-                            <br/>
-                            <div class="form-group">
-                                <label for="login">Логин: @if(session('login'))<span class="text-danger">{{ session('login') }}</span>@endif</label>
-                                <input name="login" type="text" value="{{ old('login') }}"
-                                       id="login" class="form-control" aria-describedby="basic-addon1"/>
+                        @if(session('success'))
+                            <div class="alert alert-success" role="alert">
+                                <span id="">{{ session('success') }}</span>
                             </div>
-                            <div class="form-group">
-                                <label for="email">E-mail: @if(session('email'))<span class="text-danger">{{ session('email') }}</span>@endif</label>
-                                <input name="email" type="text" id="email" value="{{ old('email') }}" class="form-control" aria-describedby="basic-addon1"/>
+                        @else
+                            <div class="well">
+                                <span>Добро пожаловать в CryptoGames. Зарегистрируйте свой аккаунт. </span>
+                                <br/>
+                                <br/>
+                                <div class="form-group">
+                                    <label for="login">Логин: @if(session('login'))<span class="text-danger">{{ session('login') }}</span>@endif</label>
+                                    <input name="login" type="text" value="{{ old('login') }}"
+                                           id="login" class="form-control" aria-describedby="basic-addon1"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">E-mail: @if(session('email'))<span class="text-danger">{{ session('email') }}</span>@endif</label>
+                                    <input name="email" type="text" id="email" value="{{ old('email') }}" class="form-control" aria-describedby="basic-addon1"/>
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Пароль:</label>
+                                    <input name="password" id="password"
+                                           class="form-control" type="password" aria-describedby="basic-addon1"/>
+                                </div>
+                                <div class="form-group">
+                                    <input type="checkbox" name="terms-check" id="termsCheck"/>
+                                    <label for="termsCheck">Я согласен с <a href="/terms" target="_blank">Условиями использования</a></label><br/>
+                                    <input type="checkbox" name="privacy-check" id="privacyCheck"/>
+                                    <label for="privacyCheck">Я согласен с <a href="/privacy" target="_blank">Политикой конфиденциальности</a></label><br/>
+                                </div>
                             </div>
-                            <div class="form-group">
-                                <label for="password">Пароль:</label>
-                                <input name="password" id="password"
-                                       class="form-control" type="password" aria-describedby="basic-addon1"/>
-                            </div>
-                            <div class="form-group">
-                                <input type="checkbox" name="terms-check" id="termsCheck"/>
-                                <label for="termsCheck">Я согласен с <a href="/terms" target="_blank">Условиями использования</a></label><br/>
-                                <input type="checkbox" name="privacy-check" id="privacyCheck"/>
-                                <label for="privacyCheck">Я согласен с <a href="/privacy" target="_blank">Политикой конфиденциальности</a></label><br/>
-
-                            </div>
-
-                        </div>
-                        <input type="submit" name="ctl00$ContentPlaceHolder1$btnRegister" value="Регистрация"
-                               id="ContentPlaceHolder1_btnRegister" class="btn btn-default center-block"/>
-{{--                        <button class="btn btn-default center-block">Register</button>--}}
+                            <input type="submit" name="ctl00$ContentPlaceHolder1$btnRegister" value="Регистрация"
+                                   id="ContentPlaceHolder1_btnRegister" class="btn btn-default center-block"/>
+                        @endif
                     </form>
                 </div>
             </div>

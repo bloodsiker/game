@@ -17,6 +17,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('login');
             $table->double('btc', 10, 8)->default(0);
+            $table->double('etc', 10, 8)->default(0);
             $table->double('usd', 10, 2)->default(0);
             $table->double('rub', 10, 2)->default(0);
             $table->double('uah', 10, 2)->default(0);

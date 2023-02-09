@@ -16,8 +16,11 @@ class KenoService
 
     protected $game;
 
-    public function __construct()
+    protected $userStatisticService;
+
+    public function __construct(UserStatisticService $userStatisticService)
     {
+        $this->userStatisticService = $userStatisticService;
         $this->game = Game::where('name', 'Keno')->first();
     }
 
@@ -57,6 +60,7 @@ class KenoService
             $winAmount = (float) sprintf("%0.2f", $winAmount);
 
             $user->writeOffBalance($bet, $currency->accuracy);
+            $this->userStatisticService->setStatistic($user, $currency, $bet, $winAmount, $this->game->slug);
         } else {
             $rate = KenoRate::where(['number' => $count, 'count_win' => $countWinNumbers, 'type' => $type])->first();
             $coeff = $rate->coeff;
@@ -66,11 +70,13 @@ class KenoService
                 $winAmount = (float) sprintf("%0.2f", $winAmount);
 
                 $user->addToBalance($winAmount - $bet, $currency->accuracy);
+                $this->userStatisticService->setStatistic($user, $currency, $bet, ($winAmount - $bet), $this->game->slug);
             } else {
                 $winAmount = -1 * $bet;
                 $winAmount = (float) sprintf("%0.2f", $winAmount);
 
                 $user->writeOffBalance($bet, $currency->accuracy);
+                $this->userStatisticService->setStatistic($user, $currency, $bet, $winAmount, $this->game->slug);
             }
         }
 
@@ -111,6 +117,7 @@ class KenoService
                     [
                         'id' => $kenoHistory->id,
                         'user_id' => $user->login,
+                        'type' => $kenoHistory->type_text,
                         'coinname' => $currency->name,
                         'time' => $kenoHistory->time_game,
                         'bet' => $bet,
@@ -149,6 +156,7 @@ class KenoService
         foreach ($history as $result) {
             $results[$i]['id'] = $result->id;
             $results[$i]['user_id'] = $result->user->login;
+            $results[$i]['type'] = $result->type_text;
             $results[$i]['coinname'] = $result->currency->name;
             $results[$i]['time'] = $result->time_game;
             $results[$i]['bet'] = $result->bet;
@@ -172,6 +180,7 @@ class KenoService
         foreach ($history as $result) {
             $results[$i]['id'] = $result->id;
             $results[$i]['user_id'] = $result->user->login;
+            $results[$i]['type'] = $result->type_text;
             $results[$i]['coinname'] = $result->currency->name;
             $results[$i]['time'] = $result->time_game;
             $results[$i]['bet'] = $result->bet;

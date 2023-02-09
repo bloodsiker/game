@@ -70,6 +70,7 @@
                     success: function (msg) {
                         console.log(msg);
                         if (type == "{{ \App\Models\FaucetHistory::TYPE_F }}") {
+                            $("#other_history").html('');
                             $("#faucet_history").html(msg);
                             $("#faucet_history_table").dataTable({
                                 bFilter: false,
@@ -78,6 +79,7 @@
                                 order: [[0, "desc"]]
                             });
                         } else {
+                            $("#faucet_history").html('');
                             $("#other_history").html(msg);
                             $("#other_history_table").dataTable({
                                 bFilter: false,
@@ -98,7 +100,7 @@
                 if (target == "#history") {
                     getHistory("{{ \App\Models\FaucetHistory::TYPE_F }}", LongId);
                 } else if (target == "#other") {
-                    getHistory("{{ \App\Models\FaucetHistory::TYPE_F }}", LongId);
+                    getHistory("{{ \App\Models\FaucetHistory::TYPE_O }}", LongId);
                 }
             });
         });
@@ -638,8 +640,9 @@
                         </form>
                     </div>
                     <div class="tab-pane fade in" id="other">
-                        <span>The list below shows the tips, rain and other rewards that you have sent or received:</span>
-                        <div id="other_history"><br/>
+                        <span>В списке ниже показаны промо-коды и другие награды, которые вы получили:</span>
+                        <br/>
+                        <div id="other_history">
                             <i class='fa fa-circle-o-notch fa-spin fa-2x fa-fw'></i>
                         </div>
                     </div>

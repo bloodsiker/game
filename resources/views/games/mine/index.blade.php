@@ -37,7 +37,6 @@
         var hotkeys = "";
         var decimals = "6";
         var highrollamount = "5000";
-        var maxratio = "9920";
         var gamename = "{{ $game->name }}";
         var coinslist = [];
 
@@ -97,7 +96,24 @@
                                     </div>
                                     <br/>
 
-                                    <span class="bet_text">Сумма ставки:</span><br/>
+                                    <span class="bet_text">Сумма ставки ({{ $currency->name }}):</span><br/>
+                                    <div class="btn-group" role="group" aria-label="..." style="width: 101%;">
+                                        <button id="btnBet1" type="button" class="btn btn-default btnSetBet"
+                                                style="width: 20%;">+1
+                                        </button>
+                                        <button id="btnBet2" type="button" class="btn btn-default btnSetBet"
+                                                style="width: 20%;">+10
+                                        </button>
+                                        <button id="btnBet3" type="button" class="btn btn-default btnSetBet"
+                                                style="width: 20%;">+50
+                                        </button>
+                                        <button id="btnBet4" type="button" class="btn btn-default btnSetBet"
+                                                style="width: 20%;">+100
+                                        </button>
+                                        <button id="btnBet5" type="button" class="btn btn-default btnSetBet"
+                                                style="width: 20%;">+250
+                                        </button>
+                                    </div>
                                     <div class="group">
                                         <div class="choices">
                                             <div class="badges">

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Services\StrHelperService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -42,11 +43,18 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
+    public function login_histories(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(UserLoginHistory::class);
+    }
+
     public function getBalance($currency)
     {
         switch ($currency) {
             case 'btc':
                 return $this->btc;
+            case 'etc':
+                return $this->etc;
             case 'usd':
                 return $this->usd;
             case 'rub':

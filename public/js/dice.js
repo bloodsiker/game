@@ -11,7 +11,8 @@ $(document).ready(function () {
     var Idc = idc;
     var Accuracy = accuracy;
     var Longid = getCookie("LongId");
-    var Minbid = parseFloat(minbid);
+    var Minbid = parseFloat(0.00003000);
+    // var Minbid = parseFloat(minbid);
     var Maxwin = parseFloat(maxwin);
     var Edge = parseFloat(edge);
     var Minratio = 1.02;
@@ -184,7 +185,7 @@ $(document).ready(function () {
 
         if (bid < Minbid) {
             $("#txtBet").addClass("red_font");
-            msg = msg + " Ставка слишком низкая. Минимальная ставка: " + Minbid.toFixed(2) + " " + coinname + ".";
+            msg = msg + " Ставка слишком низкая. Минимальная ставка: " + Minbid.toFixed(Accuracy) + " " + coinname + ".";
             result = false;
         }
         if (bid > Balance) {
@@ -204,7 +205,7 @@ $(document).ready(function () {
             msg = msg + " Коэффициент выплат слишком велик. Максимальное соотношение: " + Maxratio + "x.";
             result = false;
         }
-        if (((multiplier * bid) - bid).toFixed(2) > Maxwin) {
+        if (((multiplier * bid) - bid).toFixed(Accuracy) > Maxwin) {
             $("#txtWinAmount").addClass("red_font");
             msg = msg + " Измените ставку или выплату. Максимальный выигрыш установлен на: " + Maxwin + " " + coinname + ".";
             result = false;
@@ -235,7 +236,7 @@ $(document).ready(function () {
         if (type == "1" || type == "") {
             if (bid < Minbid) {
                 $("#txtAutoBet").addClass("red_font");
-                msg = msg + " Ставка слишком низкая. Минимальная ставка: " + Minbid.toFixed(2) + " " + coinname + ".";
+                msg = msg + " Ставка слишком низкая. Минимальная ставка: " + Minbid.toFixed(Accuracy) + " " + coinname + ".";
                 result = false;
             }
             if (bid > Balance) {
@@ -329,7 +330,7 @@ $(document).ready(function () {
         }
         if (type == "3") {
             if (bid < Minbid) {
-                msg = msg + " Ставка слишком мала. Минимальная ставка: " + Minbid.toFixed(2) + " " + coinname + ".";
+                msg = msg + " Ставка слишком мала. Минимальная ставка: " + Minbid.toFixed(Accuracy) + " " + coinname + ".";
                 result = false;
             }
 
@@ -454,7 +455,7 @@ $(document).ready(function () {
             var bid = parseFloat($("#txtBet").val());
             var multiplier = parseFloat($("#txtMultiplier").val());
             if (bid > 0) {
-                var temp = ((bid * multiplier) - bid).toFixed(2);
+                var temp = ((bid * multiplier) - bid).toFixed(Accuracy);
                 $("#txtWinAmount").val(temp);
             }
             else {
@@ -474,7 +475,7 @@ $(document).ready(function () {
                 $("#btnRollUnder span").html("Меньше<br />" + temp);
                 var temp2 = (99.999 - temp).toFixed(3);
                 $("#btnRollOver span").html("Больше<br />" + temp2);
-                var temp1 = ((bid * multiplier) - bid).toFixed(2);
+                var temp1 = ((bid * multiplier) - bid).toFixed(Accuracy);
                 if (temp1 < 0.00000001) {
                     temp1 = 0;
                 }
@@ -494,7 +495,7 @@ $(document).ready(function () {
 
             var multiplier = (parseFloat((100.000 - Edge) / chance)).toFixed(4);
             $("#txtMultiplier").val(multiplier);
-            var temp = ((bid * multiplier) - bid).toFixed(2);
+            var temp = ((bid * multiplier) - bid).toFixed(Accuracy);
             if (temp < 0.00000001) {
                 temp = 0;
             }
@@ -517,7 +518,7 @@ $(document).ready(function () {
                 $("#btnRollUnder span").html("Меньше<br />" + temp);
                 var temp2 = (99.999 - temp).toFixed(3);
                 $("#btnRollOver span").html("Больше<br />" + temp2);
-                var temp1 = ((bid * multiplier) - bid).toFixed(2);
+                var temp1 = ((bid * multiplier) - bid).toFixed(Accuracy);
                 if (temp1 < 0.00000001) {
                     temp1 = 0;
                 }
@@ -678,7 +679,7 @@ $(document).ready(function () {
 
     setDefault = function () {
 
-        $("#txtBet").val(Minbid.toFixed(2));
+        $("#txtBet").val(Minbid.toFixed(Accuracy));
         $("#txtMultiplier").val((2).toFixed(4));
 
         let currentCookie = getCookie(diceAutobetCookieName);
@@ -697,7 +698,7 @@ $(document).ready(function () {
             }
         }
         else {
-            $("#txtAutoBet").val(Minbid.toFixed(2));
+            $("#txtAutoBet").val(Minbid.toFixed(Accuracy));
             $("#txtAutoMultiplier").val((2).toFixed(4));
             $("#txtWinInc").val(100);
             $("#txtLossInc").val(100);
@@ -708,7 +709,7 @@ $(document).ready(function () {
             $("#txtSmallerThan").val(0);
             $("#txtLargerThan").val(0);
             $("#txtMaxBet").val(0);
-            $("#txtMinBet").val(Minbid.toFixed(2));
+            $("#txtMinBet").val(Minbid.toFixed(Accuracy));
 
             $('input:radio[name="rdWin"]').filter('[value="return"]').attr('checked', true);
             $('input:radio[name="rdLoss"]').filter('[value="return"]').attr('checked', true);
@@ -770,8 +771,8 @@ $(document).ready(function () {
         }
         Profit = 0;
         Runing = true;
-        CurrentBet = parseFloat($("#txtAutoBet").val()).toFixed(2);
-        BaseBet = parseFloat($("#txtAutoBet").val()).toFixed(2);
+        CurrentBet = parseFloat($("#txtAutoBet").val()).toFixed(Accuracy);
+        BaseBet = parseFloat($("#txtAutoBet").val()).toFixed(Accuracy);
         if (auto_validate("") == false) {
             auto_stop();
             return;
@@ -794,22 +795,20 @@ $(document).ready(function () {
             auto_stop();
         }
         else {
-            $("#txtAutoBet").val(parseFloat(CurrentBet).toFixed(2));
+            $("#txtAutoBet").val(parseFloat(CurrentBet).toFixed(Accuracy));
             var multiplier = parseFloat($("#txtAutoMultiplier").val()).toFixed(4);
 
             if (auto_validate("3") == true) {
                 var rdroll = $('input:radio[name=rdRoll]:checked').val();
                 if (rdroll == "over") {
                     var type = "1";
-                }
-                else if (rdroll == "under") {
+                } else if (rdroll == "under") {
                     var type = "2";
                 }
                 else {
                     if (HighLow) {
                         var type = "1";
-                    }
-                    else {
+                    } else {
                         var type = "2";
                     }
                 }
@@ -844,7 +843,7 @@ $(document).ready(function () {
         }, 2000); // some users had issue if starting to soon
 
         $("#auto_line_loading").hide();
-        $("#txtAutoBet").val(parseFloat(BaseBet).toFixed(2));
+        $("#txtAutoBet").val(parseFloat(BaseBet).toFixed(Accuracy));
         getBets();
     }
 
@@ -1000,16 +999,16 @@ $(document).ready(function () {
     });
 
     $("#btnBet1").click(function () { //min bid
-        $("#txtBet").val(Minbid.toFixed(2));
+        $("#txtBet").val(Minbid.toFixed(Accuracy));
         manual_validate();
         reCalc("1");
     });
 
     $("#btnBet2").click(function () { // bid / 2
         var bet = $("#txtBet").val();
-        $("#txtBet").val((bet / 2).toFixed(2));
+        $("#txtBet").val((bet / 2).toFixed(Accuracy));
         if ((bet / 2) < Minbid) {
-            $("#txtBet").val(Minbid.toFixed(2));
+            $("#txtBet").val(Minbid.toFixed(Accuracy));
         }
         manual_validate();
         reCalc("1");
@@ -1018,10 +1017,10 @@ $(document).ready(function () {
     $("#btnBet3").click(function () { // bid * 2
         var bet = parseFloat($("#txtBet").val());
         var multiplier = parseFloat($("#txtMultiplier").val());
-        $("#txtBet").val((bet * 2).toFixed(2));
+        $("#txtBet").val((bet * 2).toFixed(Accuracy));
 
         if ((bet * 2) > (Balance)) {
-            $("#txtBet").val((Balance).toFixed(2));
+            $("#txtBet").val((Balance).toFixed(Accuracy));
         }
         manual_validate();
         reCalc("1");
@@ -1030,7 +1029,7 @@ $(document).ready(function () {
     $("#btnBet4").click(function () { //max bid
         var multiplier = parseFloat($("#txtMultiplier").val());
 
-        $("#txtBet").val((Balance).toFixed(2));
+        $("#txtBet").val((Balance).toFixed(Accuracy));
         manual_validate();
         reCalc("1");
     });
@@ -1093,16 +1092,16 @@ $(document).ready(function () {
     });
 
     $("#btnAutoBet1").click(function () { //min bid
-        $("#txtAutoBet").val(Minbid.toFixed(2));
+        $("#txtAutoBet").val(Minbid.toFixed(Accuracy));
         auto_validate("1");
         reCalcAuto();
     });
 
     $("#btnAutoBet2").click(function () { // bid / 2
         var bet = $("#txtAutoBet").val();
-        $("#txtAutoBet").val((bet / 2).toFixed(2));
+        $("#txtAutoBet").val((bet / 2).toFixed(Accuracy));
         if ((bet / 2) < Minbid) {
-            $("#txtAutoBet").val(Minbid.toFixed(2));
+            $("#txtAutoBet").val(Minbid.toFixed(Accuracy));
         }
         auto_validate("1");
         reCalcAuto();
@@ -1111,10 +1110,10 @@ $(document).ready(function () {
     $("#btnAutoBet3").click(function () { // bid * 2
         var bet = parseFloat($("#txtAutoBet").val());
         var multiplier = parseFloat($("#txtAutoMultiplier").val());
-        $("#txtAutoBet").val((bet * 2).toFixed(2));
+        $("#txtAutoBet").val((bet * 2).toFixed(Accuracy));
 
         if ((bet * 2) > (Balance)) {
-            $("#txtAutoBet").val((Balance).toFixed(2));
+            $("#txtAutoBet").val((Balance).toFixed(Accuracy));
         }
         auto_validate("1");
         reCalcAuto();
@@ -1123,7 +1122,7 @@ $(document).ready(function () {
     $("#btnAutoBet4").click(function () { //max bid
         var multiplier = parseFloat($("#txtAutoMultiplier").val());
 
-        $("#txtAutoBet").val((Balance).toFixed(2));
+        $("#txtAutoBet").val((Balance).toFixed(Accuracy));
 
         auto_validate("1");
         reCalcAuto();
@@ -1375,7 +1374,7 @@ $(document).ready(function () {
                                 var max = parseFloat($("#txtMaxBet").val());
                                 CurrentBet = (bet + (bet * (val / 100)));
                                 if (parseFloat(CurrentBet) > max && max > 0) {
-                                    CurrentBet = max.toFixed(2)
+                                    CurrentBet = max.toFixed(Accuracy)
                                 }
                             } else if (val == "dec") {
                                 var val = parseFloat($("#txtWinDec").val());
@@ -1399,7 +1398,7 @@ $(document).ready(function () {
                                 var max = parseFloat($("#txtMaxBet").val());
                                 CurrentBet = (bet + (bet * (val / 100)));
                                 if (parseFloat(CurrentBet) > max && max > 0) {
-                                    CurrentBet = max.toFixed(2)
+                                    CurrentBet = max.toFixed(Accuracy)
                                 }
                             }
                             else if (val == "dec") {
@@ -1411,7 +1410,7 @@ $(document).ready(function () {
                                 }
                             }
                         }
-                        CurrentBet = parseFloat(CurrentBet).toFixed(2);
+                        CurrentBet = parseFloat(CurrentBet).toFixed(Accuracy);
                         showBalance(content.balance, code, Accuracy);
                         Balance = content.balance;
                         var count = $("#txtMaxRolls").val() - 1;
@@ -1427,7 +1426,7 @@ $(document).ready(function () {
                             time = 0;
                         }
 
-                        $("#txtProfit").val(Profit.toFixed(2));
+                        $("#txtProfit").val(Profit.toFixed(Accuracy));
                         $("#profit_group").show();
 
                         addToTable(content.BetData, "1");

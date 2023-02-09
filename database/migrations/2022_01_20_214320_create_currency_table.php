@@ -31,11 +31,11 @@ class CreateCurrencyTable extends Migration
             $table->bigInteger('currency_id')->unsigned();
             $table->bigInteger('user_id')->unsigned();
             $table->tinyInteger('under_over');
-            $table->double('bet',10,2);
-            $table->double('profit',10,2);
+            $table->double('bet',10,8);
+            $table->double('profit',10,8);
             $table->double('multiplier',10,4);
             $table->double('roll',10,3);
-            $table->double('remainder',10,2);
+            $table->double('remainder',10,8);
             $table->string('target', 10);
             $table->dateTime('time_game');
 

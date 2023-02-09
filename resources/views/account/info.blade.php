@@ -102,9 +102,9 @@
                             </tr>
                             @foreach($currencies as $currency)
                                 <tr>
-                                    <td>{{ $currency->idc }}</td>
                                     <td>{{ $currency->name }}</td>
-                                    <td>{{ Auth::user()->{$currency->idc} }}</td>
+                                    <td>{{ $currency->name }}</td>
+                                    <td>{{ Auth::user()->{$currency->code} }}</td>
                                 </tr>
                             @endforeach
                         </table>
@@ -119,51 +119,13 @@
                                         <th>IP адрес</th>
                                         <th>User Agent</th>
                                     <tbody>
-                                    <tr>
-                                        <td>2018-01-09 09:53:57</td>
-                                        <td>185.41.248.109</td>
-                                        <td>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_2) Ap</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2018-08-27 09:49:59</td>
-                                        <td>109.68.46.238</td>
-                                        <td>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2017-12-05 21:35:59</td>
-                                        <td>93.74.107.183</td>
-                                        <td>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_1) Ap</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2018-08-28 19:32:16</td>
-                                        <td>93.74.147.1</td>
-                                        <td>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) Ap</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2018-09-17 14:55:30</td>
-                                        <td>109.68.46.238</td>
-                                        <td>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2018-09-18 07:33:16</td>
-                                        <td>109.68.46.238</td>
-                                        <td>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2018-06-01 07:19:17</td>
-                                        <td>109.68.46.238</td>
-                                        <td>Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2018-06-05 17:23:20</td>
-                                        <td>93.74.147.1</td>
-                                        <td>Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) Ap</td>
-                                    </tr>
-                                    <tr>
-                                        <td>2017-05-11 07:20:34</td>
-                                        <td>194.44.242.242</td>
-                                        <td>Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWeb</td>
-                                    </tr>
+                                    @foreach(auth()->user()->login_histories as $history)
+                                        <tr>
+                                            <td>{{ $history->created_at->format('Y-m-d H:i:s') }}</td>
+                                            <td>{{ $history->ip }}</td>
+                                            <td>{{ $history->user_agent }}</td>
+                                        </tr>
+                                    @endforeach
                                     </tbody>
                                 </table>
                             </div>

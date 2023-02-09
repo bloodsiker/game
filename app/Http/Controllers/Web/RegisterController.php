@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Web;
 
+use App\Models\Currency;
 use App\Models\User;
+use App\Models\UserStatistic;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -37,9 +39,17 @@ class RegisterController extends Controller
             ]);
 
             if ($user) {
+                $currencies = Currency::where('is_active', true)->orderBy('position')->get();
+                foreach ($currencies as $currency) {
+                    UserStatistic::create([
+                        'user_id' => $user->id,
+                        'currency_id' => $currency->id,
+                    ]);
+                }
+
                 Auth::login($user);
 
-                return redirect()->back();
+                return redirect()->back()->with(['success' => 'Вы успешно зарегистрировались']);
             }
         }
 

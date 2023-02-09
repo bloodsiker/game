@@ -324,6 +324,54 @@ $(document).ready(function () {
         manual_validate();
     });
 
+    $("#btnBet1").click(function () { // bid + 1
+        var bet = parseFloat($("#txtMineBet").val());
+        $("#txtMineBet").val((bet + 1).toFixed(2));
+        if ((bet + 1) > (Balance)) {
+            $("#txtMineBet").val((Balance).toFixed(2));
+        }
+        manual_validate();
+    });
+
+    $("#btnBet2").click(function () { // bid + 10
+        var bet = parseFloat($("#txtMineBet").val());
+        $("#txtMineBet").val((bet + 10).toFixed(2));
+        if ((bet + 10) > (Balance)) {
+            $("#txtMineBet").val((Balance).toFixed(2));
+        }
+        manual_validate();
+    });
+
+    $("#btnBet3").click(function () { // bid + 50
+        var bet = parseFloat($("#txtMineBet").val());
+        $("#txtMineBet").val((bet + 50).toFixed(2));
+
+        if ((bet + 50) > (Balance)) {
+            $("#txtMineBet").val((Balance).toFixed(2));
+        }
+        manual_validate();
+    });
+
+    $("#btnBet4").click(function () { // bid + 100
+        var bet = parseFloat($("#txtMineBet").val());
+        $("#txtMineBet").val((bet + 100).toFixed(2));
+
+        if ((bet + 100) > (Balance)) {
+            $("#txtMineBet").val((Balance).toFixed(2));
+        }
+        manual_validate();
+    });
+
+    $("#btnBet5").click(function () { // bid + 250
+        var bet = parseFloat($("#txtMineBet").val());
+        $("#txtMineBet").val((bet + 250).toFixed(2));
+
+        if ((bet + 250) > (Balance)) {
+            $("#txtMineBet").val((Balance).toFixed(2));
+        }
+        manual_validate();
+    });
+
     $("#btnMaxBet").on('click', function () { // max bid
         $("#txtMineBet").val((Balance).toFixed(2));
         manual_validate();

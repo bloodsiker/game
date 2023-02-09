@@ -312,29 +312,30 @@ h1 {
 }
 
 footer .well {
-  background-color: var(--cg-footer-bg);
-  color: var(--cg-font-color-light);
-  margin-bottom: 0;
-  min-height: 300px;
+    background-color: var(--cg-footer-bg);
+    color: var(--cg-font-color-light);
+    margin-bottom: 0;
+    min-height: 300px;
+    padding: 35px;
 }
 
 footer .well a {
-  color: var(--cg-font-color-light);
+    color: var(--cg-font-color-light);
 }
 
 .bets {
-  height: 750px;
-  max-height: 750px;
-  margin-bottom: 20px;
-  overflow: auto;
+    height: 750px;
+    max-height: 750px;
+    margin-bottom: 20px;
+    overflow: auto;
 }
 
 .green_font {
-  color: var(--cg-green);
+    color: var(--cg-green);
 }
 
 .red_font {
-  color: var(--cg-red);
+    color: var(--cg-red);
 }
 
 @media screen and (max-width: 1000px) {

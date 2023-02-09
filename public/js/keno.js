@@ -304,7 +304,12 @@ $(document).ready(function () {
         $(".change_type").removeClass('active');
         $(this).addClass('active');
         changeType = $(this).attr('data-type');
-        htmlRatesNumber(selectedNumbers.length);
+
+        if (selectedNumbers.length) {
+            htmlRatesNumber(selectedNumbers.length);
+        } else {
+            htmlRatesNotNumber();
+        }
     });
 
     $('.game-keno__winning-close').on('click', function () {
@@ -458,7 +463,7 @@ $(document).ready(function () {
                 if (content.result) {
 
                     let i = 0;
-                    $.each(content.win, function(index, value){
+                    $.each(content.win, function(index, value) {
                         i++
                         setData(value, i, 'game-keno__numbers-item_opened');
                     });
@@ -566,12 +571,12 @@ $(document).ready(function () {
                     append = append + "<td><a class='a_bwindow' href='/keno/getBet/" + v.id + "'>" + id + "</a></td><td class='hidden-xs'>" + date + "</td>" +
                         "<td><a class='a_swindow' href='/player/" + v.user_id + "'>" + v.user_id + "</a></td>" +
                         "<td>" + v.coinname + "</td>" +
+                        "<td>" + v.type + "</td>" +
                         "<td>" + convert_number(v.bet, 2) + "</td><td>" + convert_number(v.coeff, 2) + "x</td>";
 
                     if (v.profit >= 0) {
                         append = append + "<td class='green_font text-right'>" + convert_number(v.profit, 2) + "</td>"
-                    }
-                    else {
+                    } else {
                         append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
                     }
                     append = append + "<td class='coin_column'><img class='result_coin' src='/assets/currency/" + v.code.trim() + ".png' height='25' width='25'></td></tr>"
@@ -622,6 +627,7 @@ $(document).ready(function () {
                     append = append + "<td><a class='a_bwindow' href='/keno/getBet/" + v.id + "'>" + id + "</a></td><td class='hidden-xs'>" + date + "</td>" +
                         "<td><a class='a_swindow' href='/player/" + v.user_id + "'>" + v.user_id + "</a></td>" +
                         "<td>" + v.coinname + "</td>" +
+                        "<td>" + v.type + "</td>" +
                         "<td>" + convert_number(v.bet, 2) + "</td><td>" + convert_number(v.coeff, 2) + "x</td>";
 
                     if (v.profit >= 0) {
@@ -666,12 +672,12 @@ $(document).ready(function () {
                     append = append + "<td><a class='a_bwindow' href='/keno/getBet/" + v.id + "'>" + id + "</a></td><td class='hidden-xs'>" + date + "</td>" +
                         "<td><a class='a_swindow' href='/player/" + v.user_id + "'>" + v.user_id + "</a></td>" +
                         "<td>" + v.coinname + "</td>" +
+                        "<td>" + v.type + "</td>" +
                         "<td>" + convert_number(v.bet, 2) + "</td><td>" + convert_number(v.coeff, 2) + "x</td>";
 
                     if (v.profit >= 0) {
                         append = append + "<td class='green_font text-right'>" + convert_number(v.profit, 2) + "</td>"
-                    }
-                    else {
+                    } else {
                         append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
                     }
                     append = append + "<td><img class='result_coin' src='/assets/currency/" + v.code.trim() + ".png' height='25' width='25'></td></tr>";

@@ -200,6 +200,11 @@
 
 .game-keno_group_type {
     margin-top: 20px;
+}
+.game-keno_group_type .label_text {
+    margin-bottom: 10px;
+}
+.game-keno_group_type_btn {
     display: flex;
     width: 100%;
     justify-content: center;
@@ -207,7 +212,7 @@
     background: #141a20;
 }
 
-.game-keno_group_type button {
+.game-keno_group_type_btn button {
     padding: 0.85rem;
     width: 100%;
     text-transform: capitalize;
@@ -216,7 +221,7 @@
     border: 1px solid transparent;
     border-radius: 4px;
 }
-.game-keno_group_type button.active {
+.game-keno_group_type_btn button.active {
     background: var(--cg-button-bg-active);
 }
 

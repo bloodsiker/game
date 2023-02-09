@@ -9,7 +9,7 @@
     <link href="{{ asset('css/bootstrap.css') }}" rel="stylesheet"/>
     <link href="{{ asset('js/bootstrap-switch/css/bootstrap3/bootstrap-switch.css') }}" rel="stylesheet"/>
     <link rel="stylesheet" href="{{ asset('js/datatables/dataTables.bootstrap.css') }}"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.css" rel="stylesheet"/>
+    <link href="{{ asset('css/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet"/>
     <link href="{{ asset('css/popup.css') }}" rel="stylesheet"/>
     <script src="{{ asset('js/jquery-2.1.0.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/bootstrap/js/bootstrap.min.js') }}" type="text/javascript"></script>
@@ -39,8 +39,8 @@
 
     @stack('head_scripts')
 
-    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer
-            type="f6c058ff71eb3d79b70cd59f-text/javascript"></script>
+{{--    <script src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&render=explicit" async defer--}}
+{{--            type="f6c058ff71eb3d79b70cd59f-text/javascript"></script>--}}
 </head>
 <body>
 

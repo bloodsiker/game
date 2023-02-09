@@ -13,8 +13,11 @@ class DiceService
 {
     protected $game;
 
-    public function __construct()
+    protected $userStatisticService;
+
+    public function __construct(UserStatisticService $userStatisticService)
     {
+        $this->userStatisticService = $userStatisticService;
         $this->game = Game::where('name', 'Dice')->first();
     }
 
@@ -42,8 +45,8 @@ class DiceService
             return false;
         }
 
-        $winAmount = ($bet * $multiplier) - $bet;
-        $winAmount = (float)sprintf("%0.2f",  $winAmount);
+        $betMultiplier = bcmul(StrHelperService::numberFormat($bet), StrHelperService::numberFormat($multiplier), $currency->accuracy); // ($bet * $multiplier) - $bet
+        $winAmount = bcsub($betMultiplier, StrHelperService::numberFormat($bet), $currency->accuracy);
 
         $chance = ((100.000 - $this->game->edge) / $multiplier);
         $chance = floor($chance * 1000) / 1000;
@@ -100,6 +103,8 @@ class DiceService
             'target' => $underOver === 1 ? '> ' . $chance : ' < ' . $chance,
             'time_game' => Carbon::now(),
         ]);
+
+        $this->userStatisticService->setStatistic($user, $currency, $bet, $winAmount, $this->game->slug);
 
         return [
             'd' => [

@@ -92,9 +92,12 @@
                                     </div>
 
                                     <div class="game-keno_group_type">
-                                        <button data-type="1" class="change_type active">Low</button>
-                                        <button data-type="2" class="change_type">Medium</button>
-                                        <button data-type="3" class="change_type">High</button>
+                                        <span class="label_text">Риск:</span><br/>
+                                        <div class="game-keno_group_type_btn">
+                                            <button data-type="1" class="change_type active">Low</button>
+                                            <button data-type="2" class="change_type">Medium</button>
+                                            <button data-type="3" class="change_type">High</button>
+                                        </div>
                                     </div>
 
                                     <div class="game-keno__rate-block game-keno__rate-block_buttons">
@@ -379,6 +382,7 @@
                                 <th class="hidden-xs">Время</th>
                                 <th>Игрок</th>
                                 <th>Валюта</th>
+                                <th>Риск</th>
                                 <th>Ставка</th>
                                 <th>Выплата</th>
                                 <th class="text-right">Выигрыш</th>
@@ -396,6 +400,7 @@
                                 <th class="hidden-xs">Время</th>
                                 <th>Игрок</th>
                                 <th>Валюта</th>
+                                <th>Риск</th>
                                 <th>Ставка</th>
                                 <th>Выплата</th>
                                 <th class="text-right">Выигрыш</th>

@@ -16,6 +16,16 @@ class KenoHistory extends Model
 
     protected $dates = ['time_game'];
 
+    const TYPE_LOW    = 1;
+    const TYPE_MEDIUM = 2;
+    const TYPE_HIGH   = 3;
+
+    public static $types = [
+        self::TYPE_LOW => 'Low',
+        self::TYPE_MEDIUM => 'Medium',
+        self::TYPE_HIGH => 'High',
+    ];
+
     public function currency()
     {
         return $this->hasOne(Currency::class, 'id', 'currency_id');
@@ -25,4 +35,11 @@ class KenoHistory extends Model
     {
         return $this->hasOne(User::class, 'id', 'user_id');
     }
+
+    public function getTypeTextAttribute()
+    {
+        return self::$types[$this->type];
+    }
+
+    protected $appends = ['type_text'];
 }

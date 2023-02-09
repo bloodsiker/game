@@ -14,8 +14,11 @@ class MineService
 {
     protected $game;
 
-    public function __construct()
+    protected $userStatisticService;
+
+    public function __construct(UserStatisticService $userStatisticService)
     {
+        $this->userStatisticService = $userStatisticService;
         $this->game = Game::where('name', 'Mines')->first();
     }
 
@@ -84,6 +87,8 @@ class MineService
             return ['status' => 'error', 'message' => 'Game not found'];
         }
 
+        $currency = Currency::where('code', $code)->first();
+
         $mines = json_decode($mineGame->mines);
         $revealed = json_decode($mineGame->revealed);
         $revealed[] = $cell;
@@ -130,6 +135,9 @@ class MineService
                     ],
                 ]
             ];
+
+            $this->userStatisticService->setStatistic($user, $currency, $mineGame->sum, $mineGame->profit, $this->game->slug);
+
         } else {
             $result = [
                 'active' => true,
@@ -169,6 +177,8 @@ class MineService
         $mineGame->profit = $profit;
         $mineGame->remainder = $user->getActiveBalance();
         $mineGame->save();
+
+        $this->userStatisticService->setStatistic($user, $currency, $mineGame->sum, ($mineGame->profit - $mineGame->sum), $this->game->slug);
 
         return [
             'active' => $mineGame->active,

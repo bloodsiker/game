@@ -6,6 +6,8 @@ use App\Models\Currency;
 use App\Models\FaucetHistory;
 use App\Models\PromoCode;
 use App\Models\PromoCodeActive;
+use App\Models\User;
+use App\Models\UserStatistic;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -27,8 +29,11 @@ class AccountController extends Controller
     public function infoPlayer(Request $request)
     {
         $user = Auth::user();
+        $statistics = UserStatistic::with('currency')->where('user_id', $user->id)->get();
+        $invites = User::where('ref_id', $user->id)->count();
+        $faucet = FaucetHistory::where(['user_id' => $user->id, 'type' => FaucetHistory::TYPE_F])->count();
 
-        return view('account.player');
+        return view('account.player', compact('statistics', 'invites', 'faucet'));
     }
 
     public function reward(Request $request, $currency)
@@ -73,7 +78,11 @@ class AccountController extends Controller
 
     public function getFaucetHistory(Request $request)
     {
-        return view('account.faucet_history');
+        $user = Auth::user();
+        $type = $request->get('type');
+        $faucets = FaucetHistory::where(['user_id' => $user->id, 'type' => $type])->get();
+
+        return view('account.faucet_history', compact('faucets', 'type'));
     }
 
     public function usePromoCode(Request $request)

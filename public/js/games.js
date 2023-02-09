@@ -251,7 +251,6 @@ $(document).ready(function () {
     var FirstTime = true;
 
      showBalance = function (balance, code, accuracy = 8) {
-         console.log(balance, accuracy);
          if (balance >= 0) {
             $("#lblBalance").html("Баланс: " + numberWithSpacesDouble(convert_number(balance, accuracy)));
             $("#lblCoinName").html(code);
@@ -689,8 +688,7 @@ $(document).ready(function () {
     convert_number = function (number, fixed) {
         if (fixed == 0) {
             var result = parseInt(number).toLocaleString('en-US');
-        }
-        else {
+        } else {
             var result = parseFloat(number).toFixed(fixed).toLocaleString('en-US');
         }
 

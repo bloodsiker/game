@@ -24,7 +24,7 @@
     @stack('head_css')
 
     <link href="{{ asset('js/fancybox/jquery.fancybox.css') }}" rel="stylesheet"/>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.css" rel="stylesheet"/>
+    <link href="{{ asset('css/font-awesome/css/font-awesome.min.css') }}" rel="stylesheet"/>
     <script src="{{ asset('js/jquery-2.1.0.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/jquery-ui-1.11.4/jquery-ui.min.js') }}" type="text/javascript"></script>
     <script src="{{ asset('js/bootstrap/js/bootstrap.min.js') }}" type="text/javascript"></script>

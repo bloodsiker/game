@@ -14,8 +14,11 @@ class CoinFlipService
 {
     protected $game;
 
-    public function __construct()
+    protected $userStatisticService;
+
+    public function __construct(UserStatisticService $userStatisticService)
     {
+        $this->userStatisticService = $userStatisticService;
         $this->game = Game::where('name', 'Coin Flip')->first();
     }
 
@@ -74,6 +77,8 @@ class CoinFlipService
             return ['status' => 'error', 'message' => 'Game not found'];
         }
 
+        $currency = Currency::where('code', $code)->first();
+
         $coins = json_decode($coinGame->coins);
         $revealed = json_decode($coinGame->revealed);
         $revealed[] = $coin;
@@ -86,6 +91,8 @@ class CoinFlipService
             $coinGame->lose = true;
             $coinGame->won_sum = 0;
             $coinGame->profit = -1 * $coinGame->bet;
+
+            $this->userStatisticService->setStatistic($user, $currency, $coinGame->bet, $coinGame->profit, $this->game->slug);
         } else {
             ++$coinGame->step;
             $rate = CoinFlipRate::where(['step' => $coinGame->step])->first();
@@ -156,6 +163,7 @@ class CoinFlipService
 
         $user->setActiveBalance($code);
         $user->addToBalance($profit, $currency->accuracy);
+        $this->userStatisticService->setStatistic($user, $currency, $coinGame->bet, ($profit - $coinGame->bet), $this->game->slug);
 
         $coinGame->won_sum = $profit;
         $coinGame->active = false;
