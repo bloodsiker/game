@@ -12,7 +12,7 @@
     <script type="text/javascript">
         var coin = "{{ $currency->code }}";
         var style = "7";
-        var coinname = "{{ $currency->name }}";
+        var coinname = "{{ $currency->short_name }}";
         var decimals = "6";
         var totalchannels = "5";
         var ratio = "10000000";
@@ -26,7 +26,7 @@
     <script type="text/javascript">
         var code = "{{ $currency->code }}";
         var accuracy = "{{ $currency->accuracy }}";
-        var coinname = "{{ $currency->name }}";
+        var coinname = "{{ $currency->short_name }}";
         var style = "7";
         var maxwin = "500000";
         var minbid = "0.10";
@@ -92,41 +92,57 @@
                                         </button>
                                     </div>
                                     <div class="">
-                                        <input id="txtMines" type="text" class="form-control fz-16 fw-600 text-center" value="3" autocomplete="of"/>
+                                        <input id="txtMines" type="text" class="form-control fz-16 fw-600 text-center" value="3" autocomplete="off"/>
                                     </div>
                                     <br/>
 
-                                    <span class="bet_text">Сумма ставки ({{ $currency->name }}):</span><br/>
+                                    <span class="bet_text">Сумма ставки ({{ $currency->short_name }}):</span><br/>
                                     <div class="btn-group" role="group" aria-label="..." style="width: 101%;">
-                                        <button id="btnBet1" type="button" class="btn btn-default btnSetBet"
-                                                style="width: 20%;">+1
+{{--                                        <button id="btnBet1" type="button" class="btn btn-default btnSetBet"--}}
+{{--                                                style="width: 20%;">+1--}}
+{{--                                        </button>--}}
+{{--                                        <button id="btnBet2" type="button" class="btn btn-default btnSetBet"--}}
+{{--                                                style="width: 20%;">+10--}}
+{{--                                        </button>--}}
+{{--                                        <button id="btnBet3" type="button" class="btn btn-default btnSetBet"--}}
+{{--                                                style="width: 20%;">+50--}}
+{{--                                        </button>--}}
+{{--                                        <button id="btnBet4" type="button" class="btn btn-default btnSetBet"--}}
+{{--                                                style="width: 20%;">+100--}}
+{{--                                        </button>--}}
+{{--                                        <button id="btnBet5" type="button" class="btn btn-default btnSetBet"--}}
+{{--                                                style="width: 20%;">+250--}}
+{{--                                        </button>--}}
+
+                                        <button id="btnMinBet" type="button" class="btn btn-default"
+                                                style="width: 25%;">Min
                                         </button>
-                                        <button id="btnBet2" type="button" class="btn btn-default btnSetBet"
-                                                style="width: 20%;">+10
+                                        <button id="btnDivBet" type="button" class="btn btn-default"
+                                                style="width: 25%;">1/2
                                         </button>
-                                        <button id="btnBet3" type="button" class="btn btn-default btnSetBet"
-                                                style="width: 20%;">+50
+                                        <button id="btnX2Bet" type="button" class="btn btn-default"
+                                                style="width: 25%;">x2
                                         </button>
-                                        <button id="btnBet4" type="button" class="btn btn-default btnSetBet"
-                                                style="width: 20%;">+100
-                                        </button>
-                                        <button id="btnBet5" type="button" class="btn btn-default btnSetBet"
-                                                style="width: 20%;">+250
+                                        <button id="btnMaxBet" type="button" class="btn btn-default"
+                                                style="width: 25%;">Max
                                         </button>
                                     </div>
-                                    <div class="group">
-                                        <div class="choices">
-                                            <div class="badges">
-                                                <button class="btn btnOperations" id="btnMaxBet">Max</button>
-                                                <button class="btn btnOperations" id="btnMinBet">Min</button>
-                                            </div>
-                                            <input id="txtMineBet" class="fz-16 fw-600" name="amount" type="text" value="10" autocomplete="off">
-                                            <div class="badges">
-                                                <button class="btn btnOperations" id="btnX2Bet">X2</button>
-                                                <button class="btn btnOperations" id="btnDivBet">/2</button>
-                                            </div>
-                                        </div>
+                                    <div class="">
+                                        <input id="txtMineBet" type="text" name="amount" class="form-control fz-16 fw-600 text-center" value="0.1" autocomplete="off"/>
                                     </div>
+{{--                                    <div class="group">--}}
+{{--                                        <div class="choices">--}}
+{{--                                            <div class="badges">--}}
+{{--                                                <button class="btn btnOperations" id="btnMaxBet">Max</button>--}}
+{{--                                                <button class="btn btnOperations" id="btnMinBet">Min</button>--}}
+{{--                                            </div>--}}
+{{--                                            <input id="txtMineBet" class="fz-16 fw-600" name="amount" type="text" value="10" autocomplete="off">--}}
+{{--                                            <div class="badges">--}}
+{{--                                                <button class="btn btnOperations" id="btnX2Bet">X2</button>--}}
+{{--                                                <button class="btn btnOperations" id="btnDivBet">/2</button>--}}
+{{--                                            </div>--}}
+{{--                                        </div>--}}
+{{--                                    </div>--}}
 
                                     <div class="game-mine_buttons">
                                         <button class="game-mine__button" id="btnMineStart">Играть</button>

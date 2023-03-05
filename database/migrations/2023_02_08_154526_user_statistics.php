@@ -23,6 +23,7 @@ class UserStatistics extends Migration
             $table->integer('mines')->default(0);
             $table->integer('coinflip')->default(0);
             $table->integer('keno')->default(0);
+            $table->integer('cards')->default(0);
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade');

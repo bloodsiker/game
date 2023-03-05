@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 /**
  * Class AccountController
@@ -140,6 +141,44 @@ class AccountController extends Controller
 
     public function setting(Request $request)
     {
+        if ($request->isMethod('POST')) {
+            if ($request->get('action') === 'account') {
+                $login = $request->get('login');
+                if (!$login) {
+                    return back()->with(['error_account' => 'Не введен никнейм', 'tab' => 'account']);
+                }
+
+                $userLogin = User::where(['login' => $login])->first();
+                if ($userLogin) {
+                    return back()->with(['error_account' => sprintf('Никнейм %s уже занят', $login), 'tab' => 'account']);
+                }
+
+                $user = Auth::user();
+                $user->login = $login;
+                $user->save();
+
+                return back()->with(['success_account' => 'Никнейм изменен', 'tab' => 'account']);
+            }
+
+            if ($request->get('action') === 'security') {
+                $password = $request->get('password');
+                if ($password) {
+
+                    if (strlen($password) < 6) {
+                        return back()->with(['error_security' => 'Пароль должен быть больше 6 символов', 'tab' => 'security']);
+                    }
+
+                    $user = Auth::user();
+                    $user->password = Hash::make($password);
+                    $user->save();
+
+                    return back()->with(['success_security' => 'Пароль изменен', 'tab' => 'security']);
+                }
+
+                return back()->with(['tab' => 'security']);
+            }
+        }
+
         return view('account.setting');
     }
 

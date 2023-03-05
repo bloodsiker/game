@@ -12,7 +12,7 @@
     <script type="text/javascript">
         var coin = "{{ $currency->code }}";
         var style = "7";
-        var coinname = "{{ $currency->name }}";
+        var coinname = "{{ $currency->short_name }}";
         var decimals = "6";
         var totalchannels = "5";
         var ratio = "10000000";
@@ -26,7 +26,7 @@
     <script type="text/javascript">
         var idc = "{{ $currency->code }}";
         var accuracy = "{{ $currency->accuracy }}";
-        var coinname = "{{ $currency->name }}";
+        var coinname = "{{ $currency->short_name }}";
         var style = "7";
         var maxwin = "500000";
         var minbid = "0.10";

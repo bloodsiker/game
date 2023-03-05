@@ -118,7 +118,8 @@ class KenoService
                         'id' => $kenoHistory->id,
                         'user_id' => $user->login,
                         'type' => $kenoHistory->type_text,
-                        'coinname' => $currency->name,
+                        'coinname' => $currency->short_name,
+                        'icon' => $currency->icon,
                         'time' => $kenoHistory->time_game,
                         'bet' => $bet,
                         'coeff' => $coeff,
@@ -157,7 +158,8 @@ class KenoService
             $results[$i]['id'] = $result->id;
             $results[$i]['user_id'] = $result->user->login;
             $results[$i]['type'] = $result->type_text;
-            $results[$i]['coinname'] = $result->currency->name;
+            $results[$i]['coinname'] = $result->currency->short_name;
+            $results[$i]['icon'] = $result->currency->icon;
             $results[$i]['time'] = $result->time_game;
             $results[$i]['bet'] = $result->bet;
             $results[$i]['coeff'] = $result->coeff;
@@ -181,7 +183,8 @@ class KenoService
             $results[$i]['id'] = $result->id;
             $results[$i]['user_id'] = $result->user->login;
             $results[$i]['type'] = $result->type_text;
-            $results[$i]['coinname'] = $result->currency->name;
+            $results[$i]['coinname'] = $result->currency->short_name;
+            $results[$i]['icon'] = $result->currency->icon;
             $results[$i]['time'] = $result->time_game;
             $results[$i]['bet'] = $result->bet;
             $results[$i]['coeff'] = $result->coeff;

@@ -125,7 +125,8 @@ class MineService
                     [
                         'id' => $mineGame->id,
                         'user_id' => $user->login,
-                        'coinname' => $mineGame->currency->name,
+                        'coinname' => $mineGame->currency->short_name,
+                        'icon' => $currency->icon,
                         'time' => $mineGame->time_game,
                         'bet' => $mineGame->sum,
                         'count_mine' => $mineGame->count_mine,
@@ -194,7 +195,8 @@ class MineService
                 [
                     'id' => $mineGame->id,
                     'user_id' => $user->login,
-                    'coinname' => $mineGame->currency->name,
+                    'coinname' => $mineGame->currency->short_name,
+                    'icon' => $currency->icon,
                     'time' => $mineGame->time_game,
                     'bet' => $mineGame->sum,
                     'count_mine' => $mineGame->count_mine,
@@ -227,7 +229,8 @@ class MineService
         foreach ($history as $result) {
             $results[$i]['id'] = $result->id;
             $results[$i]['user_id'] = $result->user->login;
-            $results[$i]['coinname'] = $result->currency->name;
+            $results[$i]['coinname'] = $result->currency->short_name;
+            $results[$i]['icon'] = $result->currency->icon;
             $results[$i]['time'] = $result->time_game;
             $results[$i]['bet'] = $result->sum;
             $results[$i]['count_mine'] = $result->count_mine;
@@ -251,7 +254,8 @@ class MineService
         foreach ($history as $result) {
             $results[$i]['id'] = $result->id;
             $results[$i]['user_id'] = $result->user->login;
-            $results[$i]['coinname'] = $result->currency->name;
+            $results[$i]['coinname'] = $result->currency->short_name;
+            $results[$i]['icon'] = $result->currency->icon;
             $results[$i]['time'] = $result->time_game;
             $results[$i]['bet'] = $result->sum;
             $results[$i]['count_mine'] = $result->count_mine;

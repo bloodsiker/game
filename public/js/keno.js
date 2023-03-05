@@ -575,11 +575,11 @@ $(document).ready(function () {
                         "<td>" + convert_number(v.bet, 2) + "</td><td>" + convert_number(v.coeff, 2) + "x</td>";
 
                     if (v.profit >= 0) {
-                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, 2) + "</td>"
+                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, Accuracy) + "</td>"
                     } else {
-                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
+                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, Accuracy) + "</td>"
                     }
-                    append = append + "<td class='coin_column'><img class='result_coin' src='/assets/currency/" + v.code.trim() + ".png' height='25' width='25'></td></tr>"
+                    append = append + "<td class='coin_column'><img class='result_coin' src='" + v.icon.trim() + "' height='25' width='25'></td></tr>"
 
                     AllBets.push(append);
 
@@ -631,12 +631,12 @@ $(document).ready(function () {
                         "<td>" + convert_number(v.bet, 2) + "</td><td>" + convert_number(v.coeff, 2) + "x</td>";
 
                     if (v.profit >= 0) {
-                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, 2) + "</td>"
+                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, Accuracy) + "</td>"
                     }
                     else {
-                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
+                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, Accuracy) + "</td>"
                     }
-                    append = append + "<td><img class='result_coin' src='/assets/currency/" + v.code.trim() + ".png' height='25' width='25'></td></tr>";
+                    append = append + "<td><img class='result_coin' src='" + v.icon.trim() + "' height='25' width='25'></td></tr>";
 
                     var row = $(append);
                     $("#table_my_bets_head").after(row);
@@ -676,11 +676,11 @@ $(document).ready(function () {
                         "<td>" + convert_number(v.bet, 2) + "</td><td>" + convert_number(v.coeff, 2) + "x</td>";
 
                     if (v.profit >= 0) {
-                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, 2) + "</td>"
+                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, Accuracy) + "</td>"
                     } else {
-                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
+                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, Accuracy) + "</td>"
                     }
-                    append = append + "<td><img class='result_coin' src='/assets/currency/" + v.code.trim() + ".png' height='25' width='25'></td></tr>";
+                    append = append + "<td><img class='result_coin' src='" + v.icon.trim() + "' height='25' width='25'></td></tr>";
 
                     var row = $(append);
                     $("#table_high_rollers_head").after(row);

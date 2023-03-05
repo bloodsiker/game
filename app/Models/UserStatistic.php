@@ -20,7 +20,7 @@ class UserStatistic extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'user_id', 'currency_id', 'wagered', 'profit', 'dice', 'mines', 'coinflip', 'keno'
+        'user_id', 'currency_id', 'wagered', 'profit', 'dice', 'mines', 'coinflip', 'keno', 'cards'
     ];
 
     public $timestamps = false;

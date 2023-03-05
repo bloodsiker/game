@@ -12,7 +12,7 @@
     <script type="text/javascript">
         var coin = "{{ $currency->code }}";
         var style = "7";
-        var coinname = "{{ $currency->name }}";
+        var coinname = "{{ $currency->short_name }}";
         var decimals = "6";
         var totalchannels = "5";
         var ratio = "10000000";
@@ -26,15 +26,16 @@
     <script type="text/javascript">
         var idc = "{{ $currency->code }}";
         var accuracy = "{{ $currency->accuracy }}";
-        var coinname = "{{ $currency->name }}";
+        var coinname = "{{ $currency->short_name }}";
         var style = "7";
-        var maxwin = "{{ $game->max_win }}";
-        var minbid = "{{ $game->min_bid }}";
+        var maxwin = "{{ $settings->max_win }}";
+        var minbid = "{{ $settings->min_bid }}";
         var effects = "0";
-        var edge = "{{ $game->edge }}";
+        var edge = "{{ $settings->edge }}";
         var hotkeys = "";
         var decimals = "6";
         var highrollamount = "5000";
+        var minratio = "{{ $settings->min_ratio }}";
         var maxratio = "9920";
         var gamename = "{{ $game->name }}";
         var coinslist = [];
@@ -84,7 +85,7 @@
                                     </div>
                                     <div class="input-group">
                                         <input id="txtBet" type="text" class="form-control text-right" autocomplete="off"/>
-                                        <span class="input-group-addon">{{ $currency->name }}</span>
+                                        <span class="input-group-addon">{{ $currency->short_name }}</span>
                                     </div>
 
                                     <br>
@@ -130,7 +131,7 @@
                                                 <div class="input-group input-group-sm">
                                                     <span class="input-group-addon form-control-readonly">Сумма выигрыша:</span>
                                                     <input id="txtWinAmount" type="text" class="form-control text-right form-control-readonly" readonly="true">
-                                                    <span class="input-group-addon">{{ $currency->name }}</span>
+                                                    <span class="input-group-addon">{{ $currency->short_name }}</span>
                                                 </div>
                                             </div>
                                             <div class="col-md-6">
@@ -395,7 +396,7 @@
                                 </div>
                                 <div class="input-group">
                                     <input id="txtAutoBet" type="text" class="form-control text-right"/>
-                                    <span class="input-group-addon">{{ $currency->name }}</span>
+                                    <span class="input-group-addon">{{ $currency->short_name }}</span>
                                 </div>
                                 <br/>
                                 <span class="bet_text">При победе:</span><br/>
@@ -532,25 +533,25 @@
                                     <span class="input-group-addon form-control-readonly">Остановиться, если баланс выше</span>
                                     <input id="txtLargerThan" type="text" class="form-control number"
                                            aria-label="..."/>
-                                    <span class="input-group-addon">{{ $currency->name }}</span>
+                                    <span class="input-group-addon">{{ $currency->short_name }}</span>
                                 </div>
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-addon form-control-readonly">Остановиться, если баланс ниже</span>
                                     <input id="txtSmallerThan" type="text" class="form-control number"
                                            aria-label="..."/>
-                                    <span class="input-group-addon">{{ $currency->name }}</span>
+                                    <span class="input-group-addon">{{ $currency->short_name }}</span>
                                 </div>
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-addon form-control-readonly">Максимальный размер ставки</span>
                                     <input id="txtMaxBet" type="text" class="form-control number"
                                            aria-label="..."/>
-                                    <span class="input-group-addon">{{ $currency->name }}</span>
+                                    <span class="input-group-addon">{{ $currency->short_name }}</span>
                                 </div>
                                 <div class="input-group input-group-sm">
                                     <span class="input-group-addon form-control-readonly">Минимальный размер ставки</span>
                                     <input id="txtMinBet" type="text" class="form-control number"
                                            aria-label="..."/>
-                                    <span class="input-group-addon">{{ $currency->name }}</span>
+                                    <span class="input-group-addon">{{ $currency->short_name }}</span>
                                 </div>
                             </div>
                         </div>
@@ -566,8 +567,9 @@
                                     <span class="input-group-addon form-control-readonly">Прибыль:</span>
                                     <input id="txtProfit" type="text" class="form-control readonly"
                                            aria-label="..." readonly="true"/>
-                                    <span class="input-group-addon">{{ $currency->name }} <i id="auto_line_loading"
-                                                                                             class="fa fa-circle-o-notch fa-spin fa-fw"></i></span>
+                                    <span class="input-group-addon">{{ $currency->short_name }}
+                                        <i id="auto_line_loading" class="fa fa-circle-o-notch fa-spin fa-fw"></i>
+                                    </span>
                                 </div>
                             </div>
                             <div class="col-lg-3 col-md-3 col-sm-2 col-xs-2 text-left">

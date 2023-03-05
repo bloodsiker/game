@@ -116,7 +116,7 @@
                     <li><a href="#levels" data-toggle="tab" class="text-def">Уровень крана</a></li>
                     <li><a href="#history" data-toggle="tab" class="text-def">История крана</a></li>
                     <li><a href="#invite" data-toggle="tab" class="text-def">Пригласить друга</a></li>
-                    <li class=" @if(session('tab') === 'promocode') active @endif"><a href="#voucher" data-toggle="tab" class="text-def">Промокод</a></li>
+                    <li class="@if(session('tab') === 'promocode') active @endif"><a href="#voucher" data-toggle="tab" class="text-def">Промокод</a></li>
                     <li><a href="#other" data-toggle="tab" class="text-def">Другие награды</a></li>
                 </ul>
 

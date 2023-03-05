@@ -129,7 +129,8 @@ class DiceService
                     [
                         'id' => $diceHistory->id,
                         'user_id' => $user->login,
-                        'coinname' => $currency->name,
+                        'coinname' => $currency->short_name,
+                        'icon' => $currency->icon,
                         'time' => $diceHistory->time_game,
                         'bet' => $bet,
                         'multiplier' => $multiplier,
@@ -162,7 +163,8 @@ class DiceService
         foreach ($diceHistory as $result) {
             $results[$i]['id'] = $result->id;
             $results[$i]['user_id'] = $result->user->login;
-            $results[$i]['coinname'] = $result->currency->name;
+            $results[$i]['coinname'] = $result->currency->short_name;
+            $results[$i]['icon'] = $result->currency->icon;
             $results[$i]['time'] = $result->time_game;
             $results[$i]['bet'] = $result->bet;
             $results[$i]['multiplier'] = $result->multiplier;
@@ -188,7 +190,8 @@ class DiceService
         foreach ($diceHistory as $result) {
             $results[$i]['id'] = $result->id;
             $results[$i]['user_id'] = $result->user->login;
-            $results[$i]['coinname'] = $result->currency->name;
+            $results[$i]['coinname'] = $result->currency->short_name;
+            $results[$i]['icon'] = $result->currency->icon;
             $results[$i]['time'] = $result->time_game;
             $results[$i]['bet'] = $result->bet;
             $results[$i]['multiplier'] = $result->multiplier;

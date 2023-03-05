@@ -11,11 +11,11 @@ $(document).ready(function () {
     var Idc = idc;
     var Accuracy = accuracy;
     var Longid = getCookie("LongId");
-    var Minbid = parseFloat(0.00003000);
-    // var Minbid = parseFloat(minbid);
+    // var Minbid = parseFloat(0.00003000);
+    var Minbid = parseFloat(minbid);
     var Maxwin = parseFloat(maxwin);
     var Edge = parseFloat(edge);
-    var Minratio = 1.02;
+    var Minratio = parseFloat(minratio);
     var Maxratio = calculate_maximum_payout(0.010);
     var MyBets = [];
     var AllBets = [];
@@ -1530,7 +1530,7 @@ $(document).ready(function () {
                     else {
                         append = append + "<td class='red_font text-right'>" + convert_number(v.profit, v.accuracy) + "</td>"
                     }
-                    append = append + "<td class='coin_column'><img class='result_coin' src='/assets/currency/" + v.code.trim() + ".png' height='25' width='25'></td></tr>"
+                    append = append + "<td class='coin_column'><img class='result_coin' src='" + v.icon.trim() + "' height='25' width='25'></td></tr>"
 
                     AllBets.push(append);
 
@@ -1588,7 +1588,7 @@ $(document).ready(function () {
                     } else {
                         append = append + "<td class='red_font text-right'>" + convert_number(v.profit, v.accuracy) + "</td>"
                     }
-                    append = append + "<td><img class='result_coin' src='/assets/currency/" + v.code.trim() + ".png' height='25' width='25'></td></tr>";
+                    append = append + "<td><img class='result_coin' src='" + v.icon.trim() + "' height='25' width='25'></td></tr>";
 
                     var row = $(append);
                     $("#table_my_bets_head").after(row);
@@ -1632,7 +1632,7 @@ $(document).ready(function () {
                     } else {
                         append = append + "<td class='red_font text-right'>" + convert_number(v.profit, v.accuracy) + "</td>"
                     }
-                    append = append + "<td><img class='result_coin' src='/assets/currency/" + v.code.trim() + ".png' height='25' width='25'></td></tr>";
+                    append = append + "<td><img class='result_coin' src='" + v.icon.trim() + "' height='25' width='25'></td></tr>";
 
                     var row = $(append);
                     $("#table_high_rollers_head").after(row);

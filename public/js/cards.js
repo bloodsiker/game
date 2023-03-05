@@ -5,16 +5,17 @@ $(document).ready(function () {
     }
 
     var Code = code;
+    var Coinname = coinname;
     var Accuracy = accuracy;
     var Longid = getCookie("LongId");
     var Minbid = parseFloat(minbid);
     var Maxwin = parseFloat(maxwin);
     var Edge = parseFloat(edge);
     var Maxratio = calculate_maximum_payout(0.010);
-    var DefaultStep = 0;
-    var DefaultCoeff = 0;
+    var Attempts = 3;
     var Step = 0;
     var DisabledGame = true;
+    var SelectedCell = [];
     var MyBets = [];
     var AllBets = [];
     var AllBetsId = [];
@@ -51,21 +52,28 @@ $(document).ready(function () {
     const manual_validate = function () { // manual validations
         var msg = "";
         var result = true;
-        var bid = parseFloat($("#txtCoinBet").val());
+        var bid = parseFloat($("#txtCardsBet").val());
+        var possibleMaxWon = parseFloat($('#txtMaxWon').val());
 
-        $("#txtCoinBet").removeClass("red_font");
+        $("#txtCardsBet, #txtMaxWon").removeClass("red_font");
 
         if (bid < Minbid) {
-            $("#txtCoinBet").addClass("red_font");
-            msg = msg + " Ставка слишком низкая. Минимальная ставка: " + Minbid.toFixed(2) + " " + coinname + ".";
+            $("#txtCardsBet").addClass("red_font");
+            msg = msg + " Ставка слишком низкая. Минимальная ставка: " + Minbid.toFixed(Accuracy) + " " + coinname + ".";
             result = false;
         }
         if (bid > Balance) {
-            $("#txtCoinBet").addClass("red_font");
+            $("#txtCardsBet").addClass("red_font");
             msg = msg + " Ставка больше вашего баланса.";
             result = false;
         }
-        if ((bid).toFixed(2) > Maxwin) {
+        if ((bid).toFixed(Accuracy) > Maxwin) {
+            msg = msg + " Измените ставку или выплату. Максимальный выигрыш установлен на: " + Maxwin + " " + coinname + ".";
+            result = false;
+        }
+
+        if ((possibleMaxWon).toFixed(Accuracy) > Maxwin) {
+            $("#txtMaxWon").addClass("red_font");
             msg = msg + " Измените ставку или выплату. Максимальный выигрыш установлен на: " + Maxwin + " " + coinname + ".";
             result = false;
         }
@@ -190,6 +198,49 @@ $(document).ready(function () {
         });
     };
 
+    const loadGame = () => {
+        $.ajax({
+            type: 'POST',
+            url: '/cards/load',
+            dataType: 'json',
+            success: function (res) {
+                if (res.status === 'success') {
+                    DisabledGame = false;
+
+                    $('#btnCardsStart').remove();
+                    renderBtnStarted();
+                    clearModal();
+
+                    Attempts = res.attempts;
+
+                    $('#txtCardsBet').val(convert_number(res.sum, Accuracy));
+                    setPossibleWin(convert_number(res.sum, Accuracy));
+                    $('#btnCardsStart, #txtCardsBet, .btnSetBet').attr('disabled', 'disabled');
+
+                    $('.game-skycard__cards-item').attr('class', 'game-skycard__cards-item game-skycard__cards-item_active');
+                    $('.game-skycard__cards-item-image_opened').attr('src', '/assets/icons/card-closed.png');
+                    $('.cards_possible_win').text(0);
+
+                    $.each(res.cards, function(index, value) {
+                        SelectedCell.push(parseInt(index));
+                        renderCardCell(index, value.type, value.win);
+                    });
+
+                    if (res.offer_extra) {
+                        setTimeout(function () {
+                            renderModalExtra(res.min_won_sum, res.extra_sum, res.max_open);
+                        }, 100);
+                    }
+
+                    activateUserBets();
+                }
+            },
+            error: function (msg) {
+                console.log("not ok....");
+            }
+        });
+    }
+
     getBalance(Code, Accuracy);
     getBets();
     // getProvablyFair(Longid, Code);
@@ -221,8 +272,16 @@ $(document).ready(function () {
     }
     refreshBets();
 
+    const setPossibleWin = (bid) => {
+        $("#txtMinWon").val((bid * 2).toFixed(Accuracy));
+        $("#txtMaxWon").val((bid * 15).toFixed(Accuracy));
+    }
+
     const setDefault = () => {
-        $("#txtCoinBet").val(Minbid.toFixed(2));
+        $("#txtCardsBet").val(Minbid.toFixed(Accuracy));
+        setPossibleWin(Minbid);
+
+        loadGame();
     }
     setDefault();
 
@@ -240,7 +299,7 @@ $(document).ready(function () {
 
         Runing = true;
         activateUserBets();
-        let bet = $("#txtCoinBet").val();
+        let bet = $("#txtCardsBet").val();
         if (manual_validate() === true) {
             let clientseed = getClientSeed();
             getResultManual(Longid, Code, bet, selectedNumbers, clientseed);
@@ -249,100 +308,130 @@ $(document).ready(function () {
         }
     }
 
-    $("#txtCoinBet").keyup(function () {
+    $('#txtCardsBet').on('keyup', function () {
         var start = this.selectionStart;
         var end = this.selectionEnd;
         this.value = this.value.replace(/[^0-9\.]/g, '');
+        this.value = convert_number(this.value, Accuracy);
         this.setSelectionRange(start, end);
+        setPossibleWin(this.value);
+        $("#startAgainSum").text(this.value);
         manual_validate();
     });
 
-    $("#btnDivBet").on('click', function () { // bid / 2
-        var bet = parseFloat($("#txtCoinBet").val());
-        $("#txtCoinBet").val((bet / 2).toFixed(2));
-        if ((bet / 2) < Minbid) {
-            $("#txtCoinBet").val(Minbid.toFixed(2));
+    $('#btnDivBet').on('click', function () { // bid / 2
+        var bet = parseFloat($("#txtCardsBet").val());
+        var calc = (bet / 2).toFixed(Accuracy);
+        if (calc < Minbid) {
+            $("#txtCardsBet").val(Minbid.toFixed(Accuracy));
+            $("#startAgainSum").text(Minbid.toFixed(Accuracy));
+            setPossibleWin(Minbid.toFixed(Accuracy));
+        } else {
+            $("#txtCardsBet").val(calc);
+            $("#startAgainSum").text(calc);
+            setPossibleWin(calc);
+        }
+
+        manual_validate();
+    });
+
+    $('#btnX2Bet').on('click',function () { // bid * 2
+        var bet = parseFloat($("#txtCardsBet").val());
+        var calc = (bet * 2).toFixed(Accuracy);
+        if (calc > (Balance)) {
+            $("#txtCardsBet").val((Balance).toFixed(Accuracy));
+            $("#startAgainSum").text((Balance.toFixed(Accuracy)));
+            setPossibleWin((Balance).toFixed(Accuracy));
+        } else {
+            $("#txtCardsBet").val(calc);
+            $("#startAgainSum").text(calc);
+            setPossibleWin(calc);
         }
         manual_validate();
     });
 
-    $("#btnX2Bet").click(function () { // bid * 2
-        var bet = parseFloat($("#txtCoinBet").val());
-        $("#txtCoinBet").val((bet * 2).toFixed(2));
-        if ((bet * 2) > (Balance)) {
-            $("#txtCoinBet").val((Balance).toFixed(2));
-        }
+    $('#btnMaxBet').on('click', function () { //max bid
+        $("#txtCardsBet").val((Balance).toFixed(Accuracy));
+        setPossibleWin((Balance).toFixed(Accuracy));
+        $("#startAgainSum").text((Balance.toFixed(Accuracy)));
+        manual_validate();
+    });
+
+    $(document).on('click', '#btnMinBet', function () { //min ratio
+        $("#txtCardsBet").val(Minbid.toFixed(Accuracy));
+        setPossibleWin(Minbid.toFixed(Accuracy));
+        $("#startAgainSum").text(Minbid.toFixed(Accuracy));
         manual_validate();
     });
 
     //
-    $('.coin-btn_buttons').on('click', '#btnEagle', function () {
-        let bet = $("#txtCoinBet").val();
-        if (!DisabledGame) {
-            play(1, bet);
+    $('.game-skycard__cards').on('click', '.game-skycard__cards-item_active', function () {
+        if (DisabledGame) {
+            return false;
+        }
+
+        let cell = $(this).data('number');
+
+        if (SelectedCell.indexOf(cell) === -1 && SelectedCell.length <= Attempts) {
+            play(cell);
+            SelectedCell.push(cell);
         }
     });
 
-    $('.coin-btn_buttons').on('click', '#btnTail', function () {
-        let bet = $("#txtCoinBet").val();
-        if (!DisabledGame) {
-            play(0, bet);
-        }
-    });
-
-    $(document).on('click', '#btnCoinFlipStart', function () {
+    $(document).on('click', '#btnCardsStart, #startAgain', function () {
         if (manual_validate() === true) {
+            clearModal();
             startGame();
         }
     });
 
-    $(document).on('click', '#btnPossibleWin', function () {
-        if (Step > 0 && !DisabledGame) {
-            collect();
+    $(document).on('click', '#extraCard', function () {
+        if (DisabledGame) {
+            return false;
         }
+
+        extraCard();
     })
 
-    $('.game-coinflip__winning-close').on('click', function () {
-        closeCoinflipWin();
+    $(document).on('click', '#takeMinWonSum', function () {
+        if (DisabledGame) {
+            return false;
+        }
+
+        collect();
+    })
+
+    $(document).on('click', '.game-skycard__cards-modal-close',  function () {
+        clearModal();
     });
 
-    let closeCoinflipWin = () => {
-        $('.game-coinflip__winning').removeClass('game-coinflip__winning_active');
-    }
-
-    let showWinCoinflip = (amount, coeff) => {
-        $('.game-coinflip__winning').addClass('game-coinflip__winning_active');
-        $("#winСoinflipAmount").text(amount);
-        $("#coinflipCoeff").text(coeff);
-    }
-
     const startGame = () => {
-        let bet = parseFloat($("#txtCoinBet").val());
+        let sum = parseFloat($("#txtCardsBet").val());
 
-        $('.mines-coeff').removeClass('active');
-        $('#coinStep').text(DefaultStep);
-        $('#coinCoeff').text(DefaultCoeff);
-        $('#txtCoinBet, #btnDivBet, #btnX2Bet, .btnSetBet').attr('disabled', 'disabled');
-
-        closeCoinflipWin();
+        $('#btnCardsStart, #txtCardsBet, .btnSetBet').attr('disabled', 'disabled');
+        clearModal();
         // showMessageSuccess('');
 
         $.ajax({
             type: 'POST',
-            url: '/coinflip/create',
-            data: {code: Code, bet: bet},
+            url: '/cards/create',
+            data: {code: Code, sum: sum},
             dataType: 'json',
             success: function (res) {
                 if (res.status === 'success') {
-                    $('#btnCoinFlipStart').remove();
-                    renderCoinFlip();
+                    $('#btnCardsStart').remove();
+                    renderBtnStarted();
                     DisabledGame = false;
+
+                    Attempts = res.attempts;
+
+                    $('.game-skycard__cards-item').attr('class', 'game-skycard__cards-item game-skycard__cards-item_active');
+                    $('.game-skycard__cards-item-image_opened').attr('src', '/assets/icons/card-closed.png');
+                    $('.cards_possible_win').text(0);
 
                     Balance = res.balance;
                     showBalance(res.balance, Code, Accuracy);
-                    $('.steps__step').attr('class', 'steps__step');
-                    $('.steps__step-img').attr('class', 'steps__step-img');
-                    // renderBtnPossibleWin(bet);
+                    $('.game-skycard__cards-item').removeClass('disabled').addClass('game-skycard__cards-item_active')
                     activateUserBets();
                 }
             },
@@ -352,119 +441,91 @@ $(document).ready(function () {
         });
     }
 
-    const play = (coin, bet) => {
-
-        $('#btnEagle, #btnTail').addClass('disabled');
-        $('#btnPossibleWin').addClass('disabled').attr('disabled');
+    const play = (cell) => {
         DisabledGame = true;
 
         $.ajax({
             type: 'POST',
-            url: '/coinflip/play',
-            data: {code: Code, bet: bet, coin: coin },
+            url: '/cards/play',
+            data: {code: Code, cell: cell},
             dataType: 'json',
             success: function (res) {
 
                 if (res.status === 'success') {
-                    let step = res.step;
-                    Step = step;
-
-                    let flipResult = res.coin;
-                    $('#coin').removeClass();
-                    setTimeout(function () {
-                        if (flipResult === 0) {
-                            $('#coin').addClass('tails');
-                        } else {
-                            $('#coin').addClass('heads');
-                        }
-                    }, 100);
-
                     if (res.lose === true) {
-                        let countRevealed = res.revealed.length;
-                        setTimeout(function () {
-                            Balance = res.balance;
-                            showBalance(res.balance, Code, Accuracy);
-                            renderBtnStart();
-                            $('#txtCoinBet, #btnDivBet, #btnX2Bet, .btnSetBet').removeAttr('disabled');
-                            $.each(res.coins, function(index, value) {
-                                let step = ++index;
-                                if (step => countRevealed) {
-                                    let htmlCoin = $(".steps__step[data-step="+step+"]").find('.steps__step-img');
-                                    if (value === 0) {
-                                        htmlCoin.addClass('steps__step-img_tail');
-                                    } else {
-                                        htmlCoin.addClass('steps__step-img_eagle');
-                                    }
-                                }
-                            });
 
-                            addToTable(res.BetData, "1");
-                        }, 1600);
+                        Balance = res.balance;
+                        showBalance(res.balance, Code, Accuracy);
+                        renderBtnStart();
+
+                        SelectedCell = [];
+
+                        $('#btnCardsStart, #txtCardsBet, .btnSetBet').removeAttr('disabled');
+
+                        clearModal();
+
+                        displayAllCards(res.cards, res.revealed);
+
+                        setTimeout(function () {
+                            renderModalLose(res.won_sum, res.sum);
+                        }, 800);
+
+                        // addToTable(res.BetData, "1");
+
                     } else {
-                        setTimeout(function () {
-                            $('#coinStep').text(res.step);
-                            $('#coinCoeff').text('x' + res.coeff);
-                            $('#possibleWin').text((res.possibleWin).toFixed(2));
-                            $('#btnPossibleText').text('Забрать');
+                        DisabledGame = false;
+                        renderCardCell(cell, res.cell_result.type, res.cell_result.win);
 
-                            DisabledGame = false;
-                            $('#btnEagle, #btnTail').removeClass('disabled');
-                            $('#btnPossibleWin').removeClass('disabled').removeAttr('disabled');
+                        Attempts = res.attempts;
 
-                            $(".steps__step[data-step="+step+"]").addClass('steps__step_active');
-                            let htmlCoin = $(".steps__step[data-step="+step+"]").find('.steps__step-img');
-                            if (res.finish) {
-                                $('.section__title, .coinflip-section__row').empty();
-                            }
-                            if (coin === 0) {
-                                htmlCoin.addClass('steps__step-img_tail');
-                            } else {
-                                htmlCoin.addClass('steps__step-img_eagle');
-                            }
-                        }, 1600);
+                        if (res.offer_extra) {
+                            setTimeout(function () {
+                                renderModalExtra(res.min_won_sum, res.extra_sum, res.max_open);
+                            }, 300);
+                        }
+
+                        if (res.win) {
+                            DisabledGame = true;
+
+                            $('#btnCardsStart, #txtCardsBet, .btnSetBet').removeAttr('disabled');
+                            SelectedCell = [];
+
+                            displayAllCards(res.cards, res.revealed);
+
+                            setTimeout(function () {
+                                renderModalWin(res.won_sum, res.sum);
+                            }, 1000);
+
+                            renderBtnStart();
+                        }
                     }
+                } else if (res.status === 'continue') {
+                    DisabledGame = false;
                 }
             },
             error: function (msg) {
                 showMessageManual("Ошибка связи с сервером.");
-                $("#txtManualResultNumber").hide();
             }
         });
     }
 
-    const collect = () => {
+    const extraCard = () => {
         $.ajax({
             type: 'POST',
-            url: '/coinflip/collect',
+            url: '/cards/extraCard',
             data: {code: Code},
             dataType: 'json',
             success: function (res) {
                 if (res.status === 'success') {
-                    Step = 0;
-                    showWinCoinflip(convert_number(res.won_sum, Accuracy), res.coeff);
-                    // showMessageSuccess('Вы выиграли ' + convert_number(res.won_sum, Accuracy));
+                    DisabledGame = false;
+
+                    Attempts = res.attempts;
                     Balance = res.balance;
                     showBalance(res.balance, Code, Accuracy);
-                    $('#btnPossibleWin').remove();
-                    renderBtnStart();
-
-                    $('#txtCoinBet, #btnDivBet, #btnX2Bet, .btnSetBet').removeAttr('disabled');
-
-                    let countRevealed = res.revealed.length;
-
-                    $.each(res.coins, function(index, value) {
-                        let step = ++index;
-                        if (step => countRevealed) {
-                            let htmlCoin = $(".steps__step[data-step="+step+"]").find('.steps__step-img');
-                            if (value === 0) {
-                                htmlCoin.addClass('steps__step-img_tail');
-                            } else {
-                                htmlCoin.addClass('steps__step-img_eagle');
-                            }
-                        }
-                    });
-
-                    addToTable(res.BetData, "1");
+                    clearModal();
+                    activateUserBets();
+                } else if (res.status === 'error') {
+                    showMessageManual(res.message);
                 }
             },
             error: function (msg) {
@@ -473,113 +534,155 @@ $(document).ready(function () {
         });
     }
 
-    const renderBtnStart = () => {
-        let html = `<button class="game-coinflip__button" id="btnCoinFlipStart"><span>Играть</span></button>`;
-        $('.coin-btn_buttons').html(html);
+    const collect = () => {
+        $.ajax({
+            type: 'POST',
+            url: '/cards/collect',
+            data: {code: Code},
+            dataType: 'json',
+            success: function (res) {
+                if (res.status === 'success') {
+                    // showMessageSuccess('Вы выиграли ' + convert_number(res.won_sum, Accuracy));
+                    Balance = res.balance;
+                    showBalance(res.balance, Code, Accuracy);
+                    renderBtnStart();
+
+                    SelectedCell = [];
+
+                    $('#btnCardsStart, #txtCardsBet, .btnSetBet').removeAttr('disabled');
+
+                    clearModal();
+
+                    displayAllCards(res.cards, res.revealed);
+
+                    // addToTable(res.BetData, "1");
+                }
+            },
+            error: function (msg) {
+                console.log("not ok....");
+            }
+        });
     }
 
-    const renderCoinFlip = () => {
-        let disabled = (Step > 0) ? '' : 'disabled';
-        let html = `<h3 class="section__title">Выберите исход раунда</h3>
-                    <div class="coinflip-section__row ">
-                        <div class="section__item buttons__eagle" id="btnEagle">
-                            <div class="buttons__text">Орел</div>
-                        </div>
-                        <div class="section__item buttons__tail" id="btnTail">
-                            <div class="buttons__text">Решка</div>
-                        </div>
+    const renderCardCell = (cell, type, win, is_opacity = false) => {
+        let img = '';
+        if (type == 1) {
+            img = '/assets/icons/card-blue.png'
+        } else if (type == 2) {
+            img = '/assets/icons/card-green.png'
+        } else if (type == 3) {
+            img = '/assets/icons/card-red.png'
+        }
+
+        let cellField = $('.game-skycard__cards').find(".game-skycard__cards-item[data-number='" + cell + "']");
+        cellField.find('span').css('visibility', 'visibility').text(win);
+        cellField.find('.game-skycard__cards-item-image_opened').attr('src', img);
+        cellField.addClass('game-skycard__cards-item_opened game-skycard__cards-item_selected');
+        if (is_opacity) {
+            cellField.addClass('is_opacity');
+        }
+    }
+
+    const displayAllCards = (cards, revealed) => {
+        $.each(cards, function(index, value) {
+            if (revealed.includes(parseInt(index)) === true) {
+                renderCardCell(index, value.type, value.win);
+            } else {
+                renderCardCell(index, value.type, value.win, true);
+            }
+        });
+    }
+
+    const renderModalExtra = (minWonSum, extraSum, maxOpen) => {
+        let countCards = `${maxOpen} карточки`;
+        if (maxOpen == 1) {
+            countCards = `${maxOpen} карточку`;
+        }
+
+        let html = `
+            <div>
+                <div class="game-skycard__cards-modal-body">
+                    <div class="game-skycard__cards-modal-title">
+                        Вы угадали ${countCards} из 3
                     </div>
-                    <button class="game-coinflip__button" id="btnPossibleWin" ${disabled}><span id="btnPossibleText">Сделайте ход</span>&nbsp;<span id="possibleWin"></span></button>
-                `;
-        $('.coin-btn_buttons').html(html);
+                    <div class="game-skycard__cards-modal-text">
+                        Можете забрать гарантированный выигрыш прямо сейчас:
+                    </div>
+                    <div class="game-skycard__cards-modal-button game-skycard__cards-modal-button_default" id="takeMinWonSum">
+                        <span>Забрать <strong id="minWonSum">${convert_number(minWonSum, Accuracy)} ${Coinname}</strong></span>
+                        <small>Гарантированный приз</small>
+                    </div>
+                    <div class="game-skycard__cards-modal-text">
+                        Или испытать удачу и открыть дополнительную карточку:
+                    </div>
+                    <div class="game-skycard__cards-modal-button" id="extraCard">
+                        <span>Продолжить за <strong id="extraSum">${convert_number(extraSum, Accuracy)} ${Coinname}</strong></span>
+                        <small>Дополнительная карточка</small>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        $('.game-skycard__cards-modal').addClass('active').html(html);
+        $('.game-skycard__cards-modal-wrapper').addClass('active');
     }
 
-    $("#btnBet1").click(function () { // bid + 1
-        var bet = parseFloat($("#txtCoinBet").val());
-        $("#txtCoinBet").val((bet + 1).toFixed(2));
-        if ((bet + 1) > (Balance)) {
-            $("#txtCoinBet").val((Balance).toFixed(2));
-        }
-        manual_validate();
-    });
+    const renderModalLose = (minWonSum, bet) => {
+        let html = `
+            <div>
+                <div class="game-skycard__cards-modal-close"></div>
+                <div class="game-skycard__cards-modal-body">
+                    <div class="game-skycard__cards-modal-title">Увы, не угадали...</div>
+                    <div class="game-skycard__cards-modal-text loose">Вам начислен гарантированный выигрыш:</div>
+                    <div class="game-skycard__cards-modal-text loose"><strong>${convert_number(minWonSum, Accuracy)} ${Coinname}</strong></div>
+                </div>
+                <div class="game-skycard__cards-modal-footer">
+                    <div class="game-skycard__cards-modal-button" id="startAgain">
+                        <span>Сыграть еще за <strong id="startAgainSum">${convert_number(bet, Accuracy)}</strong> <strong>${Coinname}</strong></span>
+                    </div>
+                </div>
+            </div>
+        `;
 
-    $("#btnBet2").click(function () { // bid + 10
-        var bet = parseFloat($("#txtCoinBet").val());
-        $("#txtCoinBet").val((bet + 10).toFixed(2));
-        if ((bet + 10) > (Balance)) {
-            $("#txtCoinBet").val((Balance).toFixed(2));
-        }
-        manual_validate();
-    });
+        $('.game-skycard__cards-modal').addClass('active').html(html);
+        $('.game-skycard__cards-modal-wrapper').addClass('active');
+    }
 
-    $("#btnBet3").click(function () { // bid + 50
-        var bet = parseFloat($("#txtCoinBet").val());
-        $("#txtCoinBet").val((bet + 50).toFixed(2));
+    const renderModalWin = (wonSum, bet) => {
+        let html = `
+            <div>
+                <div class="game-skycard__cards-modal-close"></div>
+                <div class="game-skycard__cards-modal-body">
+                    <div class="game-skycard__cards-modal-title">Поздравляем!!!</div>
+                    <div class="game-skycard__cards-modal-text loose">Вы выиграли:</div>
+                    <div class="game-skycard__cards-modal-text loose"><strong>${convert_number(wonSum, Accuracy)} ${Coinname}</strong></div>
+                </div>
+                <div class="game-skycard__cards-modal-footer">
+                    <div class="game-skycard__cards-modal-button" id="startAgain">
+                        <span>Сыграть еще за <strong id="startAgainSum">${convert_number(bet, Accuracy)}</strong> <strong>${Coinname}</strong></span>
+                    </div>
+                </div>
+            </div>
+        `;
 
-        if ((bet + 50) > (Balance)) {
-            $("#txtCoinBet").val((Balance).toFixed(2));
-        }
-        manual_validate();
-    });
+        $('.game-skycard__cards-modal').addClass('active').html(html);
+        $('.game-skycard__cards-modal-wrapper').addClass('active');
+    }
 
-    $("#btnBet4").click(function () { // bid + 100
-        var bet = parseFloat($("#txtCoinBet").val());
-        $("#txtCoinBet").val((bet + 100).toFixed(2));
+    const clearModal = () => {
+        $('.game-skycard__cards-modal').removeClass('active').html('');
+        $('.game-skycard__cards-modal-wrapper').removeClass('active');
+    }
 
-        if ((bet + 100) > (Balance)) {
-            $("#txtCoinBet").val((Balance).toFixed(2));
-        }
-        manual_validate();
-    });
+    const renderBtnStart = () => {
+        let html = `<button class="game-cards__button" id="btnCardsStart"><span>Играть</span></button>`;
+        $('.cards-btn_buttons').html(html);
+    }
 
-    $("#btnBet5").click(function () { // bid + 250
-        var bet = parseFloat($("#txtCoinBet").val());
-        $("#txtCoinBet").val((bet + 250).toFixed(2));
-
-        if ((bet + 250) > (Balance)) {
-            $("#txtCoinBet").val((Balance).toFixed(2));
-        }
-        manual_validate();
-    });
-
-    $(window).keyup(function (evt) {
-        if (hotkeys == "False") {
-            return;
-        }
-        var key = evt.which;
-        if ($("#manual_bet").hasClass("active")) {
-            if (key == "72") {
-                $("#btnRollOver").click();
-            }
-            else if (key == "76") {
-                $("#btnRollUnder").click();
-            }
-            else if (key == "81") {
-                $("#btnBet1").click();
-            }
-            else if (key == "87") {
-                $("#btnBet2").click();
-            }
-            else if (key == "69") {
-                $("#btnBet3").click();
-            }
-            else if (key == "82") {
-                $("#btnBet4").click();
-            }
-            else if (key == "65") {
-                $("#btnPay1").click();
-            }
-            else if (key == "83") {
-                $("#btnPay2").click();
-            }
-            else if (key == "68") {
-                $("#btnPay3").click();
-            }
-            else if (key == "70") {
-                $("#btnPay4").click();
-            }
-        }
-    });
+    const renderBtnStarted = () => {
+        let html = `<button class="game-cards__button" disabled><span>Идет игра...</span></button>`;
+        $('.cards-btn_buttons').html(html);
+    }
 
     addToGridAll = function () {
         if (Wait1 == true) return;
@@ -639,13 +742,12 @@ $(document).ready(function () {
                     append = append + "<td><a class='a_bwindow' href='/keno/getBet/" + v.id + "'>" + id + "</a></td><td class='hidden-xs'>" + date + "</td>" +
                         "<td><a class='a_swindow' href='/player/" + v.user_id + "'>" + v.user_id + "</a></td>" +
                         "<td>" + v.coinname + "</td>" +
-                        "<td>" + convert_number(v.bet, 2) + "</td><td>" + convert_number(v.coeff, 2) + "x</td>";
+                        "<td>" + convert_number(v.bet, 2) + "</td><td>" + convert_number(v.coeff, Accuracy) + "x</td>";
 
                     if (v.profit >= 0) {
-                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, 2) + "</td>"
-                    }
-                    else {
-                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
+                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, Accuracy) + "</td>"
+                    } else {
+                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, Accuracy) + "</td>"
                     }
                     append = append + "<td class='coin_column'><img class='result_coin' src='" + v.icon.trim() + "' height='25' width='25'></td></tr>"
 

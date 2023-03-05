@@ -12,7 +12,7 @@
     <script type="text/javascript">
         var coin = "{{ $currency->code }}";
         var style = "7";
-        var coinname = "{{ $currency->name }}";
+        var coinname = "{{ $currency->short_name }}";
         var decimals = "6";
         var totalchannels = "5";
         var ratio = "10000000";
@@ -26,7 +26,7 @@
     <script type="text/javascript">
         var code = "{{ $currency->code }}";
         var accuracy = "{{ $currency->accuracy }}";
-        var coinname = "{{ $currency->name }}";
+        var coinname = "{{ $currency->short_name }}";
         var style = "7";
         var maxwin = "500000";
         var minbid = "0.10";
@@ -133,7 +133,7 @@
                                                 <span class="game-keno__winning-amount-title">Выиграш</span>
                                                 <span class="game-keno__winning-amount-value">
                                                     <span class="sum" id="winKenoAmount"></span>
-                                                     <span class="sum">{{ $currency->name }}</span>
+                                                     <span class="sum">{{ $currency->short_name }}</span>
                                                 </span>
                                             </div>
                                         </div>

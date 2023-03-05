@@ -14,10 +14,8 @@ class UserStatisticService
         $statistic = UserStatistic::where(['user_id' => $user->id, 'currency_id' => $currency->id])->first();
         if ($statistic) {
             ++$statistic->{$game};
-            $wagered = bcadd(StrHelperService::numberFormat($statistic->wagered), StrHelperService::numberFormat($bet), $currency->accuracy);
-            $profit = bcadd(StrHelperService::numberFormat($statistic->profit), StrHelperService::numberFormat($profit), $currency->accuracy);
-            $statistic->wagered = $wagered;
-            $statistic->profit = $profit;
+            $statistic->wagered = StrHelperService::sum($statistic->wagered, $bet, $currency->accuracy);
+            $statistic->profit = StrHelperService::sum($statistic->profit, $profit, $currency->accuracy);
             $statistic->save();
         } else {
             UserStatistic::create([

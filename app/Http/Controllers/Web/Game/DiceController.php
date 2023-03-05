@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Game;
 
 use App\Models\Currency;
 use App\Models\DiceHistory;
+use App\Models\DiceSetting;
 use App\Services\DiceService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -31,8 +32,9 @@ class DiceController extends Controller
         }
 
         $game = $this->service->getGame();
+        $settings = DiceSetting::where(['currency_id' => $currency->id])->first();
 
-        return view('games.dice.index', compact('currency', 'game'));
+        return view('games.dice.index', compact('currency', 'game', 'settings'));
     }
 
     public function getBet(Request $request, $id)

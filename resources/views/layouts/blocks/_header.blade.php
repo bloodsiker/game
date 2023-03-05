@@ -14,7 +14,7 @@
             @endphp
 
             <a class="navbar-brand" href="{{ route('index') }}">
-                <img class="tilt-left" src="{{ asset('assets/currency/'. $currency->code . '.png') }}" width="60"
+                <img class="tilt-left" src="{{ asset($currency->icon) }}" width="60"
                      alt="Crypto.Games - Cryptocurrency Dice, Slot and Blackjack gambling"
                      title="На главную"/>
             </a>
@@ -44,7 +44,7 @@
                             <li>
                                 <a class='coin' href='{{ route(request()->route()->getName(), ['currency' => $curr->code]) }}' data-type='coin'
                                    data-game='blackjack' data-coin='btc' data-name='bitcoin'>
-                                    <img src='{{ asset('assets/currency/'. $curr->code . '.png') }}' width=15>&nbsp;{{ $curr->name }}</a>
+                                    <img src='{{ asset($curr->icon) }}' width=15>&nbsp;{{ $curr->name }}</a>
                             </li>
                         @endforeach
                     </ul>
@@ -62,7 +62,7 @@
                 <li>
                     <a href="bitcoin.html#" class="dropdown-toggle" data-toggle="dropdown" role="button"
                        aria-haspopup="true" aria-expanded="false">
-                        <i class="fa fa-user fa-fw fa-lg fa-fw" aria-hidden="true"></i>Your account <span
+                        <i class="fa fa-user fa-fw fa-lg fa-fw" aria-hidden="true"></i>Аккаунт <span
                             class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu">
                         <li>
@@ -88,7 +88,7 @@
                         </li>
                         <li>
                             <a class="a_swindow" href="{{ route('account.setting') }}">
-                                <i class="fa fa-cog fa-fw fa-lg fa-fw" aria-hidden="true"></i>Settings</a>
+                                <i class="fa fa-cog fa-fw fa-lg fa-fw" aria-hidden="true"></i>Настройки</a>
                         </li>
                         @if (Auth::user())
                             <li class="divider"></li>
@@ -99,7 +99,7 @@
                 </li>
 
                 @if(!auth()->check())
-                    <li><a class="a_gwindow" href="register.html"><i class="fa fa-sign-in fa-lg fa-fw" aria-hidden="true"></i>Log in</a></li>
+                    <li><a class="a_gwindow" href="{{ route('register') }}"><i class="fa fa-sign-in fa-lg fa-fw" aria-hidden="true"></i>Log in</a></li>
                 @endif
             </ul>
         </div>
@@ -131,6 +131,12 @@
             <a href="{{ route('coinflip', ['currency' => $currency->code]) }}" class="sidebar-link @if(request()->route()->getName() === 'coinflip') sidebar-link_active @endif">
                 <span class="sidebar-link__image"><img src="{{ asset('assets/games/coinflip.svg') }}" alt="Coin Flip"></span>
                 <span class="sidebar-link__name">Coin Flip</span>
+            </a>
+        </div>
+        <div class="sidebar-item">
+            <a href="{{ route('cards', ['currency' => $currency->code]) }}" class="sidebar-link @if(request()->route()->getName() === 'cards') sidebar-link_active @endif">
+                <span class="sidebar-link__image"><img src="{{ asset('assets/games/cards.svg') }}" alt="Coin Flip"></span>
+                <span class="sidebar-link__name">Cards</span>
             </a>
         </div>
         <div class="sidebar-item">

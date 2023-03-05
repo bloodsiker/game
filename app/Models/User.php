@@ -88,14 +88,14 @@ class User extends Authenticatable
 
     public function addToBalance($amount, $accuracy = 8)
     {
-        $balance = bcadd(StrHelperService::numberFormat($this->{$this->balance}), StrHelperService::numberFormat($amount), $accuracy);
+        $balance = StrHelperService::sum($this->{$this->balance}, $amount, $accuracy);
         $this->{$this->balance} = $balance;
         $this->save();
     }
 
     public function writeOffBalance($amount, $accuracy = 8)
     {
-        $balance = bcsub(StrHelperService::numberFormat($this->{$this->balance}), StrHelperService::numberFormat($amount), $accuracy);
+        $balance = StrHelperService::minus($this->{$this->balance}, $amount, $accuracy);
         $this->{$this->balance} = $balance;
         $this->save();
     }

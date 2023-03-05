@@ -76,16 +76,18 @@
                                 <th>Keno</th>
                                 <th>Coin Flip</th>
                                 <th>Mines</th>
+                                <th>Cards</th>
                                 <th>Total wagered</th>
                                 <th>Total profit*</th>
                             </tr>
                             @foreach($statistics as $statistic)
                                 <tr>
-                                    <td><img src="{{ asset('assets/currency/'. $statistic->currency->code . '.png') }}" style='height:18px' title='BitcoinCash'></td>
+                                    <td><img src="{{ asset('assets/coins/'. $statistic->currency->code . '.png') }}" style='height:18px' title='{{ $statistic->currency->name }}'></td>
                                     <td>{{ $statistic->dice }}</td>
                                     <td>{{ $statistic->keno }}</td>
                                     <td>{{ $statistic->coinflip }}</td>
                                     <td>{{ $statistic->mines }}</td>
+                                    <td>{{ $statistic->cards }}</td>
                                     <td>{{ $statistic->wagered }}</td>
                                     <td>{{ $statistic->profit }}</td>
                                 </tr>

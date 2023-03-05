@@ -187,7 +187,8 @@ class CoinFlipService
                 [
                     'id' => $coinGame->id,
                     'user_id' => $user->login,
-                    'coinname' => $coinGame->currency->name,
+                    'coinname' => $coinGame->currency->short_name,
+                    'icon' => $currency->icon,
                     'time' => $coinGame->time_game,
                     'bet' => $coinGame->bet,
                     'coeff' => $coinGame->coeff,
@@ -219,7 +220,8 @@ class CoinFlipService
         foreach ($history as $result) {
             $results[$i]['id'] = $result->id;
             $results[$i]['user_id'] = $result->user->login;
-            $results[$i]['coinname'] = $result->currency->name;
+            $results[$i]['coinname'] = $result->currency->short_name;
+            $results[$i]['icon'] = $result->currency->icon;
             $results[$i]['time'] = $result->time_game;
             $results[$i]['bet'] = $result->bet;
             $results[$i]['coeff'] = $result->coeff;
@@ -242,7 +244,8 @@ class CoinFlipService
         foreach ($history as $result) {
             $results[$i]['id'] = $result->id;
             $results[$i]['user_id'] = $result->user->login;
-            $results[$i]['coinname'] = $result->currency->name;
+            $results[$i]['coinname'] = $result->currency->short_name;
+            $results[$i]['icon'] = $result->currency->icon;
             $results[$i]['time'] = $result->time_game;
             $results[$i]['bet'] = $result->bet;
             $results[$i]['coeff'] = $result->coeff;

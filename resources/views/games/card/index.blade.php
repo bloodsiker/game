@@ -1,11 +1,11 @@
 @extends('layouts.layout')
 
 @push('head_css')
-    <link href="{{ asset('css/coinflip.css') }}" rel="stylesheet"/>
+    <link href="{{ asset('css/cards.css') }}" rel="stylesheet"/>
 @endpush
 
 @push('game_scripts')
-    <script src="{{ asset('js/coinflip.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('js/cards.js') }}" type="text/javascript"></script>
 @endpush
 
 @push('head_scripts')
@@ -28,13 +28,14 @@
         var accuracy = "{{ $currency->accuracy }}";
         var coinname = "{{ $currency->short_name }}";
         var style = "7";
-        var maxwin = "500000";
-        var minbid = "0.10";
+        var maxwin = "{{ $settings->max_win }}";
+        var minbid = "{{ $settings->min_bid }}";
         var effects = "0";
         var edge = "{{ $game->edge }}";
         var hotkeys = "";
         var decimals = "6";
         var highrollamount = "5000";
+        var minratio = "{{ $settings->min_ratio }}";
         var maxratio = "9920";
         var gamename = "{{ $game->name }}";
         var coinslist = [];
@@ -62,37 +63,47 @@
                 <br/>
                 <div class="tab-pane fade in active" id="mine_game">
                     <div class="row">
-                        <div class="coinflip-game">
+                        <div class="cards-game">
                             <div class="col-lg-4 col-md-6 col-sm-6 col-xs-6 text-center">
                                 <div class="well height-100">
-                                    <span class="bet_text">Сумма ставки:</span><br/>
+                                    <span class="bet_text">Размер ставки:</span><br/>
                                     <div class="btn-group" role="group" aria-label="..." style="width: 101%;">
-                                        <button id="btnBet1" type="button" class="btn btn-default btnSetBet"
-                                                style="width: 20%;">+1
+                                        <button id="btnMinBet" type="button" class="btn btn-default btnSetBet"
+                                                style="width: 25%;">Min
                                         </button>
-                                        <button id="btnBet2" type="button" class="btn btn-default btnSetBet"
-                                                style="width: 20%;">+10
+                                        <button id="btnDivBet" type="button" class="btn btn-default btnSetBet"
+                                                style="width: 25%;">1/2
                                         </button>
-                                        <button id="btnBet3" type="button" class="btn btn-default btnSetBet"
-                                                style="width: 20%;">+50
+                                        <button id="btnX2Bet" type="button" class="btn btn-default btnSetBet"
+                                                style="width: 25%;">x2
                                         </button>
-                                        <button id="btnBet4" type="button" class="btn btn-default btnSetBet"
-                                                style="width: 20%;">+100
-                                        </button>
-                                        <button id="btnBet5" type="button" class="btn btn-default btnSetBet"
-                                                style="width: 20%;">+250
+                                        <button id="btnMaxBet" type="button" class="btn btn-default btnSetBet"
+                                                style="width: 25%;">Max
                                         </button>
                                     </div>
-                                    <div class="relative">
-                                        <input id="txtCoinBet" type="text" class="form-control fz-16 fw-600" value="" autocomplete="of"/>
-                                        <div class="control_buttons">
-                                            <button type="button" class="btn btn-default control_btn" id="btnDivBet">/2</button>
-                                            <button type="button" class="btn btn-default control_btn" id="btnX2Bet">X2</button>
-                                        </div>
+                                    <div class="input-group">
+                                        <input id="txtCardsBet" type="text" class="form-control text-right" autocomplete="off"/>
+                                        <span class="input-group-addon">{{ $currency->short_name }}</span>
                                     </div>
 
-                                    <div class="coin-btn_buttons">
-                                        <button class="game-coinflip__button" id="btnCoinFlipStart"><span>Играть</span></button>
+                                    <br>
+
+                                    <span class="bet_text">Возможный выигрыш:</span><br/>
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-addon form-control-readonly">От</span>
+                                        <input id="txtMinWon" type="text" class="form-control number" disabled aria-label="..."/>
+                                        <span class="input-group-addon">{{ $currency->short_name }}</span>
+                                    </div>
+                                    <div class="input-group input-group-sm">
+                                        <span class="input-group-addon form-control-readonly">До</span>
+                                        <input id="txtMaxWon" type="text" class="form-control number" disabled aria-label="..."/>
+                                        <span class="input-group-addon">{{ $currency->short_name }}</span>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="cards-btn_buttons">
+                                        <button class="game-cards__button" id="btnCardsStart"><span>Играть</span></button>
                                     </div>
 
                                     <div class="message_line">
@@ -110,51 +121,94 @@
                             <div class="col-lg-8 col-md-6 col-sm-6 col-xs-6 text-center">
                                 <div class="well height-100">
 
-                                   <div class="coinflip__block">
-                                       <div class="game-coinflip__winning">
-                                           <div class="game-coinflip__winning-close"></div>
-                                           <div class="game-coinflip__winning-rate">
-                                               <span class="sum" id="coinflipCoeff">0.25</span>
-                                               x
-                                           </div>
-                                           <div class="game-coinflip__winning-amount">
-                                               <span class="game-coinflip__winning-amount-title">Выиграш</span>
-                                               <span class="game-coinflip__winning-amount-value">
-                                                    <span class="sum" id="winСoinflipAmount"></span>
-                                                     <span class="sum">{{ $currency->short_name }}</span>
-                                                </span>
-                                           </div>
-                                       </div>
-
-                                       <div class="board">
-                                           <div class="board__aside board__aside_left">
-                                               <div class="board__aside-number" id="coinStep">0</div>
-                                               <div class="board__aside-text">Раунд</div>
-                                           </div>
-                                           <div class="board_inner">
-                                               <div class="coin" id="coin">
-                                                   <div class="coin__side coin__side_eagle"></div>
-                                                   <div class="coin__side coin__side_tail"></div>
-                                               </div>
-                                           </div>
-                                           <div class="board__aside board__aside_right">
-                                               <div class="board__aside-number" id="coinCoeff">x0</div>
-                                               <div class="board__aside-text">Коэфф.</div>
-                                           </div>
-                                       </div>
-
-                                       <ul class="game__steps steps">
-                                           @foreach($rates as $rate)
-                                               <li class="steps__step" data-step="{{ $rate->step }}">
-                                                   <div class="steps__step-img">
-                                                       <div class="steps__step-side steps__step-side_default"></div>
-                                                       <div class="steps__step-side steps__step-side_final"></div>
-                                                   </div>
-                                                   <span>x{{ $rate->coeff }}</span>
-                                               </li>
-                                           @endforeach
-                                       </ul>
-                                   </div>
+                                    <div class="game-skycard__block game-skycard__block_game">
+                                        <div class="game-skycard__cards">
+                                            <div class="game-skycard__cards-modal-wrapper active">
+                                                <div class="game-skycard__cards-modal active"></div>
+                                            </div>
+                                            <div class="game-skycard__cards-item-wrapper">
+                                                <div class="game-skycard__cards-item disabled" data-number="1">
+                                                    <span class="cards_possible_win" style="visibility: hidden;">0</span>
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                        class="game-skycard__cards-item-image_opened">
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                        class="game-skycard__cards-item-image_closed">
+                                                </div>
+                                            </div>
+                                            <div class="game-skycard__cards-item-wrapper">
+                                                <div class="game-skycard__cards-item disabled" data-number="2">
+                                                    <span class="cards_possible_win" style="visibility: hidden;">0</span>
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                        class="game-skycard__cards-item-image_opened">
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                        class="game-skycard__cards-item-image_closed">
+                                                </div>
+                                            </div>
+                                            <div class="game-skycard__cards-item-wrapper">
+                                                <div class="game-skycard__cards-item disabled" data-number="3">
+                                                    <span class="cards_possible_win" style="visibility: hidden;">0</span>
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                         class="game-skycard__cards-item-image_opened">
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                         class="game-skycard__cards-item-image_closed">
+                                                </div>
+                                            </div>
+                                            <div class="game-skycard__cards-item-wrapper">
+                                                <div class="game-skycard__cards-item disabled" data-number="4">
+                                                    <span class="cards_possible_win" style="visibility: hidden;">0</span>
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                         class="game-skycard__cards-item-image_opened">
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                         class="game-skycard__cards-item-image_closed">
+                                                </div>
+                                            </div>
+                                            <div class="game-skycard__cards-item-wrapper">
+                                                <div class="game-skycard__cards-item disabled" data-number="5">
+                                                    <span class="cards_possible_win" style="visibility: hidden;">0</span>
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                         class="game-skycard__cards-item-image_opened">
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                         class="game-skycard__cards-item-image_closed">
+                                                </div>
+                                            </div>
+                                            <div class="game-skycard__cards-item-wrapper">
+                                                <div class="game-skycard__cards-item disabled" data-number="6">
+                                                    <span class="cards_possible_win" style="visibility: hidden;">0</span>
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                         class="game-skycard__cards-item-image_opened">
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                         class="game-skycard__cards-item-image_closed">
+                                                </div>
+                                            </div>
+                                            <div class="game-skycard__cards-item-wrapper">
+                                                <div class="game-skycard__cards-item disabled" data-number="7">
+                                                    <span class="cards_possible_win" style="visibility: hidden;">0</span>
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                         class="game-skycard__cards-item-image_opened">
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                         class="game-skycard__cards-item-image_closed">
+                                                </div>
+                                            </div>
+                                            <div class="game-skycard__cards-item-wrapper">
+                                                <div class="game-skycard__cards-item disabled" data-number="8">
+                                                    <span class="cards_possible_win" style="visibility: hidden;">0</span>
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                         class="game-skycard__cards-item-image_opened">
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                         class="game-skycard__cards-item-image_closed">
+                                                </div>
+                                            </div>
+                                            <div class="game-skycard__cards-item-wrapper">
+                                                <div class="game-skycard__cards-item disabled" data-number="9">
+                                                    <span class="cards_possible_win" style="visibility: hidden;">0</span>
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                         class="game-skycard__cards-item-image_opened">
+                                                    <img src="{{ asset('assets/icons/card-closed.png') }}" alt="Card"
+                                                         class="game-skycard__cards-item-image_closed">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                 </div>
                             </div>

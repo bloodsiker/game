@@ -1,0 +1,474 @@
+body .is_opacity {
+    opacity: 0.4;
+}
+.cards-game {
+    display: flex;
+    margin-bottom: 25px;
+}
+.game-cards__button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50px;
+    width: 100%;
+    margin-top: 25px;
+    font-size: 20px;
+    border-color: transparent;
+    border-top: 2px solid #82ffff;
+    border-radius: 6px;
+    background: linear-gradient(to top right,#4be,#81f8fd);
+    text-shadow: 1px 1px 1px rgb(0 0 0 / 50%);
+    transition: all .3s ease-out;
+    position: relative;
+    touch-action: none;
+    cursor: pointer;
+}
+.game-cards__button:before {
+    content: "";
+    background: linear-gradient(to top right,#81f8fd,#4be);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+    border-radius: 6px;
+    transition: all .3s;
+}
+.game-cards__button.disabled {
+    cursor: not-allowed;
+    opacity: .5;
+}
+.game-cards__button>span {
+    position: relative;
+    z-index: 1;
+    margin-top: -3px;
+}
+
+
+/**  CARDS  **/
+.game-skycard__block_game {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+.game-skycard__cards-modal-wrapper.active:before {
+    opacity: .6;
+    visibility: visible;
+}
+.game-skycard__cards-modal-wrapper:after, .game-skycard__cards-modal-wrapper:before {
+    content: "";
+    position: absolute;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .25s ease-in-out,visibility .25s ease-in-out;
+}
+.game-skycard__block {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    height: 100%;
+    color: #fff;
+}
+
+.game-skycard__cards, .game-skycard__cards-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.game-skycard__cards {
+    flex-wrap: wrap;
+}
+.game-skycard__cards-modal-wrapper:after, .game-skycard__cards-modal-wrapper:before {
+    content: "";
+    position: absolute;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .25s ease-in-out,visibility .25s ease-in-out;
+}
+.game-skycard__cards-modal-wrapper:before {
+    z-index: 5;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg,#1e272a,#21313b);
+}
+.game-skycard__cards-modal-wrapper:after {
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-size: 200% 200%;
+    z-index: 6;
+    transform: rotate(0);
+    -webkit-animation: rotate-start-bg 15s linear infinite normal;
+    animation: rotate-start-bg 15s linear infinite normal;
+}
+
+.game-skycard__cards-item-wrapper {
+    width: 33.333333%;
+    padding: 10px;
+    position: relative;
+    z-index: 1;
+    transform: translateZ(-50px);
+}
+.game-skycard__cards-item {
+    position: relative;
+    touch-action: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    transition: transform .2s ease-in-out;
+}
+.game-skycard__cards, .game-skycard__cards-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.game-skycard__cards-item>span {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    z-index: 1;
+    opacity: 0;
+    transition: opacity .25s ease-in-out,visibility .25s ease-in-out;
+}
+.game-skycard__cards-item_opened>span {
+    opacity: 1;
+    transition: opacity .6s ease-in-out .7s,visibility .6s ease-in-out .7s;
+}
+.game-skycard__cards-item>img {
+    width: 100%;
+}
+.game-skycard__cards-item_active {
+    cursor: pointer;
+}
+.game-skycard__cards-item_active:hover:not(.game-skycard__cards-item_opened) {
+    transform: scale(1.05);
+}
+.game-skycard__cards-item_opened {
+    cursor: default;
+    transition: opacity .4s ease-in-out;
+}
+.game-skycard__cards-item-image_opened {
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    -webkit-animation: skycard-flip-opened-return-card .9s ease-in-out;
+    animation: skycard-flip-opened-return-card .9s ease-in-out;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+}
+.game-skycard__cards-item-image_closed {
+    position: relative;
+    z-index: 2;
+    -webkit-animation: skycard-flip-closed-return-card .9s ease-in-out;
+    animation: skycard-flip-closed-return-card .9s ease-in-out;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+}
+.game-skycard__cards-item_opened .game-skycard__cards-item-image_closed {
+     -webkit-animation:skycard-flip-closed-card .9s ease-in-out;
+    animation: skycard-flip-closed-card .9s ease-in-out;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards;
+}
+
+.game-skycard__cards-item_opened .game-skycard__cards-item-image_opened {
+    -webkit-animation: skycard-flip-opened-card .9s ease-in-out;
+    animation: skycard-flip-opened-card .9s ease-in-out;
+    -webkit-animation-fill-mode: forwards;
+    animation-fill-mode: forwards
+}
+
+.game-skycard__cards-item_opened:not(.game-skycard__cards-item_selected) {
+    opacity: .5
+}
+
+.game-skycard__cards-item:after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 3;
+    background: rgba(125,134,232,.2);
+    border-radius: 4%;
+    -webkit-animation: progress-animation 1s ease-in-out infinite normal;
+    animation: progress-animation 1s ease-in-out infinite normal;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity .2s ease-in-out,visibility .2s ease-in-out
+}
+
+.game-skycard__cards-item_progress {
+    cursor: default
+}
+
+.game-skycard__cards-item_progress:after {
+    opacity: 1;
+    visibility: visible
+}
+
+@-webkit-keyframes progress-animation {
+    0% {
+        background: rgba(125,134,232,.2)
+    }
+
+    50% {
+        background: rgba(125,134,232,.4)
+    }
+
+    to {
+        background: rgba(125,134,232,.2)
+    }
+}
+
+@keyframes progress-animation {
+    0% {
+        background: rgba(125,134,232,.2)
+    }
+
+    50% {
+        background: rgba(125,134,232,.4)
+    }
+
+    to {
+        background: rgba(125,134,232,.2)
+    }
+}
+
+@-webkit-keyframes skycard-flip-closed-card {
+    0% {
+        transform: rotateY(0deg);
+        opacity: 1
+    }
+    to {
+        transform: rotateY(180deg);
+        opacity: 0
+    }
+}
+
+@keyframes skycard-flip-closed-card {
+    0% {
+        transform: rotateY(0deg);
+        opacity: 1
+    }
+    to {
+        transform: rotateY(180deg);
+        opacity: 0
+    }
+}
+
+@-webkit-keyframes skycard-flip-closed-return-card {
+    0% {
+        transform: rotateY(180deg);
+        opacity: 0
+    }
+    to {
+        transform: rotateY(0deg);
+        opacity: 1
+    }
+}
+
+@keyframes skycard-flip-closed-return-card {
+    0% {
+        transform: rotateY(180deg);
+        opacity: 0
+    }
+    to {
+        transform: rotateY(0deg);
+        opacity: 1
+    }
+}
+
+@-webkit-keyframes skycard-flip-opened-card {
+    0% {
+        transform: rotateY(180deg);
+        opacity: 0
+    }
+    to {
+        transform: rotateY(1turn);
+        opacity: 1
+    }
+}
+
+@keyframes skycard-flip-opened-card {
+    0% {
+        transform: rotateY(180deg);
+        opacity: 0
+    }
+    to {
+        transform: rotateY(1turn);
+        opacity: 1
+    }
+}
+
+@-webkit-keyframes skycard-flip-opened-return-card {
+    0% {
+        transform: rotateY(1turn);
+        opacity: 1
+    }
+    to {
+        transform: rotateY(180deg);
+        opacity: 0
+    }
+}
+
+@keyframes skycard-flip-opened-return-card {
+    0% {
+        transform: rotateY(1turn);
+        opacity: 1
+    }
+    to {
+        transform: rotateY(180deg);
+        opacity: 0
+    }
+}
+
+@-webkit-keyframes skycard-flip {
+    0% {
+        transform: rotateY(0deg)
+    }
+    50% {
+        transform: rotateY(50deg)
+    }
+    to {
+        transform: rotateY(0deg)
+    }
+}
+
+@keyframes skycard-flip {
+    0% {
+        transform: rotateY(0deg)
+    }
+    50% {
+        transform: rotateY(50deg)
+    }
+    to {
+        transform: rotateY(0deg)
+    }
+}
+
+.game-skycard__cards-modal-wrapper {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 4;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    overflow: hidden;
+    border-radius: 5px;
+}
+.game-skycard__cards-modal-wrapper.active {
+    visibility: visible;
+}
+.game-skycard__cards-modal {
+    width: 80%;
+    max-width: 300px;
+    background: #21313b;
+    border-radius: 6px;
+    box-shadow: 0 5px 25px 2px rgb(152 150 150 / 30%);
+    position: relative;
+    z-index: 7;
+    text-align: center;
+    opacity: 0;
+    visibility: hidden;
+    transform: scale(.9);
+    transition: all .25s ease-in-out;
+}
+.game-skycard__cards-modal.active {
+    opacity: 1;
+    visibility: visible;
+    transform: scale(1);
+}
+.game-skycard__cards-modal-body {
+    padding: 20px;
+}
+.game-skycard__cards-modal-footer {
+    padding: 20px;
+    background: #1e272a;
+    border-radius: 0 0 6px 6px
+}
+.game-skycard__cards-modal-close {
+    position: absolute;
+    top: -16px;
+    right: -16px;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: #535356 url(/assets/icons/modal-close.svg) 50% no-repeat;
+    background-size: 12px 12px;
+    cursor: pointer;
+    transition: all .2s ease-in-out
+}
+
+.game-skycard__cards-modal-close:hover {
+    background-color: #535356;
+    transform: rotate(180deg)
+}
+.game-skycard__cards-modal-title {
+    font-size: 22px;
+    line-height: 28px;
+}
+.game-skycard__cards-modal-text {
+    font-size: 14px;
+    line-height: 20px;
+    margin-top: 15px;
+}
+.game-skycard__cards-modal-text.loose {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 16px;
+    line-height: 22px;
+}
+.game-skycard__cards-modal-text.loose+.game-skycard__cards-modal-text.loose {
+    margin-top: 10px;
+    color: #fff;
+}
+.game-skycard__cards-modal-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    min-height: 46px;
+    margin-top: 10px;
+    background: linear-gradient(to top right,#36aadc,#6dd1fb);
+    border-top: 2px solid #92ddfd;
+    border-radius: 6px;
+    padding: 8px 10px 10px;
+    font-size: 16px;
+    text-shadow: 1px 1px 1px #2b8cb5;
+    cursor: pointer;
+    transition: all .3s ease-out;
+    position: relative;
+    touch-action: none;
+}
+.game-skycard__cards-modal-button_default {
+    border-top-color: #becbd7;
+    background: var(--cg-button-clear);
+}
+
