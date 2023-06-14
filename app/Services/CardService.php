@@ -286,6 +286,8 @@ class CardService
                 'max_open' => $maxOpenCard,
             ];
         }
+
+        return [];
     }
 
     public function extraCard(Request $request) {
@@ -376,25 +378,25 @@ class CardService
 
     private function generateCards($bet, $accuracy = 8)
     {
-        $min = bcmul(StrHelperService::numberFormat($bet), StrHelperService::numberFormat(2), $accuracy);
-        $max = bcmul(StrHelperService::numberFormat($bet), StrHelperService::numberFormat(15), $accuracy);
-        $maxWin = bcsub($max, $min, $accuracy);
+        $min = StrHelperService::mul($bet, 2, $accuracy);
+        $max = StrHelperService::mul($bet, 15, $accuracy);
+        $maxWin = StrHelperService::minus($max, $min, $accuracy);
 
         $a1 = mt_rand(0,15);
         $a2 = mt_rand(25,45);
         $a3 = mt_rand(55,100);
 
-        $cardOne = bcmul($maxWin, StrHelperService::numberFormat($a1), $accuracy);
-        $cardOne = bcdiv($cardOne, StrHelperService::numberFormat(100), $accuracy);
-        $cardOne = bcadd($cardOne, StrHelperService::numberFormat($min), 8);
+        $cardOne = StrHelperService::mul($maxWin, $a1, $accuracy);
+        $cardOne = StrHelperService::div($cardOne,100, $accuracy);
+        $cardOne = StrHelperService::sum($cardOne, $min, $accuracy);
 
-        $cardTwo = bcmul($maxWin, StrHelperService::numberFormat($a2), $accuracy);
-        $cardTwo = bcdiv($cardTwo, StrHelperService::numberFormat(100), $accuracy);
-        $cardTwo = bcadd($cardTwo, StrHelperService::numberFormat($min), $accuracy);
+        $cardTwo = StrHelperService::mul($maxWin, $a2, $accuracy);
+        $cardTwo = StrHelperService::div($cardTwo,100, $accuracy);
+        $cardTwo = StrHelperService::sum($cardTwo, $min, $accuracy);
 
-        $cardThree = bcmul($maxWin, StrHelperService::numberFormat($a3), $accuracy);
-        $cardThree = bcdiv($cardThree, StrHelperService::numberFormat(100), $accuracy);
-        $cardThree = bcadd($cardThree, StrHelperService::numberFormat($min), $accuracy);
+        $cardThree = StrHelperService::mul($maxWin, $a3, $accuracy);
+        $cardThree = StrHelperService::div($cardThree,100, $accuracy);
+        $cardThree = StrHelperService::sum($cardThree, $min, $accuracy);
 
         $arrayNumber = [];
         for ($i = 1; $i <= 3; $i++) {

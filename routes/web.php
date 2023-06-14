@@ -46,12 +46,14 @@ Route::group(['middleware' => ['web']], function () {
         Route::post('/mines/create', [MineController::class, 'create']);
         Route::post('/mines/play', [MineController::class, 'play']);
         Route::post('/mines/collect', [MineController::class, 'collect']);
+        Route::post('/mines/load', [MineController::class, 'load']);
         Route::post('/mines/getLastBets', [MineController::class, 'getLastBets'])->name('getMinesLastBets');
         Route::get('/mines/getBet/{id}', [MineController::class, 'getBet'])->name('getBetMine');
 
         Route::post('/coinflip/create', [CoinFlipController::class, 'create']);
         Route::post('/coinflip/play', [CoinFlipController::class, 'play']);
         Route::post('/coinflip/collect', [CoinFlipController::class, 'collect']);
+        Route::post('/coinflip/load', [CoinFlipController::class, 'load']);
         Route::post('/coinflip/getLastBets', [CoinFlipController::class, 'getLastBets'])->name('getCoinLastBets');
 
         Route::post('/cards/create', [CardController::class, 'create']);

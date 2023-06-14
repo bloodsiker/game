@@ -221,8 +221,53 @@ $(document).ready(function () {
     }
     refreshBets();
 
+    const loadGame = () => {
+        $.ajax({
+            type: 'POST',
+            url: '/coinflip/load',
+            dataType: 'json',
+            success: function (res) {
+                if (res.status === 'success') {
+                    DisabledGame = false;
+                    Step = res.step;
+
+                    $('#txtCoinBet, #btnDivBet, #btnX2Bet, .btnSetBet').attr('disabled', 'disabled');
+                    $('#btnCoinFlipStart').remove();
+                    renderCoinFlip();
+
+                    $('#coinStep').text(res.step);
+                    $('#coinCoeff').text('x' + res.coeff);
+
+                    $('#possibleWin').text((res.possibleWin).toFixed(Accuracy));
+
+                    $.each(res.revealed, function(index, value) {
+                        var step = index + 1;
+
+                        $(".steps__step[data-step="+step+"]").addClass('steps__step_active');
+                        let htmlCoin = $(".steps__step[data-step="+step+"]").find('.steps__step-img');
+                        if (res.finish) {
+                            $('.section__title, .coinflip-section__row').empty();
+                        }
+                        if (parseInt(value) === 0) {
+                            htmlCoin.addClass('steps__step-img_tail');
+                        } else {
+                            htmlCoin.addClass('steps__step-img_eagle');
+                        }
+                    });
+
+                    activateUserBets();
+                }
+            },
+            error: function (msg) {
+                console.log("not ok....");
+            }
+        });
+    }
+
     const setDefault = () => {
-        $("#txtCoinBet").val(Minbid.toFixed(2));
+        $("#txtCoinBet").val(Minbid.toFixed(Accuracy));
+
+        loadGame();
     }
     setDefault();
 
@@ -259,18 +304,18 @@ $(document).ready(function () {
 
     $("#btnDivBet").on('click', function () { // bid / 2
         var bet = parseFloat($("#txtCoinBet").val());
-        $("#txtCoinBet").val((bet / 2).toFixed(2));
+        $("#txtCoinBet").val((bet / 2).toFixed(Accuracy));
         if ((bet / 2) < Minbid) {
-            $("#txtCoinBet").val(Minbid.toFixed(2));
+            $("#txtCoinBet").val(Minbid.toFixed(Accuracy));
         }
         manual_validate();
     });
 
     $("#btnX2Bet").click(function () { // bid * 2
         var bet = parseFloat($("#txtCoinBet").val());
-        $("#txtCoinBet").val((bet * 2).toFixed(2));
+        $("#txtCoinBet").val((bet * 2).toFixed(Accuracy));
         if ((bet * 2) > (Balance)) {
-            $("#txtCoinBet").val((Balance).toFixed(2));
+            $("#txtCoinBet").val((Balance).toFixed(Accuracy));
         }
         manual_validate();
     });
@@ -404,7 +449,7 @@ $(document).ready(function () {
                         setTimeout(function () {
                             $('#coinStep').text(res.step);
                             $('#coinCoeff').text('x' + res.coeff);
-                            $('#possibleWin').text((res.possibleWin).toFixed(2));
+                            $('#possibleWin').text((res.possibleWin).toFixed(Accuracy));
                             $('#btnPossibleText').text('Забрать');
 
                             DisabledGame = false;
@@ -413,13 +458,26 @@ $(document).ready(function () {
 
                             $(".steps__step[data-step="+step+"]").addClass('steps__step_active');
                             let htmlCoin = $(".steps__step[data-step="+step+"]").find('.steps__step-img');
-                            if (res.finish) {
-                                $('.section__title, .coinflip-section__row').empty();
-                            }
                             if (coin === 0) {
                                 htmlCoin.addClass('steps__step-img_tail');
                             } else {
                                 htmlCoin.addClass('steps__step-img_eagle');
+                            }
+
+                            if (res.finish) {
+                                Step = 0;
+                                showWinCoinflip(convert_number(res.won_sum, Accuracy), res.coeff);
+
+                                $('.section__title, .coinflip-section__row').empty();
+
+                                Balance = res.balance;
+                                showBalance(res.balance, Code, Accuracy);
+                                $('#btnPossibleWin').remove();
+                                renderBtnStart();
+
+                                $('#txtCoinBet, #btnDivBet, #btnX2Bet, .btnSetBet').removeAttr('disabled');
+
+                                addToTable(res.BetData, "1");
                             }
                         }, 1600);
                     }
@@ -480,6 +538,7 @@ $(document).ready(function () {
 
     const renderCoinFlip = () => {
         let disabled = (Step > 0) ? '' : 'disabled';
+        let btnText =  (Step > 0) ? 'Забрать' : 'Сделайте ход';
         let html = `<h3 class="section__title">Выберите исход раунда</h3>
                     <div class="coinflip-section__row ">
                         <div class="section__item buttons__eagle" id="btnEagle">
@@ -489,96 +548,57 @@ $(document).ready(function () {
                             <div class="buttons__text">Решка</div>
                         </div>
                     </div>
-                    <button class="game-coinflip__button" id="btnPossibleWin" ${disabled}><span id="btnPossibleText">Сделайте ход</span>&nbsp;<span id="possibleWin"></span></button>
+                    <button class="game-coinflip__button" id="btnPossibleWin" ${disabled}><span id="btnPossibleText">${btnText}</span>&nbsp;<span id="possibleWin"></span></button>
                 `;
         $('.coin-btn_buttons').html(html);
     }
 
     $("#btnBet1").click(function () { // bid + 1
         var bet = parseFloat($("#txtCoinBet").val());
-        $("#txtCoinBet").val((bet + 1).toFixed(2));
+        $("#txtCoinBet").val((bet + 1).toFixed(Accuracy));
         if ((bet + 1) > (Balance)) {
-            $("#txtCoinBet").val((Balance).toFixed(2));
+            $("#txtCoinBet").val((Balance).toFixed(Accuracy));
         }
         manual_validate();
     });
 
     $("#btnBet2").click(function () { // bid + 10
         var bet = parseFloat($("#txtCoinBet").val());
-        $("#txtCoinBet").val((bet + 10).toFixed(2));
+        $("#txtCoinBet").val((bet + 10).toFixed(Accuracy));
         if ((bet + 10) > (Balance)) {
-            $("#txtCoinBet").val((Balance).toFixed(2));
+            $("#txtCoinBet").val((Balance).toFixed(Accuracy));
         }
         manual_validate();
     });
 
     $("#btnBet3").click(function () { // bid + 50
         var bet = parseFloat($("#txtCoinBet").val());
-        $("#txtCoinBet").val((bet + 50).toFixed(2));
+        $("#txtCoinBet").val((bet + 50).toFixed(Accuracy));
 
         if ((bet + 50) > (Balance)) {
-            $("#txtCoinBet").val((Balance).toFixed(2));
+            $("#txtCoinBet").val((Balance).toFixed(Accuracy));
         }
         manual_validate();
     });
 
     $("#btnBet4").click(function () { // bid + 100
         var bet = parseFloat($("#txtCoinBet").val());
-        $("#txtCoinBet").val((bet + 100).toFixed(2));
+        $("#txtCoinBet").val((bet + 100).toFixed(Accuracy));
 
         if ((bet + 100) > (Balance)) {
-            $("#txtCoinBet").val((Balance).toFixed(2));
+            $("#txtCoinBet").val((Balance).toFixed(Accuracy));
         }
         manual_validate();
     });
 
     $("#btnBet5").click(function () { // bid + 250
         var bet = parseFloat($("#txtCoinBet").val());
-        $("#txtCoinBet").val((bet + 250).toFixed(2));
+        $("#txtCoinBet").val((bet + 250).toFixed(Accuracy));
 
         if ((bet + 250) > (Balance)) {
-            $("#txtCoinBet").val((Balance).toFixed(2));
+            $("#txtCoinBet").val((Balance).toFixed(Accuracy));
         }
         manual_validate();
-    });
-
-    $(window).keyup(function (evt) {
-        if (hotkeys == "False") {
-            return;
-        }
-        var key = evt.which;
-        if ($("#manual_bet").hasClass("active")) {
-            if (key == "72") {
-                $("#btnRollOver").click();
-            }
-            else if (key == "76") {
-                $("#btnRollUnder").click();
-            }
-            else if (key == "81") {
-                $("#btnBet1").click();
-            }
-            else if (key == "87") {
-                $("#btnBet2").click();
-            }
-            else if (key == "69") {
-                $("#btnBet3").click();
-            }
-            else if (key == "82") {
-                $("#btnBet4").click();
-            }
-            else if (key == "65") {
-                $("#btnPay1").click();
-            }
-            else if (key == "83") {
-                $("#btnPay2").click();
-            }
-            else if (key == "68") {
-                $("#btnPay3").click();
-            }
-            else if (key == "70") {
-                $("#btnPay4").click();
-            }
-        }
     });
 
     addToGridAll = function () {
@@ -639,13 +659,12 @@ $(document).ready(function () {
                     append = append + "<td><a class='a_bwindow' href='/keno/getBet/" + v.id + "'>" + id + "</a></td><td class='hidden-xs'>" + date + "</td>" +
                         "<td><a class='a_swindow' href='/player/" + v.user_id + "'>" + v.user_id + "</a></td>" +
                         "<td>" + v.coinname + "</td>" +
-                        "<td>" + convert_number(v.bet, 2) + "</td><td>" + convert_number(v.coeff, 2) + "x</td>";
+                        "<td>" + convert_number(v.bet, Accuracy) + "</td><td>" + convert_number(v.coeff, 2) + "x</td>";
 
                     if (v.profit >= 0) {
-                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, 2) + "</td>"
-                    }
-                    else {
-                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
+                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, Accuracy) + "</td>"
+                    } else {
+                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, Accuracy) + "</td>"
                     }
                     append = append + "<td class='coin_column'><img class='result_coin' src='" + v.icon.trim() + "' height='25' width='25'></td></tr>"
 
@@ -695,13 +714,12 @@ $(document).ready(function () {
                     append = append + "<td><a class='a_bwindow' href='/keno/getBet/" + v.id + "'>" + id + "</a></td><td class='hidden-xs'>" + date + "</td>" +
                         "<td><a class='a_swindow' href='/player/" + v.user_id + "'>" + v.user_id + "</a></td>" +
                         "<td>" + v.coinname + "</td>" +
-                        "<td>" + convert_number(v.bet, 2) + "</td><td>" + convert_number(v.coeff, 2) + "x</td>";
+                        "<td>" + convert_number(v.bet, Accuracy) + "</td><td>" + convert_number(v.coeff, 2) + "x</td>";
 
                     if (v.profit >= 0) {
-                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, 2) + "</td>"
-                    }
-                    else {
-                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
+                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, Accuracy) + "</td>"
+                    } else {
+                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, Accuracy) + "</td>"
                     }
                     append = append + "<td><img class='result_coin' src='" + v.icon.trim() + "' height='25' width='25'></td></tr>";
 
@@ -739,13 +757,12 @@ $(document).ready(function () {
                     append = append + "<td><a class='a_bwindow' href='/keno/getBet/" + v.id + "'>" + id + "</a></td><td class='hidden-xs'>" + date + "</td>" +
                         "<td><a class='a_swindow' href='/player/" + v.user_id + "'>" + v.user_id + "</a></td>" +
                         "<td>" + v.coinname + "</td>" +
-                        "<td>" + convert_number(v.bet, 2) + "</td><td>" + convert_number(v.coeff, 2) + "x</td>";
+                        "<td>" + convert_number(v.bet, Accuracy) + "</td><td>" + convert_number(v.coeff, 2) + "x</td>";
 
                     if (v.profit >= 0) {
-                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, 2) + "</td>"
-                    }
-                    else {
-                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, 2) + "</td>"
+                        append = append + "<td class='green_font text-right'>" + convert_number(v.profit, Accuracy) + "</td>"
+                    } else {
+                        append = append + "<td class='red_font text-right'>" + convert_number(v.profit, Accuracy) + "</td>"
                     }
                     append = append + "<td><img class='result_coin' src='" + v.icon.trim() + "' height='25' width='25'></td></tr>";
 

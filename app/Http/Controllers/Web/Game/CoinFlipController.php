@@ -48,6 +48,11 @@ class CoinFlipController extends Controller
         return response()->json($this->service->collect($request));
     }
 
+    public function load(Request $request)
+    {
+        return response()->json($this->service->load($request));
+    }
+
     public function getLastBets()
     {
         return response()->json($this->service->getLastBets());

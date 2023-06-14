@@ -1,0 +1,18 @@
+FROM nginx:1.15.12-alpine
+
+RUN echo 'Europe/Kiev' > /etc/timezone
+
+RUN wget https://github.com/kelseyhightower/confd/releases/download/v0.16.0/confd-0.16.0-linux-amd64 \
+    && mv confd-0.16.0-linux-amd64 /bin/confd \
+    && chmod +x /bin/confd
+
+COPY conf/nginx/confd.toml /etc/confd/conf.d/confd.toml
+COPY conf/nginx/nginx.conf-www.tmpl /etc/confd/templates/nginx.conf.tmpl
+COPY conf/nginx/entrypoint.sh /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["nginx", "-g", "daemon off;"]
+
+EXPOSE 80 81
+
+WORKDIR /var/www/

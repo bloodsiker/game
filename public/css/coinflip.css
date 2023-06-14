@@ -193,19 +193,12 @@
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
 }
-.coinflip-game .board__aside-number {
-    font-size: 33px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    position: relative;
-    transition: color .1s;
-}
 .coinflip-game .board__aside-text {
     font-size: 12px;
     color: hsla(0,0%,100%,.2);
 }
 .coinflip-game .board__aside-number {
-    font-size: 33px;
+    font-size: 28px;
     font-weight: 600;
     margin-bottom: 8px;
     position: relative;

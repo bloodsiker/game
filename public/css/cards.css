@@ -50,6 +50,10 @@ body .is_opacity {
 
 
 /**  CARDS  **/
+.game-skycard__cards .game-skycard__cards-item.disabled {
+    pointer-events: none;
+    opacity: 1;
+}
 .game-skycard__block_game {
     padding: 15px;
     display: flex;

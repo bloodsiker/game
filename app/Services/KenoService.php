@@ -55,7 +55,7 @@ class KenoService
         if ($countWinNumbers === 0) {
             $coeff = 0.00;
 
-            $winAmount = -1 * $bet;
+            $winAmount = StrHelperService::mul(-1, $bet, $currency->accuracy);
 
             $winAmount = (float) sprintf("%0.2f", $winAmount);
 
@@ -66,13 +66,13 @@ class KenoService
             $coeff = $rate->coeff;
 
             if ($coeff > 0) {
-                $winAmount = $bet * $coeff;
+                $winAmount = StrHelperService::mul($bet, $coeff, $currency->accuracy);
                 $winAmount = (float) sprintf("%0.2f", $winAmount);
 
-                $user->addToBalance($winAmount - $bet, $currency->accuracy);
+                $user->addToBalance(StrHelperService::minus($winAmount, $bet, $currency->accuracy), $currency->accuracy);
                 $this->userStatisticService->setStatistic($user, $currency, $bet, ($winAmount - $bet), $this->game->slug);
             } else {
-                $winAmount = -1 * $bet;
+                $winAmount = StrHelperService::mul(-1, $bet, $currency->accuracy);
                 $winAmount = (float) sprintf("%0.2f", $winAmount);
 
                 $user->writeOffBalance($bet, $currency->accuracy);

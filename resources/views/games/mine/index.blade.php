@@ -28,10 +28,10 @@
         var accuracy = "{{ $currency->accuracy }}";
         var coinname = "{{ $currency->short_name }}";
         var style = "7";
-        var maxwin = "500000";
-        var minbid = "0.10";
-        var minmines = 2;
-        var maxmines = 24;
+        var maxwin = "{{ $settings->max_win }}";
+        var minbid = "{{ $settings->min_bid }}";
+        var minmines = {{ $settings->min_mines }};
+        var maxmines = {{ $settings->max_mines }};
         var effects = "0";
         var edge = "{{ $game->edge }}";
         var hotkeys = "";
@@ -75,21 +75,11 @@
                                 <div class="well height-100">
                                     <span class="bet_text">Количество бомб:</span><br/>
                                     <div class="btn-group" role="group" aria-label="..." style="width: 101%;">
-                                        <button data-mine="3" type="button" class="btn btn-default btnSetMine"
-                                                style="width: 20%;">3
-                                        </button>
-                                        <button data-mine="5" type="button" class="btn btn-default btnSetMine"
-                                                style="width: 20%;">5
-                                        </button>
-                                        <button data-mine="10" type="button" class="btn btn-default btnSetMine"
-                                                style="width: 20%;">10
-                                        </button>
-                                        <button data-mine="20" type="button" class="btn btn-default btnSetMine"
-                                                style="width: 20%;">20
-                                        </button>
-                                        <button data-mine="24" type="button" class="btn btn-default btnSetMine"
-                                                style="width: 20%;">24
-                                        </button>
+                                        <button data-mine="3" type="button" class="btn btn-default btnSetMine" style="width: 20%;">3</button>
+                                        <button data-mine="5" type="button" class="btn btn-default btnSetMine" style="width: 20%;">5</button>
+                                        <button data-mine="10" type="button" class="btn btn-default btnSetMine" style="width: 20%;">10</button>
+                                        <button data-mine="20" type="button" class="btn btn-default btnSetMine" style="width: 20%;">20</button>
+                                        <button data-mine="24" type="button" class="btn btn-default btnSetMine" style="width: 20%;">24</button>
                                     </div>
                                     <div class="">
                                         <input id="txtMines" type="text" class="form-control fz-16 fw-600 text-center" value="3" autocomplete="off"/>
@@ -114,21 +104,13 @@
 {{--                                                style="width: 20%;">+250--}}
 {{--                                        </button>--}}
 
-                                        <button id="btnMinBet" type="button" class="btn btn-default"
-                                                style="width: 25%;">Min
-                                        </button>
-                                        <button id="btnDivBet" type="button" class="btn btn-default"
-                                                style="width: 25%;">1/2
-                                        </button>
-                                        <button id="btnX2Bet" type="button" class="btn btn-default"
-                                                style="width: 25%;">x2
-                                        </button>
-                                        <button id="btnMaxBet" type="button" class="btn btn-default"
-                                                style="width: 25%;">Max
-                                        </button>
+                                        <button id="btnMinBet" type="button" class="btn btn-default btnOperations" style="width: 25%;">Min</button>
+                                        <button id="btnDivBet" type="button" class="btn btn-default btnOperations" style="width: 25%;">1/2</button>
+                                        <button id="btnX2Bet" type="button" class="btn btn-default btnOperations" style="width: 25%;">x2</button>
+                                        <button id="btnMaxBet" type="button" class="btn btn-default btnOperations" style="width: 25%;">Max</button>
                                     </div>
                                     <div class="">
-                                        <input id="txtMineBet" type="text" name="amount" class="form-control fz-16 fw-600 text-center" value="0.1" autocomplete="off"/>
+                                        <input id="txtMineBet" type="text" name="amount" class="form-control fz-16 fw-600 text-center" value="{{ $settings->min_bid }}" autocomplete="off"/>
                                     </div>
 {{--                                    <div class="group">--}}
 {{--                                        <div class="choices">--}}

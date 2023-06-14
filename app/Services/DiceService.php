@@ -33,20 +33,18 @@ class DiceService
 
         $user->setActiveBalance($code);
 
-
         $maxRatio = floor(((100 - $this->game->edge) / (100 * (0.010 / 100))));
 
         if ($multiplier > $maxRatio) {
-            $error = 'Коэффициент выплат слишком велик. Максимальное соотношение: ' . $maxRatio;
+            return ['status' => 'error', 'message'  => 'Коэффициент выплат слишком велик. Максимальное соотношение: ' . $maxRatio];
         }
 
         if ($bet > $user->getActiveBalance()) {
-            $error = 'Ставка больше вашего баланса.';
-            return false;
+            return ['status' => 'error', 'message'  => 'Ставка больше вашего баланса.'];
         }
 
-        $betMultiplier = bcmul(StrHelperService::numberFormat($bet), StrHelperService::numberFormat($multiplier), $currency->accuracy); // ($bet * $multiplier) - $bet
-        $winAmount = bcsub($betMultiplier, StrHelperService::numberFormat($bet), $currency->accuracy);
+        $betMultiplier = StrHelperService::mul($bet, $multiplier, $currency->accuracy); // ($bet * $multiplier) - $bet
+        $winAmount = StrHelperService::minus($betMultiplier, $bet, $currency->accuracy);
 
         $chance = ((100.000 - $this->game->edge) / $multiplier);
         $chance = floor($chance * 1000) / 1000;
@@ -58,7 +56,7 @@ class DiceService
             if ($randRoll > $chance) {
                 $user->addToBalance($winAmount, $currency->accuracy);
             } else {
-                $winAmount = -1 * $bet;
+                $winAmount = StrHelperService::mul(-1, $bet, $currency->accuracy);
                 $user->writeOffBalance($bet, $currency->accuracy);
             }
         } elseif ($underOver === 2) {

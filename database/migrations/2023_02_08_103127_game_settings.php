@@ -34,6 +34,18 @@ class GameSettings extends Migration
 
             $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade');
         });
+
+        Schema::create('mine_settings', function (Blueprint $table) {
+            $table->id();
+            $table->bigInteger('currency_id')->unsigned();
+            $table->double('edge', 3, 2);
+            $table->double('max_win', 19, 8);
+            $table->double('min_bid', 10, 8);
+            $table->smallInteger('min_mines')->default(2);
+            $table->smallInteger('max_mines')->default(24);
+
+            $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade');
+        });
     }
 
     /**
@@ -43,6 +55,7 @@ class GameSettings extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('mine_settings');
         Schema::dropIfExists('cards_settings');
         Schema::dropIfExists('dice_settings');
     }

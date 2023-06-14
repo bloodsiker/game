@@ -18,7 +18,7 @@ class CreatePromoCodesTable extends Migration
             $table->bigInteger('currency_id')->unsigned();
             $table->string('code', 50);
             $table->integer('quantity');
-            $table->double('discount', 10, 2)->default(0);
+            $table->double('discount', 16, 8)->default(0);
             $table->boolean('is_fixed_discount')->default(0);
             $table->dateTime('start_date');
             $table->dateTime('end_date');

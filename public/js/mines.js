@@ -70,7 +70,7 @@ $(document).ready(function () {
             msg = msg + " Ставка больше вашего баланса.";
             result = false;
         }
-        if ((bid).toFixed(2) > Maxwin) {
+        if ((bid).toFixed(Accuracy) > Maxwin) {
             msg = msg + " Измените ставку или выплату. Максимальный выигрыш установлен на: " + Maxwin + " " + coinname + ".";
             result = false;
         }
@@ -218,14 +218,76 @@ $(document).ready(function () {
         });
     };
 
+    const loadGame = () => {
+        $.ajax({
+            type: 'POST',
+            url: '/mines/load',
+            dataType: 'json',
+            success: function (res) {
+                if (res.status === 'success') {
+                    DisabledGame = false;
+                    $('#btnMineStart').remove();
+
+                    setPlaceholderMines(res.count_mine, res.free_fields);
+
+                    $('#txtMineBet').val(convert_number(res.sum, Accuracy));
+                    $('#txtMines').val(res.count_mine);
+                    $('#txtMineBet, #txtMines, .btnSetMine, .btnOperations').attr('disabled', 'disabled');
+                    showMessageManual('');
+                    showMessageSuccess('');
+
+                    let step = res.step;
+                    Step = step;
+
+                    $('.game-mine__numbers-item').attr('class', 'game-mine__numbers-item');
+                    renderBtnPossibleWin((res.possibleWin).toFixed(Accuracy));
+
+                    $.each(res.revealed, function(index, value) {
+                        SelectedCell.push(parseInt(value));
+                        renderWinCell(value);
+                    });
+
+                    setTimeout(function () {
+                        $('.mines-coeff').removeClass('active');
+                        let slickSlider = $('.mines-coeffs-slider').slick('init');
+
+                        let slide = $('.mines-coeffs-slider').find('.slick-container[data-step=' + step + ']');
+                        if (slide) {
+                            slide.find('.mines-coeff').addClass('active');
+                            let indexSlick = slide.data('slick-index');
+                            slickSlider.slick('slickGoTo', parseInt(indexSlick));
+                        }
+                    }, 1000);
+
+                    activateUserBets();
+                }
+            },
+            error: function (msg) {
+                console.log("not ok....");
+            }
+        });
+    }
+
+    const setPlaceholderMines = (mine, winCell = null) => {
+        let win = 25 - mine;
+        if (winCell) {
+            win = winCell;
+        }
+        WinMinesInFields = win;
+        $('#countWinMines').text(win);
+        $('#countLossMines').text(mine);
+    }
+
     const setDefault = () => {
         getMinesRates();
         $("#txtMines").val(DefaultMines);
-        $("#txtMineBet").val(Minbid);
+        $("#txtMineBet").val(convert_number(Minbid, Accuracy));
+        setPlaceholderMines(DefaultMines);
         setTimeout(function () {
             renderHtmlRates(DefaultMines);
-        }, 1000)
+        }, 1000);
 
+        loadGame();
     }
     setDefault();
 
@@ -255,6 +317,7 @@ $(document).ready(function () {
         var start = this.selectionStart;
         var end = this.selectionEnd;
         this.value = this.value.replace(/[^0-9\.]/g, '');
+        this.value = convert_number(this.value, Accuracy);
         this.setSelectionRange(start, end);
         manual_validate();
     });
@@ -274,13 +337,6 @@ $(document).ready(function () {
         this.setSelectionRange(start, end);
         manual_validate();
     });
-
-    const setPlaceholderMines = (mine) => {
-        let win = 25 - mine;
-        WinMinesInFields = win;
-        $('#countWinMines').text(win);
-        $('#countLossMines').text(mine);
-    }
 
     const renderHtmlRates = (countMine) => {
         let html = '';
@@ -314,7 +370,6 @@ $(document).ready(function () {
             slidesToShow: 4,
             slidesToScroll: 4,
         });
-        setPlaceholderMines(countMine);
     }
 
     $(".btnSetMine").on('click', function () { // set mines
@@ -326,76 +381,76 @@ $(document).ready(function () {
 
     $("#btnBet1").click(function () { // bid + 1
         var bet = parseFloat($("#txtMineBet").val());
-        $("#txtMineBet").val((bet + 1).toFixed(2));
+        $("#txtMineBet").val((bet + 1).toFixed(Accuracy));
         if ((bet + 1) > (Balance)) {
-            $("#txtMineBet").val((Balance).toFixed(2));
+            $("#txtMineBet").val((Balance).toFixed(Accuracy));
         }
         manual_validate();
     });
 
     $("#btnBet2").click(function () { // bid + 10
         var bet = parseFloat($("#txtMineBet").val());
-        $("#txtMineBet").val((bet + 10).toFixed(2));
+        $("#txtMineBet").val((bet + 10).toFixed(Accuracy));
         if ((bet + 10) > (Balance)) {
-            $("#txtMineBet").val((Balance).toFixed(2));
+            $("#txtMineBet").val((Balance).toFixed(Accuracy));
         }
         manual_validate();
     });
 
     $("#btnBet3").click(function () { // bid + 50
         var bet = parseFloat($("#txtMineBet").val());
-        $("#txtMineBet").val((bet + 50).toFixed(2));
+        $("#txtMineBet").val((bet + 50).toFixed(Accuracy));
 
         if ((bet + 50) > (Balance)) {
-            $("#txtMineBet").val((Balance).toFixed(2));
+            $("#txtMineBet").val((Balance).toFixed(Accuracy));
         }
         manual_validate();
     });
 
     $("#btnBet4").click(function () { // bid + 100
         var bet = parseFloat($("#txtMineBet").val());
-        $("#txtMineBet").val((bet + 100).toFixed(2));
+        $("#txtMineBet").val((bet + 100).toFixed(Accuracy));
 
         if ((bet + 100) > (Balance)) {
-            $("#txtMineBet").val((Balance).toFixed(2));
+            $("#txtMineBet").val((Balance).toFixed(Accuracy));
         }
         manual_validate();
     });
 
     $("#btnBet5").click(function () { // bid + 250
         var bet = parseFloat($("#txtMineBet").val());
-        $("#txtMineBet").val((bet + 250).toFixed(2));
+        $("#txtMineBet").val((bet + 250).toFixed(Accuracy));
 
         if ((bet + 250) > (Balance)) {
-            $("#txtMineBet").val((Balance).toFixed(2));
+            $("#txtMineBet").val((Balance).toFixed(Accuracy));
         }
         manual_validate();
     });
 
     $("#btnMaxBet").on('click', function () { // max bid
-        $("#txtMineBet").val((Balance).toFixed(2));
+        $("#txtMineBet").val((Balance).toFixed(Accuracy));
         manual_validate();
     });
 
     $("#btnMinBet").on('click', function () { // max bid
-        $("#txtMineBet").val((Minbid).toFixed(2));
+        $("#txtMineBet").val((Minbid).toFixed(Accuracy));
         manual_validate();
     });
 
     $("#btnDivBet").on('click', function () { // bid / 2
         var bet = parseFloat($("#txtMineBet").val());
-        $("#txtMineBet").val((bet / 2).toFixed(2));
+        $("#txtMineBet").val((bet / 2).toFixed(Accuracy));
         if ((bet / 2) < Minbid) {
-            $("#txtMineBet").val(Minbid.toFixed(2));
+            $("#txtMineBet").val(Minbid.toFixed(Accuracy));
         }
         manual_validate();
     });
 
     $("#btnX2Bet").click(function () { // bid * 2
         var bet = parseFloat($("#txtMineBet").val());
-        $("#txtMineBet").val((bet * 2).toFixed(2));
+        $("#txtMineBet").val((bet * 2).toFixed(Accuracy));
         if ((bet * 2) > (Balance)) {
-            $("#txtMineBet").val((Balance).toFixed(2));
+            $("#txtMineBet").val((Balance).toFixed(Accuracy));
         }
         manual_validate();
     });
@@ -443,10 +498,7 @@ $(document).ready(function () {
         let clientseed = getClientSeed();
 
         $('#countWinMines').text(WinMinesInFields);
-        $('.btnSetMine').attr('disabled', 'disabled');
-        $('.btnOperations').attr('disabled', 'disabled');
-        $('#txtMineBet').attr('disabled', 'disabled');
-        $('#txtMines').attr('disabled', 'disabled');
+        $('#txtMineBet, #txtMines, .btnSetMine, .btnOperations').attr('disabled', 'disabled');
         showMessageManual('');
         showMessageSuccess('');
 
@@ -467,7 +519,7 @@ $(document).ready(function () {
                     $('#btnMineStart').remove();
                     $('.game-mine__numbers-item').attr('class', 'game-mine__numbers-item');
                     $('.mine-img').remove();
-                    renderBtnPossibleWin(bet);
+                    renderBtnPossibleWin(convert_number(bet, Accuracy));
                     activateUserBets();
                 }
             },
@@ -507,7 +559,7 @@ $(document).ready(function () {
 
                         let winMines = parseInt($('#countWinMines').text());
                         $('#countWinMines').text(--winMines);
-                        $('#possibleWin').text((res.possibleWin).toFixed(2));
+                        $('#possibleWin').text((res.possibleWin).toFixed(Accuracy));
                         $('#btnPossibleWin').removeAttr('disabled');
 
                         $('.mines-coeff').removeClass('active');
@@ -518,6 +570,35 @@ $(document).ready(function () {
                             slide.find('.mines-coeff').addClass('active');
                             let indexSlick = slide.data('slick-index');
                             slickSlider.slick('slickGoTo', parseInt(indexSlick));
+                        }
+
+                        if (res.win) {
+                            DisabledGame = true;
+                            Step = 0;
+                            showMessageSuccess('Вы выиграли ' + (res.won_sum).toFixed(Accuracy));
+                            Balance = res.balance;
+                            showBalance(res.balance, Code, Accuracy);
+                            $('#btnPossibleWin').remove();
+                            renderBtnStart();
+                            SelectedCell = [];
+
+                            $('#txtMineBet, #txtMines, .btnSetMine, .btnOperations').removeAttr('disabled');
+
+                            $.each($('.game-mine__numbers-item'), function() {
+                                let number = $(this).data('number');
+
+                                if (res.mines.indexOf(number) !== -1) {
+                                    let html = `<img class="mine-img" src="/assets/icons/mine-loss.png" alt="Неудача"><i class="mines-reveal-animation"></i>`;
+                                    $(this).addClass('gameDanger is_opacity').html(html);
+                                } else {
+                                    if (res.revealed.indexOf(number) === -1) {
+                                        let html = `<img class="mine-img" src="/assets/icons/mine_win.png" alt="Успешно"><i class="mines-reveal-animation"></i>`;
+                                        $(this).addClass('gameSuccess is_opacity').html(html);
+                                    }
+                                }
+                            });
+
+                            addToTable(res.BetData, "1");
                         }
                     }
                 }
@@ -538,17 +619,14 @@ $(document).ready(function () {
                 if (res.status === 'success') {
                     DisabledGame = true;
                     Step = 0;
-                    showMessageSuccess('Вы выиграли ' + (res.won_sum).toFixed(2));
+                    showMessageSuccess('Вы выиграли ' + (res.won_sum).toFixed(Accuracy));
                     Balance = res.balance;
                     showBalance(res.balance, Code, Accuracy);
                     $('#btnPossibleWin').remove();
                     renderBtnStart();
                     SelectedCell = [];
 
-                    $('.btnSetMine').removeAttr('disabled');
-                    $('.btnOperations').removeAttr('disabled');
-                    $('#txtMineBet').removeAttr('disabled');
-                    $('#txtMines').removeAttr('disabled');
+                    $('#txtMineBet, #txtMines, .btnSetMine, .btnOperations').removeAttr('disabled');
 
                     $.each($('.game-mine__numbers-item'), function() {
                         let number = $(this).data('number');

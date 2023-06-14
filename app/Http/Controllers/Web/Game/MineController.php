@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Game;
 
 use App\Models\Currency;
 use App\Models\MineHistory;
+use App\Models\MineSetting;
 use App\Services\MineService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -31,8 +32,9 @@ class MineController extends Controller
         }
 
         $game = $this->service->getGame();
+        $settings = MineSetting::where(['currency_id' => $currency->id])->first();
 
-        return view('games.mine.index', compact('currency', 'game'));
+        return view('games.mine.index', compact('currency', 'game', 'settings'));
     }
 
     public function create(Request $request)
@@ -48,6 +50,11 @@ class MineController extends Controller
     public function collect(Request $request)
     {
         return response()->json($this->service->collect($request));
+    }
+
+    public function load(Request $request)
+    {
+        return response()->json($this->service->load($request));
     }
 
     public function getRates()

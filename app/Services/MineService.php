@@ -27,8 +27,9 @@ class MineService
         $user = Auth::user();
         $code = $request->get('code');
         $sum = (float) $request->get('sum');
+        $mineCount = $request->get('mines_count');
 
-        if (!$request->get('mines_count')) {
+        if (!$mineCount) {
             return ['status' => 'error', 'message'  => 'need mines_count'];
         }
 
@@ -40,7 +41,7 @@ class MineService
 
         $user->setActiveBalance($code);
 
-        $count = $request->get('mines_count') ?? 2;
+        $count = max($mineCount, 2);
 
         if ($user->getActiveBalance() < $sum) {
             return ['status' => 'error', 'message'  => 'Не достаточно средств на счету'];
@@ -56,6 +57,7 @@ class MineService
         $game->step = 0;
         $game->coeff = 1;
         $game->active = true;
+        $game->revealed = json_encode([]);
         $game->mines = json_encode($mines);
         $game->remainder = $user->getActiveBalance();
         $game->time_game = Carbon::now();
@@ -94,16 +96,33 @@ class MineService
         $revealed[] = $cell;
 
         $lose = in_array($cell, $mines) ? true : false;
+        $win = false;
 
         if ($lose) {
             $mineGame->active = false;
             $mineGame->lose = true;
             $mineGame->won_sum = 0;
-            $mineGame->profit = -1 * $mineGame->sum;
+            $mineGame->profit = StrHelperService::mul(-1, $mineGame->sum, $currency->accuracy);
         } else {
             ++$mineGame->step;
             $rate = MineRate::where(['mine' => $mineGame->count_mine, 'step' => $mineGame->step])->first();
-            $mineGame->coeff = $rate ? $rate->coeff : $mineGame->coeff;
+
+            $countWin = 25 - $mineGame->count_mine;
+            if (count($revealed) === $countWin) {
+                $win = true;
+            } else {
+                $mineGame->coeff = $rate->coeff;
+            }
+        }
+
+        if ($win) {
+            $profit = StrHelperService::mul($mineGame->sum, $mineGame->coeff, $currency->accuracy);
+            $user->addToBalance($profit, $currency->accuracy);
+
+            $mineGame->active = false;
+            $mineGame->won_sum = $profit;
+            $mineGame->profit = $profit;
+            $mineGame->remainder = $user->getActiveBalance();
         }
 
         $mineGame->revealed = json_encode($revealed);
@@ -141,7 +160,8 @@ class MineService
 
         } else {
             $result = [
-                'active' => true,
+                'win' => $win,
+                'active' => false,
                 'coeff' => $mineGame->coeff,
                 'lose' => $mineGame->lose,
                 'mines' => [],
@@ -151,9 +171,57 @@ class MineService
                 'sum' => $mineGame->sum,
                 'possibleWin' => $mineGame->sum * $mineGame->coeff,
             ];
+
+            if ($win) {
+                $result['won_sum'] = (float) $mineGame->won_sum;
+                $result['mines'] = json_decode($mineGame->mines);
+                $result['BetData'] = [
+                    [
+                        'id' => $mineGame->id,
+                        'user_id' => $user->login,
+                        'coinname' => $mineGame->currency->short_name,
+                        'icon' => $currency->icon,
+                        'time' => $mineGame->time_game,
+                        'bet' => $mineGame->sum,
+                        'count_mine' => $mineGame->count_mine,
+                        'coeff' => $mineGame->coeff,
+                        'profit' => $mineGame->profit,
+                        'code' => $code,
+                    ],
+                ];
+                $this->userStatisticService->setStatistic($user, $currency, $mineGame->sum, ($mineGame->profit - $mineGame->sum), $this->game->slug);
+            }
         }
 
         return $result;
+    }
+
+    public function load(Request $request) {
+        $user = Auth::user();
+        $mineGame = MineHistory::where(['user_id' => $user->id, 'active'=> true])->orderBy('id', 'DESC')->first();
+
+        if ($mineGame) {
+            $rate = MineRate::where(['mine' => $mineGame->count_mine, 'step' => $mineGame->step])->select(['coeff', 'mine', 'step'])->first();
+
+            $revealed = json_decode($mineGame->revealed);
+
+            return [
+                'active' => $mineGame->active,
+                'coeff' => $mineGame->coeff,
+                'lose' => $mineGame->lose,
+                'mines' => [],
+                'revealed' => $revealed,
+                'status' => 'success',
+                'step' => $mineGame->step,
+                'rate' => $rate,
+                'sum' => $mineGame->sum,
+                'free_fields' => 25 - count($revealed) - $mineGame->count_mine,
+                'count_mine' => $mineGame->count_mine,
+                'possibleWin' => $mineGame->sum * $mineGame->coeff,
+            ];
+        }
+
+        return [];
     }
 
     public function collect(Request $request)

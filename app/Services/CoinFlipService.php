@@ -53,6 +53,7 @@ class CoinFlipService
         $game->active = true;
         $game->remainder = $user->getActiveBalance();
         $game->coins = json_encode($coins);
+        $game->revealed = json_encode([]);
         $game->time_game = Carbon::now();
         $game->save();
 
@@ -85,18 +86,38 @@ class CoinFlipService
         $coinGame->revealed = json_encode($revealed);
 
         $lose = !($coins[$coinGame->step] === $coin);
+        $win = false;
 
         if ($lose) {
             $coinGame->active = false;
             $coinGame->lose = true;
             $coinGame->won_sum = 0;
-            $coinGame->profit = -1 * $coinGame->bet;
+            $coinGame->profit = StrHelperService::mul(-1, $coinGame->bet, $currency->accuracy);
 
             $this->userStatisticService->setStatistic($user, $currency, $coinGame->bet, $coinGame->profit, $this->game->slug);
         } else {
             ++$coinGame->step;
             $rate = CoinFlipRate::where(['step' => $coinGame->step])->first();
-            $coinGame->coeff = $rate ? $rate->coeff : $coinGame->coeff;
+            if ($rate->finish) {
+                $win = true;
+            }
+
+            $coinGame->coeff = $rate->coeff;
+        }
+
+        if ($win) {
+            $profit = StrHelperService::mul($coinGame->bet, $coinGame->coeff, $currency->accuracy);
+
+            $user->setActiveBalance($code);
+            $user->addToBalance($profit, $currency->accuracy);
+
+            $coinGame->won_sum = $profit;
+            $coinGame->active = false;
+            $coinGame->profit = $profit;
+            $coinGame->remainder = $user->getActiveBalance();
+            $coinGame->save();
+
+            $this->userStatisticService->setStatistic($user, $currency, $coinGame->bet, ($profit - $coinGame->bet), $this->game->slug);
         }
 
         $coinGame->save();
@@ -112,7 +133,7 @@ class CoinFlipService
                 'step' => $coinGame->step,
                 'bet' => $coinGame->bet,
                 'coin' => $coins[$coinGame->step],
-                'profit' => -1 * $coinGame->bet,
+                'profit' => $coinGame->profit,
                 'finish' => 0,
                 'possibleWin' => 0,
                 'BetData' => [
@@ -140,11 +161,52 @@ class CoinFlipService
                 'bet' => $coinGame->bet,
                 'coin' => $coins[$coinGame->step - 1],
                 'finish' => $rate->finish,
+                'possibleWin' => (float) StrHelperService::mul($coinGame->bet, $coinGame->coeff, $currency->accuracy),
+            ];
+
+            if ($win) {
+                $result['won_sum'] = (float) $coinGame->won_sum;
+                $result['finish'] = 1;
+                $result['BetData'] = [
+                    [
+                        'id' => $coinGame->id,
+                        'user_id' => $user->login,
+                        'coinname' => $coinGame->currency->name,
+                        'time' => $coinGame->time_game,
+                        'bet' => $coinGame->bet,
+                        'coeff' => $coinGame->coeff,
+                        'profit' => $coinGame->profit,
+                        'code' => $code,
+                    ],
+                ];
+            }
+        }
+
+        return $result;
+    }
+
+    public function load(Request $request) {
+        $user = Auth::user();
+
+        $coinGame = CoinFlipHistory::where(['user_id' => $user->id, 'active'=> true])->orderBy('id', 'DESC')->first();
+
+        if ($coinGame) {
+            $rate = CoinFlipRate::where(['step' => $coinGame->step])->select(['coeff', 'step'])->first();
+
+            $revealed = json_decode($coinGame->revealed);
+
+            return [
+                'coeff' => $coinGame->coeff,
+                'revealed' => $revealed,
+                'status' => 'success',
+                'step' => $coinGame->step,
+                'bet' => $coinGame->bet,
+                'finish' => $rate ? $rate->finish : null,
                 'possibleWin' => $coinGame->bet * $coinGame->coeff,
             ];
         }
 
-        return $result;
+        return [];
     }
 
     public function collect(Request $request)
@@ -159,17 +221,18 @@ class CoinFlipService
 
         $currency = Currency::where('code', $code)->first();
 
-        $profit = bcmul(StrHelperService::numberFormat($coinGame->bet), StrHelperService::numberFormat($coinGame->coeff), $currency->accuracy);
+        $profit = StrHelperService::mul($coinGame->bet, $coinGame->coeff, $currency->accuracy);
 
         $user->setActiveBalance($code);
         $user->addToBalance($profit, $currency->accuracy);
-        $this->userStatisticService->setStatistic($user, $currency, $coinGame->bet, ($profit - $coinGame->bet), $this->game->slug);
 
         $coinGame->won_sum = $profit;
         $coinGame->active = false;
         $coinGame->profit = $profit;
         $coinGame->remainder = $user->getActiveBalance();
         $coinGame->save();
+
+        $this->userStatisticService->setStatistic($user, $currency, $coinGame->bet, ($profit - $coinGame->bet), $this->game->slug);
 
         return [
             'active' => $coinGame->active,
