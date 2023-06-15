@@ -1,4 +1,4 @@
-FROM php:8.0-fpm
+FROM php:8.2-fpm
 
 RUN usermod -u 1001 www-data && groupmod -g 1001 www-data
 
@@ -26,16 +26,3 @@ ENTRYPOINT ["/entrypoint.sh"]
 CMD ["php-fpm"]
 
 WORKDIR /var/www
-
-COPY composer.json composer.json
-COPY composer.lock composer.lock
-
-RUN composer install \
-    --no-dev \
-    --optimize-autoloader \
-    --prefer-dist \
-    --no-interaction \
-    --no-ansi \
-    --no-scripts
-
-COPY . .
